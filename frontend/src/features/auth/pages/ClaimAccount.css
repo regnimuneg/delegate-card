@@ -1,0 +1,212 @@
+/* ============================================
+   Claim Account Page Styles
+   ============================================ */
+
+.claim-page {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, rgba(0, 55, 192, 0.1) 100%);
+}
+
+.claim-container {
+    width: 100%;
+    max-width: 460px;
+    padding: var(--space-4);
+}
+
+/* ---- Brand Header ---- */
+.claim-brand {
+    text-align: center;
+    margin-bottom: var(--space-6);
+}
+
+.claim-logo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-1);
+}
+
+.claim-logo-text {
+    font-size: var(--font-size-4xl);
+    font-weight: var(--font-weight-extrabold);
+    color: var(--nimun-blue);
+    letter-spacing: 0.05em;
+}
+
+.claim-logo-year {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-muted);
+}
+
+.claim-tagline {
+    margin-top: var(--space-2);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ---- Step Indicator ---- */
+.claim-steps {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-6);
+}
+
+.claim-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    opacity: 0.4;
+    transition: opacity var(--transition-base);
+}
+
+.claim-step.active,
+.claim-step.completed {
+    opacity: 1;
+}
+
+.claim-step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    border: 2px solid var(--text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-muted);
+    transition: all var(--transition-base);
+}
+
+.claim-step.active .claim-step-number {
+    background: var(--nimun-blue);
+    border-color: var(--nimun-blue);
+    color: var(--text-on-blue);
+}
+
+.claim-step.completed .claim-step-number {
+    background: var(--status-success);
+    border-color: var(--status-success);
+    color: var(--text-on-blue);
+}
+
+.claim-step-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
+
+.claim-step-connector {
+    width: 40px;
+    height: 2px;
+    background: var(--text-muted);
+    opacity: 0.3;
+}
+
+/* ---- Claim Card ---- */
+.claim-card {
+    text-align: center;
+}
+
+.claim-title {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-2);
+    text-transform: none;
+}
+
+.claim-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+}
+
+.claim-subtitle strong {
+    color: var(--nimun-blue);
+    font-weight: var(--font-weight-semibold);
+}
+
+/* ---- Welcome Section ---- */
+.claim-welcome {
+    margin-bottom: var(--space-4);
+}
+
+.claim-welcome-emoji {
+    font-size: var(--font-size-3xl);
+    display: block;
+    margin-bottom: var(--space-2);
+}
+
+/* ---- Form ---- */
+.claim-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    text-align: left;
+}
+
+.claim-error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-4);
+    background: var(--status-error-bg);
+    color: var(--status-error);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-sm);
+}
+
+/* ---- Login Prompt ---- */
+.claim-login-prompt {
+    margin-top: var(--space-6);
+    text-align: center;
+}
+
+.claim-login-prompt p {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    margin-bottom: var(--space-2);
+}
+
+.claim-login-link {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--nimun-blue);
+}
+
+.claim-login-link:hover {
+    text-decoration: underline;
+}
+
+/* ---- Back Button ---- */
+.claim-back-btn {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color var(--transition-fast);
+}
+
+.claim-back-btn:hover {
+    color: var(--nimun-blue);
+}
+
+/* ---- Demo Notice ---- */
+.claim-demo {
+    margin-top: var(--space-6);
+    text-align: center;
+}
+
+.claim-demo p {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    background: rgba(0, 55, 192, 0.05);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-capsule);
+}

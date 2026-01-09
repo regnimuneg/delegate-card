@@ -1,0 +1,88 @@
+/* ============================================
+   NIMUN Input Styles
+   ============================================ */
+
+.nimun-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.nimun-input-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.nimun-input-required {
+    color: var(--status-error);
+    margin-left: var(--space-1);
+}
+
+.nimun-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nimun-input-icon {
+    position: absolute;
+    left: var(--space-4);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.nimun-input {
+    width: 100%;
+    padding: var(--space-4);
+    font-size: var(--font-size-base);
+    color: var(--text-primary);
+    background: var(--bg-card);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+}
+
+.nimun-input--with-icon {
+    padding-left: calc(var(--space-4) + 24px + var(--space-2));
+}
+
+.nimun-input::placeholder {
+    color: var(--text-muted);
+}
+
+.nimun-input:hover:not(:disabled) {
+    border-color: var(--nimun-blue-subtle);
+}
+
+.nimun-input:focus {
+    outline: none;
+    border-color: var(--nimun-blue);
+    box-shadow: var(--shadow-md), 0 0 0 4px var(--nimun-blue-subtle);
+}
+
+.nimun-input:disabled {
+    background: var(--bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* ---- Error State ---- */
+.nimun-input-group--error .nimun-input {
+    border-color: var(--status-error);
+}
+
+.nimun-input-group--error .nimun-input:focus {
+    box-shadow: var(--shadow-md), 0 0 0 4px var(--status-error-bg);
+}
+
+.nimun-input-error {
+    font-size: var(--font-size-sm);
+    color: var(--status-error);
+}

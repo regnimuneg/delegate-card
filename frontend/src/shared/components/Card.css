@@ -1,0 +1,87 @@
+/* ============================================
+   NIMUN Card Styles
+   ============================================ */
+
+.nimun-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+}
+
+/* ---- Variants ---- */
+.nimun-card--default {
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nimun-card--elevated {
+    box-shadow: var(--shadow-lg);
+}
+
+.nimun-card--outlined {
+    background: transparent;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: none;
+}
+
+.nimun-card--blue {
+    background: var(--nimun-blue);
+    color: var(--text-on-blue);
+}
+
+.nimun-card--blue p,
+.nimun-card--blue span,
+.nimun-card--blue label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* ---- Glow Effect ---- */
+.nimun-card--glow {
+    box-shadow: var(--shadow-blue);
+}
+
+.nimun-card--glow:hover {
+    box-shadow: var(--shadow-blue-lg);
+}
+
+/* ---- Padding Sizes ---- */
+.nimun-card--padding-none {
+    padding: 0;
+}
+
+.nimun-card--padding-small {
+    padding: var(--space-4);
+}
+
+.nimun-card--padding-medium {
+    padding: var(--space-6);
+}
+
+.nimun-card--padding-large {
+    padding: var(--space-8);
+}
+
+/* ---- Card Sections ---- */
+.nimun-card-header {
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: var(--space-4);
+}
+
+.nimun-card--blue .nimun-card-header {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.nimun-card-body {
+    flex: 1;
+}
+
+.nimun-card-footer {
+    padding-top: var(--space-4);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    margin-top: var(--space-4);
+}
+
+.nimun-card--blue .nimun-card-footer {
+    border-top-color: rgba(255, 255, 255, 0.2);
+}

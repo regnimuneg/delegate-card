@@ -1,0 +1,135 @@
+/* ============================================
+   Attendance History Styles
+   ============================================ */
+
+.attendance-history {
+    padding: var(--space-2);
+}
+
+.attendance-history-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+}
+
+.attendance-history-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-5);
+}
+
+.attendance-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.attendance-history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 55, 192, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 55, 192, 0.05);
+    transition: all var(--transition-base);
+}
+
+.attendance-history-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 55, 192, 0.1);
+    border-color: rgba(0, 55, 192, 0.2);
+}
+
+.attendance-history-item-icon {
+    font-size: var(--font-size-xl);
+    flex-shrink: 0;
+}
+
+.attendance-history-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.attendance-history-item-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.attendance-history-item-council {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-2);
+}
+
+.attendance-history-item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.attendance-history-item-date,
+.attendance-history-item-duration {
+    display: flex;
+    align-items: center;
+}
+
+.attendance-history-item-status {
+    flex-shrink: 0;
+}
+
+.attendance-history-status-badge {
+    display: inline-block;
+    padding: var(--space-1) var(--space-3);
+    background: var(--status-success-bg);
+    color: var(--status-success);
+    border-radius: var(--radius-capsule);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Empty State */
+.attendance-history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-10);
+}
+
+.attendance-history-empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+}
+
+.attendance-history-empty h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+}
+
+.attendance-history-empty p {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+    .attendance-history {
+        padding: var(--space-4);
+    }
+
+    .attendance-history-title {
+        font-size: var(--font-size-xl);
+    }
+}

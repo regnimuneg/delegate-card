@@ -1,0 +1,117 @@
+import { useState } from 'react';
+import { VoucherCard } from './VoucherCard';
+import { VoucherClaimModal } from './VoucherClaimModal';
+import { useVouchers } from '../hooks/useVouchers';
+import './VoucherList.css';
+
+/**
+ * VoucherList Component
+ * Displays all available vouchers for a delegate to claim
+ * @param {string} delegateId - The delegate's ID
+ * @param {function} onClaimSuccess - Callback when a voucher is successfully claimed, receives claim data
+ */
+export function VoucherList({ delegateId, onClaimSuccess }) {
+    const { vouchers, isLoading, claimingVendorId, claimVoucher } = useVouchers(delegateId);
+    const [selectedVoucher, setSelectedVoucher] = useState(null);
+
+    const handleClaimClick = (voucher) => {
+        setSelectedVoucher(voucher);
+    };
+
+    const handleConfirmClaim = async () => {
+        if (!selectedVoucher) return;
+
+        const result = await claimVoucher(selectedVoucher.id);
+
+        if (result.success) {
+            // Notify parent with claim data for dashboard display
+            if (onClaimSuccess) {
+                onClaimSuccess({
+                    vendorId: selectedVoucher.id,
+                    vendorName: selectedVoucher.name,
+                    icon: selectedVoucher.icon,
+                    description: selectedVoucher.description,
+                    timestamp: Date.now()
+                });
+            }
+            // Close the confirmation modal
+            setSelectedVoucher(null);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setSelectedVoucher(null);
+    };
+
+    // Separate available and exhausted vouchers
+    const availableVouchers = vouchers.filter(v => v.canClaim);
+    const exhaustedVouchers = vouchers.filter(v => !v.canClaim);
+
+    return (
+        <div className="voucher-list">
+            <div className="voucher-list-header">
+                <h3 className="voucher-list-title">
+                    Available Vouchers
+                </h3>
+                <span className="voucher-list-count">
+                    {availableVouchers.length} available
+                </span>
+            </div>
+
+            {vouchers.length === 0 ? (
+                <div className="voucher-list-empty">
+                    <span className="voucher-list-empty-icon">🎫</span>
+                    <p>No vouchers available at this time</p>
+                </div>
+            ) : (
+                <>
+                    {/* Available Vouchers */}
+                    {availableVouchers.length > 0 && (
+                        <div className="voucher-list-grid">
+                            {availableVouchers.map(voucher => (
+                                <VoucherCard
+                                    key={voucher.id}
+                                    voucher={voucher}
+                                    onClaim={handleClaimClick}
+                                    isClaiming={claimingVendorId === voucher.id}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Exhausted Vouchers */}
+                    {exhaustedVouchers.length > 0 && (
+                        <div className="voucher-list-exhausted">
+                            <h4 className="voucher-list-exhausted-title">
+                                Limit Reached ({exhaustedVouchers.length})
+                            </h4>
+                            <div className="voucher-list-grid voucher-list-grid--compact">
+                                {exhaustedVouchers.map(voucher => (
+                                    <VoucherCard
+                                        key={voucher.id}
+                                        voucher={voucher}
+                                        onClaim={handleClaimClick}
+                                        isClaiming={false}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* Claim Confirmation Modal (no QR code - just confirmation) */}
+            {selectedVoucher && (
+                <VoucherClaimModal
+                    voucher={selectedVoucher}
+                    isLoading={isLoading}
+                    onConfirm={handleConfirmClaim}
+                    onClose={handleCloseModal}
+                />
+            )}
+        </div>
+    );
+}
+
+export default VoucherList;
+

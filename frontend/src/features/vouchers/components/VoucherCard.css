@@ -1,0 +1,168 @@
+/* ============================================
+   VoucherCard Component Styles
+   ============================================ */
+
+.voucher-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    padding: var(--space-5);
+    box-shadow: var(--shadow-md);
+    border: 1px solid rgba(0, 55, 192, 0.1);
+    transition: all var(--transition-base);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.voucher-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Status-based styling */
+.voucher-card--available {
+    border-left: 4px solid var(--status-success);
+}
+
+.voucher-card--limited {
+    border-left: 4px solid var(--status-warning);
+}
+
+.voucher-card--exhausted {
+    border-left: 4px solid var(--text-muted);
+    opacity: 0.7;
+}
+
+.voucher-card--exhausted:hover {
+    transform: none;
+    box-shadow: var(--shadow-md);
+}
+
+/* Header */
+.voucher-card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+}
+
+.voucher-card-icon {
+    font-size: var(--font-size-3xl);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--nimun-blue-subtle);
+    border-radius: var(--radius-md);
+}
+
+.voucher-card-vendor {
+    flex: 1;
+    min-width: 0;
+}
+
+.voucher-card-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* Usage Badge */
+.voucher-usage {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-capsule);
+}
+
+.voucher-usage--available {
+    background: var(--status-success-bg);
+    color: var(--status-success);
+}
+
+.voucher-usage--limited {
+    background: var(--status-warning-bg);
+    color: var(--status-warning);
+}
+
+.voucher-usage--exhausted {
+    background: rgba(136, 136, 136, 0.1);
+    color: var(--text-muted);
+}
+
+.voucher-usage--unlimited {
+    background: var(--status-info-bg);
+    color: var(--nimun-blue);
+}
+
+.voucher-usage-icon {
+    font-size: var(--font-size-sm);
+}
+
+.voucher-usage-count {
+    font-weight: var(--font-weight-bold);
+}
+
+/* Description */
+.voucher-card-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: var(--line-height-normal);
+    flex: 1;
+}
+
+/* Footer */
+.voucher-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: auto;
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.voucher-card-used {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+.voucher-card-claim-btn {
+    flex-shrink: 0;
+}
+
+/* Exhausted state overrides */
+.voucher-card--exhausted .voucher-card-icon {
+    filter: grayscale(50%);
+    opacity: 0.6;
+}
+
+.voucher-card--exhausted .voucher-card-name {
+    color: var(--text-secondary);
+}
+
+/* Animation for claim */
+@keyframes claimPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 var(--nimun-blue-glow);
+    }
+
+    50% {
+        box-shadow: 0 0 0 8px transparent;
+    }
+}
+
+.voucher-card.claiming {
+    animation: claimPulse 1s ease-in-out infinite;
+}

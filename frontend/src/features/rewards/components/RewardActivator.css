@@ -1,0 +1,271 @@
+/* ============================================
+   Reward Activator Styles
+   ============================================ */
+
+.reward-activator {
+    width: 100%;
+}
+
+.reward-activator-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ---- Reward Type Selection ---- */
+.reward-types {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+@media (max-width: 480px) {
+    .reward-types {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.reward-type-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-4) var(--space-2);
+    background: var(--bg-card);
+    border: 2px solid transparent;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+}
+
+.reward-type-btn:hover {
+    border-color: var(--nimun-blue-subtle);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.reward-type-btn.selected {
+    border-color: var(--nimun-blue);
+    background: var(--nimun-blue-subtle);
+}
+
+.reward-type-icon {
+    font-size: var(--font-size-2xl);
+}
+
+.reward-type-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-primary);
+}
+
+/* ---- Activation Section ---- */
+.reward-activate-section {
+    text-align: center;
+    padding: var(--space-4);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+}
+
+.reward-selected-info {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-4);
+}
+
+.reward-selected-info strong {
+    color: var(--nimun-blue);
+}
+
+/* ---- Active QR Card ---- */
+.reward-active-card {
+    text-align: center;
+    animation: slideUp var(--transition-slow) ease-out;
+}
+
+.reward-qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
+}
+
+.reward-qr-wrapper {
+    padding: var(--space-3);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.reward-qr-label {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--nimun-blue);
+}
+
+/* ---- Timer ---- */
+.reward-timer-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.reward-timer-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+}
+
+.reward-timer {
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-bold);
+    font-variant-numeric: tabular-nums;
+    color: var(--text-primary);
+}
+
+.reward-timer--large {
+    font-size: var(--font-size-4xl);
+    color: var(--text-on-blue);
+}
+
+.reward-timer-bar {
+    width: 100%;
+    max-width: 200px;
+    height: 4px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+}
+
+.reward-timer-bar-fill {
+    height: 100%;
+    background: var(--nimun-blue);
+    border-radius: var(--radius-full);
+    transition: width 1s linear;
+}
+
+/* ---- Actions ---- */
+.reward-actions {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-3);
+}
+
+/* ---- Low-Tech Mode ---- */
+.reward-active-card.low-tech-mode {
+    background: var(--nimun-blue);
+    color: var(--text-on-blue);
+    animation: glow 2s ease-in-out infinite;
+}
+
+.reward-low-tech {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-6) 0;
+}
+
+.reward-low-tech-animation {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.reward-low-tech-icon {
+    font-size: 80px;
+    position: relative;
+    z-index: 1;
+    animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+.reward-low-tech-pulse {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    animation: pulse-ring 1.5s ease-out infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.5);
+        opacity: 0;
+    }
+}
+
+.reward-low-tech-title {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 0;
+    color: var(--text-on-blue);
+}
+
+.reward-low-tech-type {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-extrabold);
+    margin: 0;
+    color: var(--text-on-blue);
+}
+
+.low-tech-mode .reward-actions {
+    margin-top: var(--space-4);
+}
+
+.low-tech-mode .nimun-btn--secondary {
+    color: var(--text-on-blue);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.low-tech-mode .nimun-btn--secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.low-tech-mode .nimun-btn--ghost {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ---- Instructions ---- */
+.reward-instructions {
+    text-align: center;
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+    padding: var(--space-4);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    margin-top: var(--space-2);
+}

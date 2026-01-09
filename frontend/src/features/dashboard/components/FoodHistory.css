@@ -1,0 +1,128 @@
+/* ============================================
+   Food History Styles
+   ============================================ */
+
+.food-history {
+    padding: var(--space-2);
+}
+
+.food-history-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-1);
+    color: var(--text-primary);
+}
+
+.food-history-subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-5);
+}
+
+.food-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+.food-history-item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(8px);
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(0, 55, 192, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 55, 192, 0.05);
+    transition: all var(--transition-base);
+}
+
+.food-history-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 55, 192, 0.1);
+    border-color: rgba(0, 55, 192, 0.2);
+}
+
+.food-history-item-icon {
+    font-size: var(--font-size-xl);
+    flex-shrink: 0;
+}
+
+.food-history-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.food-history-item-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.food-history-item-location {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-1);
+}
+
+.food-history-item-date {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+}
+
+.food-history-item-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+}
+
+.food-history-item-tag {
+    display: inline-block;
+    padding: var(--space-1) var(--space-2);
+    background: rgba(0, 55, 192, 0.08);
+    color: var(--nimun-blue);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+/* Empty State */
+.food-history-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-10);
+}
+
+.food-history-empty-icon {
+    font-size: 4rem;
+    margin-bottom: var(--space-4);
+    opacity: 0.5;
+}
+
+.food-history-empty h3 {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--space-2);
+    color: var(--text-secondary);
+}
+
+.food-history-empty p {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+@media (min-width: 768px) {
+    .food-history {
+        padding: var(--space-4);
+    }
+
+    .food-history-title {
+        font-size: var(--font-size-xl);
+    }
+}

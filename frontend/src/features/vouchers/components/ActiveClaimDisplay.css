@@ -1,0 +1,224 @@
+/* ============================================
+   ActiveClaimDisplay - Compact Horizontal Bar
+   ============================================ */
+
+.active-claim {
+    background: var(--nimun-blue);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    animation: claimSlideIn 0.3s ease-out;
+}
+
+.active-claim--expired {
+    background: var(--text-muted);
+}
+
+.active-claim-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-3) var(--space-4);
+}
+
+/* Left: Info Section */
+.active-claim-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 0 0 auto;
+}
+
+.active-claim-icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    color: white;
+}
+
+.active-claim-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.active-claim-label {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.active-claim-vendor {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: white;
+}
+
+/* Center: QR/Visual Display */
+.active-claim-display {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.active-claim-qr {
+    background: white;
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.active-claim-lowtech {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.active-claim-lowtech-icon {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: white;
+    z-index: 1;
+}
+
+.active-claim-lowtech-ring {
+    position: absolute;
+    inset: 0;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: ringPulse 1.5s ease-out infinite;
+}
+
+/* Right: Timer & Actions */
+.active-claim-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 0 0 auto;
+}
+
+.active-claim-timer {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    color: white;
+    min-width: 56px;
+    text-align: center;
+}
+
+.active-claim-timer--warning {
+    animation: timerBlink 1s ease-in-out infinite;
+}
+
+.active-claim-toggle {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.15);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.active-claim-toggle:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.active-claim-close {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    color: rgba(255, 255, 255, 0.7);
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.active-claim-close:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* Bottom: Progress Bar */
+.active-claim-bar {
+    height: 3px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.active-claim-bar-fill {
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    transition: width 1s linear;
+}
+
+/* Animations */
+@keyframes claimSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes ringPulse {
+    0% {
+        transform: scale(0.8);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1.3);
+        opacity: 0;
+    }
+}
+
+@keyframes timerBlink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .active-claim-content {
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .active-claim-display {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: var(--space-2);
+    }
+
+    .active-claim-qr svg {
+        width: 80px !important;
+        height: 80px !important;
+    }
+}

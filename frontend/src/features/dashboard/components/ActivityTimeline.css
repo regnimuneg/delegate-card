@@ -1,0 +1,130 @@
+/* ============================================
+   Activity Timeline Styles
+   ============================================ */
+
+.activity-timeline {
+    width: 100%;
+}
+
+.activity-timeline-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--space-4);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* ---- List ---- */
+.activity-timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+}
+
+/* ---- Item ---- */
+.activity-timeline-item {
+    display: flex;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    animation: slideUp var(--transition-slow) ease-out both;
+}
+
+.activity-timeline-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+/* Type-specific icon backgrounds */
+.activity-timeline-item--attendance .activity-timeline-icon {
+    background: var(--nimun-blue-subtle);
+}
+
+.activity-timeline-item--food .activity-timeline-icon {
+    background: var(--status-success-bg);
+}
+
+.activity-timeline-item--game .activity-timeline-icon {
+    background: var(--status-warning-bg);
+}
+
+/* ---- Content ---- */
+.activity-timeline-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-2);
+    margin-bottom: var(--space-1);
+}
+
+.activity-timeline-item-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.activity-timeline-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.activity-timeline-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.activity-timeline-points {
+    display: inline-block;
+    margin-top: var(--space-2);
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--status-warning);
+    background: var(--status-warning-bg);
+    border-radius: var(--radius-capsule);
+}
+
+/* ---- Empty State ---- */
+.activity-timeline-empty {
+    text-align: center;
+}
+
+.activity-timeline-empty-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-6) 0;
+}
+
+.activity-timeline-empty-icon {
+    font-size: var(--font-size-3xl);
+    opacity: 0.5;
+}
+
+.activity-timeline-empty-content p {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.activity-timeline-empty-hint {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}

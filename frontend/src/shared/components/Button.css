@@ -1,0 +1,116 @@
+/* ============================================
+   NIMUN Button Styles
+   ============================================ */
+
+.nimun-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-primary);
+    font-weight: var(--font-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-capsule);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    position: relative;
+    overflow: hidden;
+}
+
+.nimun-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ---- Variants ---- */
+.nimun-btn--primary {
+    background: var(--nimun-blue);
+    color: var(--text-on-blue);
+    border: 2px solid var(--nimun-blue);
+    box-shadow: var(--shadow-blue);
+}
+
+.nimun-btn--primary:hover:not(:disabled) {
+    background: var(--nimun-blue-dark);
+    border-color: var(--nimun-blue-dark);
+    box-shadow: var(--shadow-blue-lg);
+    transform: translateY(-2px);
+}
+
+.nimun-btn--primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.nimun-btn--secondary {
+    background: transparent;
+    color: var(--nimun-blue);
+    border: 2px solid var(--nimun-blue);
+}
+
+.nimun-btn--secondary:hover:not(:disabled) {
+    background: var(--nimun-blue-subtle);
+}
+
+.nimun-btn--ghost {
+    background: transparent;
+    color: var(--text-primary);
+    border: 2px solid transparent;
+}
+
+.nimun-btn--ghost:hover:not(:disabled) {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.nimun-btn--danger {
+    background: var(--status-error);
+    color: var(--text-on-blue);
+    border: 2px solid var(--status-error);
+}
+
+.nimun-btn--danger:hover:not(:disabled) {
+    background: #dc2626;
+    border-color: #dc2626;
+}
+
+/* ---- Sizes ---- */
+.nimun-btn--small {
+    padding: var(--space-2) var(--space-4);
+    font-size: var(--font-size-xs);
+}
+
+.nimun-btn--medium {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--font-size-sm);
+}
+
+.nimun-btn--large {
+    padding: var(--space-4) var(--space-8);
+    font-size: var(--font-size-base);
+}
+
+/* ---- Modifiers ---- */
+.nimun-btn--full {
+    width: 100%;
+}
+
+/* ---- Loading State ---- */
+.nimun-btn--loading .nimun-btn__content {
+    opacity: 0;
+}
+
+.nimun-btn__spinner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

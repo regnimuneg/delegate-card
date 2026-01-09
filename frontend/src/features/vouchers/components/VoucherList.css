@@ -1,0 +1,106 @@
+/* ============================================
+   VoucherList Component Styles
+   ============================================ */
+
+.voucher-list {
+    width: 100%;
+}
+
+/* Header */
+.voucher-list-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-5);
+}
+
+.voucher-list-title {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.voucher-list-title-icon {
+    font-size: var(--font-size-2xl);
+}
+
+.voucher-list-count {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-muted);
+    background: var(--nimun-blue-subtle);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-capsule);
+}
+
+/* Grid */
+.voucher-list-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+}
+
+.voucher-list-grid--compact {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: var(--space-3);
+}
+
+/* Empty State */
+.voucher-list-empty {
+    text-align: center;
+    padding: var(--space-10) var(--space-4);
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    border: 2px dashed rgba(0, 55, 192, 0.2);
+}
+
+.voucher-list-empty-icon {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: var(--space-3);
+    opacity: 0.5;
+}
+
+.voucher-list-empty p {
+    color: var(--text-muted);
+    margin: 0;
+}
+
+/* Exhausted Section */
+.voucher-list-exhausted {
+    margin-top: var(--space-8);
+    padding-top: var(--space-6);
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.voucher-list-exhausted-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-muted);
+    margin: 0 0 var(--space-4) 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .voucher-list-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
+    }
+
+    .voucher-list-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .voucher-list-grid--compact {
+        grid-template-columns: 1fr;
+    }
+}
