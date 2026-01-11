@@ -39,22 +39,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-size-lg);
     background: var(--bg-secondary);
     border-radius: var(--radius-md);
+    color: var(--text-primary);
+}
+
+.activity-timeline-icon svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* Type-specific icon backgrounds */
 .activity-timeline-item--attendance .activity-timeline-icon {
     background: var(--nimun-blue-subtle);
+    color: var(--nimun-blue);
 }
 
 .activity-timeline-item--food .activity-timeline-icon {
     background: var(--status-success-bg);
+    color: var(--status-success);
 }
 
 .activity-timeline-item--game .activity-timeline-icon {
     background: var(--status-warning-bg);
+    color: var(--status-warning);
 }
 
 /* ---- Content ---- */
@@ -114,8 +122,16 @@
 }
 
 .activity-timeline-empty-icon {
-    font-size: var(--font-size-3xl);
     opacity: 0.5;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.activity-timeline-empty-icon svg {
+    width: 48px;
+    height: 48px;
 }
 
 .activity-timeline-empty-content p {

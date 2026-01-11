@@ -64,7 +64,11 @@ export function AttendanceHistory({ attendance = MOCK_ATTENDANCE }) {
     if (attendance.length === 0) {
         return (
             <div className="attendance-history-empty">
-                <span className="attendance-history-empty-icon">📊</span>
+                <svg className="attendance-history-empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="12" y1="20" x2="12" y2="10"></line>
+                    <line x1="18" y1="20" x2="18" y2="4"></line>
+                    <line x1="6" y1="20" x2="6" y2="16"></line>
+                </svg>
                 <h3>No Attendance Records</h3>
                 <p>Your session check-ins will appear here</p>
             </div>
@@ -82,7 +86,9 @@ export function AttendanceHistory({ attendance = MOCK_ATTENDANCE }) {
                 {attendance.map((record) => (
                     <div key={record.id} className="attendance-history-item">
                         <div className="attendance-history-item-icon">
-                            ✅
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
                         </div>
                         <div className="attendance-history-item-content">
                             <h4 className="attendance-history-item-title">{record.sessionName}</h4>

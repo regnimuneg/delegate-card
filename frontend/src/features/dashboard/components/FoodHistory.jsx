@@ -41,12 +41,49 @@ const MOCK_FOOD_HISTORY = [
  */
 function getMealIcon(mealType) {
     const icons = {
-        'Breakfast': '🌅',
-        'Lunch': '🍽️',
-        'Dinner': '🌙',
-        'Snack': '☕'
+        'Breakfast': (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2"></path>
+                <path d="M12 20v2"></path>
+                <path d="M4.93 4.93l1.41 1.41"></path>
+                <path d="M17.66 17.66l1.41 1.41"></path>
+                <path d="M2 12h2"></path>
+                <path d="M20 12h2"></path>
+                <path d="M6.34 17.66l-1.41 1.41"></path>
+                <path d="M19.07 4.93l-1.41 1.41"></path>
+            </svg>
+        ),
+        'Lunch': (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+                <path d="M7 2v20"></path>
+                <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+            </svg>
+        ),
+        'Dinner': (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <path d="M12 6v6l4 2"></path>
+            </svg>
+        ),
+        'Snack': (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+            </svg>
+        )
     };
-    return icons[mealType] || '🍴';
+    return icons[mealType] || (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+            <path d="M7 2v20"></path>
+            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+        </svg>
+    );
 }
 
 /**
@@ -77,7 +114,11 @@ export function FoodHistory({ foodHistory = MOCK_FOOD_HISTORY }) {
     if (foodHistory.length === 0) {
         return (
             <div className="food-history-empty">
-                <span className="food-history-empty-icon">🍽️</span>
+                <svg className="food-history-empty-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+                    <path d="M7 2v20"></path>
+                    <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+                </svg>
                 <h3>No Meal Records</h3>
                 <p>Your claimed meals will appear here</p>
             </div>
@@ -99,7 +140,13 @@ export function FoodHistory({ foodHistory = MOCK_FOOD_HISTORY }) {
                         </div>
                         <div className="food-history-item-content">
                             <h4 className="food-history-item-title">{record.mealType}</h4>
-                            <p className="food-history-item-location">📍 {record.location}</p>
+                            <p className="food-history-item-location">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ display: 'inline', verticalAlign: 'middle', marginRight: '4px' }}>
+                                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                    <circle cx="12" cy="10" r="3"></circle>
+                                </svg>
+                                {record.location}
+                            </p>
                             <p className="food-history-item-date">{formatFoodDate(record.date)}</p>
                             {record.items && record.items.length > 0 && (
                                 <div className="food-history-item-items">

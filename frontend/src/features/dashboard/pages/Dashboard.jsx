@@ -5,7 +5,7 @@ import { ActivityTimeline } from '../components/ActivityTimeline';
 import { AttendanceHistory } from '../components/AttendanceHistory';
 import { FoodHistory } from '../components/FoodHistory';
 import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
-import { Button } from '../../../shared/components';
+import { Navbar, Footer } from '../../../shared/components/layout';
 import './Dashboard.css';
 
 /**
@@ -33,44 +33,13 @@ export function Dashboard() {
 
     return (
         <div className="dashboard-page">
-            {/* Header */}
-            <header className="dashboard-header">
-                <div className="dashboard-header-content">
-                    <div className="dashboard-brand">
-                        <img src="/logo24.png" alt="NIMUN Logo" className="dashboard-brand-logo" />
-                        <span className="dashboard-brand-text">NIMUN</span>
-                        <span className="dashboard-brand-year">'26</span>
-                    </div>
-                    <Button variant="ghost" size="small" onClick={logout}>
-                        Sign Out
-                    </Button>
-                </div>
-            </header>
-
-            {/* Tab Navigation */}
-            <nav className="dashboard-tabs">
-                <button
-                    className={`dashboard-tab ${activeTab === 'home' ? 'dashboard-tab--active' : ''}`}
-                    onClick={() => setActiveTab('home')}
-                >
-                    <span className="dashboard-tab-icon">🏠</span>
-                    <span className="dashboard-tab-label">Home</span>
-                </button>
-                <button
-                    className={`dashboard-tab ${activeTab === 'attendance' ? 'dashboard-tab--active' : ''}`}
-                    onClick={() => setActiveTab('attendance')}
-                >
-                    <span className="dashboard-tab-icon">📊</span>
-                    <span className="dashboard-tab-label">Attendance</span>
-                </button>
-                <button
-                    className={`dashboard-tab ${activeTab === 'food' ? 'dashboard-tab--active' : ''}`}
-                    onClick={() => setActiveTab('food')}
-                >
-                    <span className="dashboard-tab-icon">🍽️</span>
-                    <span className="dashboard-tab-label">Food</span>
-                </button>
-            </nav>
+            {/* Navbar */}
+            <Navbar
+                user={user}
+                onLogout={logout}
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+            />
 
             {/* Main Content */}
             <main className="dashboard-main">
@@ -94,54 +63,63 @@ export function Dashboard() {
                                 </section>
                             )}
 
-                            {/* Compact Card & Stats Section */}
-                            <div className="dashboard-compact-header">
-                                {/* Delegate Card - Compact */}
-                                <section className="dashboard-section dashboard-section--card animate-slide-up">
+                            {/* Bento Grid Layout */}
+                            <div className="bento-grid">
+                                {/* Delegate Card - Left Aligned */}
+                                <section className="bento-item bento-item--card animate-slide-up">
                                     <DelegateCard delegate={user} />
                                 </section>
 
-                                {/* Stats - Compact */}
-                                <section className="dashboard-section dashboard-stats dashboard-section--stats animate-slide-up">
+                                {/* Stats */}
+                                <section className="bento-item bento-item--stats animate-slide-up">
                                     <h3 className="dashboard-stats-title">Your Stats</h3>
                                     <div className="dashboard-stats-grid">
                                         <div className="dashboard-stat">
-                                            <span className="dashboard-stat-icon">📊</span>
+                                            <svg className="dashboard-stat-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <line x1="12" y1="20" x2="12" y2="10"></line>
+                                                <line x1="18" y1="20" x2="18" y2="4"></line>
+                                                <line x1="6" y1="20" x2="6" y2="16"></line>
+                                            </svg>
                                             <span className="dashboard-stat-value">{user.sessionsAttended || 0}</span>
                                             <span className="dashboard-stat-label">Sessions</span>
                                         </div>
                                         <div className="dashboard-stat">
-                                            <span className="dashboard-stat-icon">📅</span>
+                                            <svg className="dashboard-stat-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                                            </svg>
                                             <span className="dashboard-stat-value">{user.daysAttended || 0}</span>
                                             <span className="dashboard-stat-label">Days</span>
                                         </div>
                                         <div className="dashboard-stat">
-                                            <span className="dashboard-stat-icon">🏆</span>
+                                            <svg className="dashboard-stat-icon" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                                                <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                                                <path d="M4 22h16"></path>
+                                                <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                                                <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                                                <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                                            </svg>
                                             <span className="dashboard-stat-value">{user.awards || 0}</span>
                                             <span className="dashboard-stat-label">Awards</span>
                                         </div>
                                     </div>
                                 </section>
-                            </div>
 
-                            {/* Two Column Layout */}
-                            <div className="dashboard-grid">
-                                {/* Left Column - Vouchers */}
-                                <div className="dashboard-column">
-                                    <section className="dashboard-section animate-slide-up" style={{ animationDelay: '100ms' }}>
-                                        <VoucherList
-                                            delegateId={user.id}
-                                            onClaimSuccess={handleClaimSuccess}
-                                        />
-                                    </section>
-                                </div>
+                                {/* Vouchers - Full Width */}
+                                <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
+                                    <VoucherList
+                                        delegateId={user.id}
+                                        onClaimSuccess={handleClaimSuccess}
+                                    />
+                                </section>
 
-                                {/* Right Column - Activity */}
-                                <div className="dashboard-column">
-                                    <section className="dashboard-section animate-slide-up" style={{ animationDelay: '200ms' }}>
-                                        <ActivityTimeline />
-                                    </section>
-                                </div>
+                                {/* Activity - Full Width */}
+                                <section className="bento-item bento-item--activity animate-slide-up" style={{ animationDelay: '200ms' }}>
+                                    <ActivityTimeline />
+                                </section>
                             </div>
                         </>
                     )}
@@ -163,9 +141,7 @@ export function Dashboard() {
             </main>
 
             {/* Footer */}
-            <footer className="dashboard-footer">
-                <p>NIMUN 2026 • International Conference</p>
-            </footer>
+            <Footer />
         </div>
     );
 }

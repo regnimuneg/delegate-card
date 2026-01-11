@@ -135,10 +135,17 @@
     margin-bottom: var(--space-4);
 }
 
-.claim-welcome-emoji {
-    font-size: var(--font-size-3xl);
-    display: block;
+.claim-welcome-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: var(--space-2);
+    color: var(--nimun-blue);
+}
+
+.claim-welcome-icon svg {
+    width: 48px;
+    height: 48px;
 }
 
 /* ---- Form ---- */

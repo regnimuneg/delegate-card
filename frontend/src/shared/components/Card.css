@@ -7,6 +7,12 @@
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     transition: all var(--transition-base);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nimun-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
 }
 
 /* ---- Variants ---- */
@@ -38,10 +44,13 @@
 /* ---- Glow Effect ---- */
 .nimun-card--glow {
     box-shadow: var(--shadow-blue);
+    border-color: rgba(0, 55, 192, 0.2);
 }
 
 .nimun-card--glow:hover {
     box-shadow: var(--shadow-blue-lg);
+    transform: translateY(-2px);
+    border-color: rgba(0, 55, 192, 0.3);
 }
 
 /* ---- Padding Sizes ---- */

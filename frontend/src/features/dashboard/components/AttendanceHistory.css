@@ -45,7 +45,14 @@
 }
 
 .attendance-history-item-icon {
-    font-size: var(--font-size-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: var(--radius-md);
+    color: rgb(34, 197, 94);
     flex-shrink: 0;
 }
 
@@ -108,9 +115,12 @@
 }
 
 .attendance-history-empty-icon {
-    font-size: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: var(--space-4);
-    opacity: 0.5;
+    color: var(--nimun-blue);
+    opacity: 0.4;
 }
 
 .attendance-history-empty h3 {

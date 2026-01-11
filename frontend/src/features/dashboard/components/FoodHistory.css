@@ -45,7 +45,14 @@
 }
 
 .food-history-item-icon {
-    font-size: var(--font-size-xl);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(0, 55, 192, 0.08);
+    border-radius: var(--radius-md);
+    color: var(--nimun-blue);
     flex-shrink: 0;
 }
 
@@ -62,6 +69,8 @@
 }
 
 .food-history-item-location {
+    display: flex;
+    align-items: center;
     font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin-bottom: var(--space-1);
@@ -101,9 +110,12 @@
 }
 
 .food-history-empty-icon {
-    font-size: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-bottom: var(--space-4);
-    opacity: 0.5;
+    color: var(--nimun-blue);
+    opacity: 0.4;
 }
 
 .food-history-empty h3 {
