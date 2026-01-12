@@ -9,7 +9,7 @@ The password reset feature requires SMTP email configuration. Add these environm
 SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
 SMTP_SECURE=false
-SMTP_USER=registration.nimun@nu.edu.eg
+SMTP_USER=reg.nimun.eg@gmail.com
 SMTP_PASSWORD=your_email_password_or_app_password
 
 # Frontend URL (for reset links)
@@ -38,8 +38,15 @@ For other SMTP providers (Outlook, SendGrid, etc.), adjust:
 
 After configuration, test the email setup:
 
+**Option 1: From backend directory (Recommended)**
 ```bash
+cd backend
 node -e "import('./src/utils/email.js').then(m => m.testEmailConfig())"
+```
+
+**Option 2: From project root**
+```bash
+node -e "import('./backend/src/utils/email.js').then(m => m.testEmailConfig())"
 ```
 
 ## Database Migration

@@ -99,12 +99,10 @@ export async function getDelegateByEmail(email) {
         .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
     if (userError) {
-        console.log('❌ User lookup error:', userError.message);
         return null;
     }
     
     if (!user) {
-        console.log('❌ User not found in users table');
         return null;
     }
 
@@ -115,12 +113,10 @@ export async function getDelegateByEmail(email) {
         .maybeSingle(); // Use maybeSingle() instead of single()
 
     if (delegateError) {
-        console.log('❌ Delegate lookup error:', delegateError.message);
         throw delegateError;
     }
     
     if (!delegate) {
-        console.log('❌ Delegate not found for user:', user.id);
         return null;
     }
 
@@ -130,30 +126,6 @@ export async function getDelegateByEmail(email) {
     };
 }
 
-/**
- * Get admin by email
- */
-export async function getAdminByEmail(email) {
-    const { data: user, error: userError } = await supabaseAdmin
-        .from('users')
-        .select('*')
-        .eq('email', email.toLowerCase())
-        .eq('user_type', 'admin')
-        .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
-
-    if (userError) {
-        console.log('❌ Admin user lookup error:', userError.message);
-        return null;
-    }
-    
-    if (!user) {
-        console.log('❌ Admin user not found in users table');
-        return null;
-    }
-
-    // Admin users don't have a separate table, just return the user
-    return user;
-}
 
 /**
  * Get member by email
@@ -167,12 +139,10 @@ export async function getMemberByEmail(email) {
         .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
     if (userError) {
-        console.log('❌ Member user lookup error:', userError.message);
         return null;
     }
     
     if (!user) {
-        console.log('❌ Member user not found in users table');
         return null;
     }
 
@@ -183,12 +153,10 @@ export async function getMemberByEmail(email) {
         .maybeSingle(); // Use maybeSingle() instead of single()
 
     if (memberError) {
-        console.log('❌ Member lookup error:', memberError.message);
         throw memberError;
     }
     
     if (!member) {
-        console.log('❌ Member not found for user:', user.id);
         return null;
     }
 
@@ -423,7 +391,6 @@ export default {
     getDelegateById,
     getDelegateByEmail,
     getMemberByEmail,
-    getAdminByEmail,
     getDelegateByClaimToken,
     createDelegate,
     updateDelegate,

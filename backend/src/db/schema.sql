@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS users (
     last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
     photo_url TEXT,
-    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('admin', 'delegate', 'member')),
+    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
@@ -379,13 +379,18 @@ CREATE INDEX IF NOT EXISTS idx_reward_expires ON reward_activations(expires_at);
 -- ============================================
 
 -- Function to update updated_at timestamp
+-- Fixed: Added secure search_path to prevent role mutable search_path issue
 CREATE OR REPLACE FUNCTION update_updated_at_column()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = ''
+AS $$
 BEGIN
     NEW.updated_at = CURRENT_TIMESTAMP;
     RETURN NEW;
 END;
-$$ language 'plpgsql';
+$$;
 
 -- Triggers for updated_at
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON users
@@ -409,6 +414,7 @@ CREATE TRIGGER update_voucher_claims_updated_at BEFORE UPDATE ON voucher_claims
 
 -- Enable RLS on all tables
 ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE password_reset_tokens ENABLE ROW LEVEL SECURITY;
 ALTER TABLE delegates ENABLE ROW LEVEL SECURITY;
 ALTER TABLE members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vouchers ENABLE ROW LEVEL SECURITY;
@@ -419,48 +425,80 @@ ALTER TABLE activity_timeline ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reward_activations ENABLE ROW LEVEL SECURITY;
 
 -- Users: Users can read their own data
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
 CREATE POLICY "Users can view own data" ON users
-    FOR SELECT USING (auth.uid() = id);
+    FOR SELECT USING ((select auth.uid()) = id);
 
--- Delegates: Delegates can view their own data
+-- Password Reset Tokens: Service role can manage all tokens
+-- Fixed: Enable RLS and restrict access to service role only
+-- Tokens are sensitive and should only be accessed via service role (backend API)
+CREATE POLICY "Service role can manage password reset tokens" ON password_reset_tokens
+    FOR ALL USING ((select auth.role()) = 'service_role');
+
+-- Delegates: Combined policy for delegates and service role
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
+-- Fixed: Combined policies to avoid multiple permissive policies issue
 CREATE POLICY "Delegates can view own data" ON delegates
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING (
+        (select auth.uid()) = user_id 
+        OR (select auth.role()) = 'service_role'
+    );
 
--- Delegates: Service role can manage all delegates
-CREATE POLICY "Service role can manage delegates" ON delegates
-    FOR ALL USING (auth.role() = 'service_role');
-
--- Members: Members can view their own data
+-- Members: Combined policy for members and service role
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
+-- Fixed: Combined policies to avoid multiple permissive policies issue
 CREATE POLICY "Members can view own data" ON members
-    FOR SELECT USING (auth.uid() = user_id);
-
--- Members: Service role can manage all members
-CREATE POLICY "Service role can manage members" ON members
-    FOR ALL USING (auth.role() = 'service_role');
+    FOR SELECT USING (
+        (select auth.uid()) = user_id 
+        OR (select auth.role()) = 'service_role'
+    );
 
 -- Vouchers: Everyone can view active vouchers
 CREATE POLICY "Everyone can view active vouchers" ON vouchers
     FOR SELECT USING (is_active = TRUE);
 
 -- Voucher Claims: Delegates can view their own claims
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
 CREATE POLICY "Delegates can view own claims" ON voucher_claims
-    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
+    FOR SELECT USING ((select auth.uid()) = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Attendance: Delegates can view their own attendance
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
 CREATE POLICY "Delegates can view own attendance" ON attendance_records
-    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
+    FOR SELECT USING ((select auth.uid()) = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Food History: Delegates can view their own food history
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
 CREATE POLICY "Delegates can view own food history" ON food_history
-    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
+    FOR SELECT USING ((select auth.uid()) = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
--- Activity Timeline: Users can view their own activities
+-- Activity Timeline: Users can view their own activities ONLY
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
+-- Security: Each user can ONLY see their own activity timeline entries
 CREATE POLICY "Users can view own activities" ON activity_timeline
-    FOR SELECT USING (auth.uid() = user_id);
+    FOR SELECT USING ((select auth.uid()) = user_id);
 
--- Reward Activations: Delegates can view their own activations
+-- Reward Activations: Delegates can view their own activations ONLY
+-- Fixed: Using (select auth.uid()) to avoid re-evaluation per row
+-- Security: Each delegate can ONLY see their own reward activations
 CREATE POLICY "Delegates can view own reward activations" ON reward_activations
-    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
+    FOR SELECT USING ((select auth.uid()) = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
+-- ============================================
+-- RLS POLICY SUMMARY - USER DATA ISOLATION
+-- ============================================
+-- All RLS policies ensure that each user can ONLY access their own data:
+-- ✅ users: Users can only view their own user record
+-- ✅ delegates: Delegates can only view their own delegate profile
+-- ✅ members: Members can only view their own member profile
+-- ✅ voucher_claims: Delegates can only view their own voucher claims
+-- ✅ attendance_records: Delegates can only view their own attendance
+-- ✅ food_history: Delegates can only view their own food history
+-- ✅ activity_timeline: Users can only view their own activities
+-- ✅ reward_activations: Delegates can only view their own reward activations
+-- 
+-- Service role (backend API) can access all data for administrative purposes.
+-- Regular users accessing via Supabase client are restricted to their own data only.
+--
 -- Note: For production, you'll need to configure Supabase Auth
--- and adjust RLS policies based on your authentication setup
+-- and ensure auth.uid() returns the correct user UUID for each authenticated session.

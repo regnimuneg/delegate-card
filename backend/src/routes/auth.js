@@ -2,7 +2,6 @@ import express from 'express';
 import {
     getDelegateByEmail,
     getMemberByEmail,
-    getAdminByEmail,
     getDelegateByClaimToken,
     updateDelegate,
     createActivityEntry
@@ -23,6 +22,8 @@ import {
     validatePasswordReset
 } from '../middleware/validator.js';
 import { sendPasswordResetEmail } from '../utils/email.js';
+import { loginLimiter, passwordResetLimiter } from '../middleware/rateLimiter.js';
+import { log, logError, logAuth } from '../utils/logger.js';
 import crypto from 'crypto';
 
 const router = express.Router();
@@ -48,13 +49,6 @@ router.post('/login', validateLogin, async (req, res, next) => {
             user = await getMemberByEmail(email);
             userType = 'member';
             console.log('👤 Member lookup result:', user ? 'Found' : 'Not found');
-        }
-
-        // If not a member, try admin
-        if (!user) {
-            user = await getAdminByEmail(email);
-            userType = 'admin';
-            console.log('👤 Admin lookup result:', user ? 'Found' : 'Not found');
         }
 
         // If still not found, invalid credentials
@@ -324,7 +318,7 @@ router.get('/me', authenticate, async (req, res, next) => {
  * POST /api/auth/password/reset/request
  * Request password reset - sends email with reset token
  */
-router.post('/password/reset/request', validatePasswordResetRequest, async (req, res, next) => {
+router.post('/password/reset/request', passwordResetLimiter, validatePasswordResetRequest, async (req, res, next) => {
     try {
         const { email } = req.body;
 
@@ -337,16 +331,11 @@ router.post('/password/reset/request', validatePasswordResetRequest, async (req,
             userType = 'member';
         }
         
+        // Return error if email is not registered
         if (!user) {
-            user = await getAdminByEmail(email);
-            userType = 'admin';
-        }
-
-        // Always return success (don't reveal if email exists)
-        if (!user) {
-            return res.json({
-                success: true,
-                message: 'If an account exists with this email, a password reset link has been sent.'
+            return res.status(404).json({
+                success: false,
+                error: 'Email not registered. Please check your email address or contact support.'
             });
         }
 
@@ -365,10 +354,10 @@ router.post('/password/reset/request', validatePasswordResetRequest, async (req,
             });
 
         if (insertError) {
-            console.error('Error creating reset token:', insertError);
+            logError('Error creating reset token', insertError);
             return res.status(500).json({
                 success: false,
-                error: 'Failed to create reset token'
+                error: 'Failed to process password reset request'
             });
         }
 
@@ -379,14 +368,15 @@ router.post('/password/reset/request', validatePasswordResetRequest, async (req,
                 resetToken,
                 user.first_name || 'Delegate'
             );
+            log('✅ Password reset email sent', { email: user.email });
         } catch (emailError) {
-            console.error('Error sending reset email:', emailError);
+            logError('Error sending reset email', emailError);
             // Still return success to user (don't reveal email issues)
         }
 
         res.json({
             success: true,
-            message: 'If an account exists with this email, a password reset link has been sent.'
+            message: 'Password reset link has been sent to your email address.'
         });
     } catch (error) {
         next(error);

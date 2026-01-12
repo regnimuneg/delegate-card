@@ -36,13 +36,9 @@ router.post('/:id/claim', authenticate, validateVoucherClaim, async (req, res, n
         const { id: voucherId } = req.params;
         const delegateId = req.user.id;
         
-        console.log('📋 Voucher claim request:', { voucherId, delegateId });
-
         // Get vouchers to check if this one exists and is claimable
         const vouchers = await getVouchersForDelegate(delegateId);
-        console.log('📦 Available vouchers:', vouchers.map(v => ({ id: v.id, name: v.name, canClaim: v.canClaim })));
         const voucher = vouchers.find(v => v.id === voucherId);
-        console.log('🎫 Found voucher:', voucher ? { id: voucher.id, name: voucher.name, canClaim: voucher.canClaim } : 'NOT FOUND');
 
         if (!voucher) {
             return res.status(404).json({

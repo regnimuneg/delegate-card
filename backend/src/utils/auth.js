@@ -4,7 +4,26 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'change-this-in-production';
+// Validate JWT_SECRET in production
+const isProduction = process.env.NODE_ENV === 'production';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (isProduction) {
+    if (!JWT_SECRET) {
+        console.error('❌ JWT_SECRET is required in production!');
+        process.exit(1);
+    }
+    if (JWT_SECRET.length < 32) {
+        console.error('❌ JWT_SECRET must be at least 32 characters long!');
+        process.exit(1);
+    }
+    if (JWT_SECRET === 'change-this-in-production') {
+        console.error('❌ JWT_SECRET must be changed from default value!');
+        process.exit(1);
+    }
+}
+
+const finalJWTSecret = JWT_SECRET || 'change-this-in-production';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 /**
@@ -26,7 +45,7 @@ export async function comparePassword(password, hash) {
  * Generate JWT token
  */
 export function generateToken(payload) {
-    return jwt.sign(payload, JWT_SECRET, {
+    return jwt.sign(payload, finalJWTSecret, {
         expiresIn: JWT_EXPIRES_IN
     });
 }
@@ -36,7 +55,7 @@ export function generateToken(payload) {
  */
 export function verifyToken(token) {
     try {
-        return jwt.verify(token, JWT_SECRET);
+        return jwt.verify(token, finalJWTSecret);
     } catch (error) {
         return null;
     }

@@ -13,7 +13,7 @@ const createTransporter = () => {
         port: parseInt(process.env.SMTP_PORT || '587'),
         secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
         auth: {
-            user: process.env.SMTP_USER || 'registration.nimun@nu.edu.eg',
+            user: process.env.SMTP_USER || 'reg.nimun.eg@gmail.com',
             pass: process.env.SMTP_PASSWORD
         }
     });
@@ -34,7 +34,7 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
     const mailOptions = {
-        from: `"NIMUN'26" <${process.env.SMTP_USER || 'registration.nimun@nu.edu.eg'}>`,
+        from: `"NIMUN'26" <${process.env.SMTP_USER || 'reg.nimun.eg@gmail.com'}>`,
         to: to,
         subject: 'Reset Your NIMUN\'26 Delegate Portal Password',
         html: `
@@ -101,10 +101,10 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
 
     try {
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Password reset email sent:', info.messageId);
+        // Log success (sanitized)
         return { success: true, messageId: info.messageId };
     } catch (error) {
-        console.error('❌ Error sending password reset email:', error);
+        // Error is logged by caller
         throw error;
     }
 }
@@ -116,10 +116,8 @@ export async function testEmailConfig() {
     try {
         const transporter = createTransporter();
         await transporter.verify();
-        console.log('✅ Email server is ready to send messages');
         return { success: true };
     } catch (error) {
-        console.error('❌ Email server configuration error:', error);
         return { success: false, error: error.message };
     }
 }

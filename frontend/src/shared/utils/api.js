@@ -14,8 +14,15 @@ function getApiBaseUrl() {
     const hostname = window.location.hostname;
     const protocol = window.location.protocol;
     
-    // Use port 3000 for backend
-    return `${protocol}//${hostname}:3000/api`;
+    // In production (Vercel), backend is on Render (different domain)
+    // In development, use port 3000 for backend
+    if (hostname === 'localhost' || hostname.includes('127.0.0.1') || hostname.includes('192.168.')) {
+        return `${protocol}//${hostname}:3000/api`;
+    }
+    
+    // Production: should have VITE_API_URL set, but fallback to same domain
+    // This won't work in production, so VITE_API_URL must be set
+    return `${protocol}//${hostname}/api`;
 }
 
 const API_BASE_URL = getApiBaseUrl();

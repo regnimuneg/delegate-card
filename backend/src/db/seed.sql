@@ -78,7 +78,34 @@ VALUES (
     'unclaimed'
 ) ON CONFLICT (id) DO NOTHING;
 
--- Test Delegate 3: Fatima Ali (DSC-12) - Active
+-- Test Delegate 3: Adham Abdelaal (HRC-02) - Unclaimed
+-- ID Format: HRC-XX
+INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440004',
+    'adhamaeabdelaal@gmail.com',
+    '$2b$10$placeholder_hash_will_be_updated_on_claim',
+    'Adham',
+    'Abdelaal',
+    '2000-01-01',
+    'delegate'
+) ON CONFLICT (email) DO NOTHING;
+
+INSERT INTO delegates (
+    id, user_id, name, council, claim_token, claim_token_used, qr_code, status
+)
+VALUES (
+    'HRC-02',
+    '550e8400-e29b-41d4-a716-446655440004',
+    'Adham Abdelaal',
+    'HRC',
+    'CLAIM-HRC002',
+    FALSE,
+    'IC\'26-HRC-02',
+    'unclaimed'
+) ON CONFLICT (id) DO NOTHING;
+
+-- Test Delegate 4: Fatima Ali (DSC-12) - Active
 -- ID Format: DSC-XX (DISEC)
 INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
 VALUES (
@@ -157,17 +184,6 @@ VALUES (
     'Chair Of UNHRC', -- Executive role (replace with actual role)
     'Executive'
 ) ON CONFLICT (id) DO NOTHING;
-
--- Test Member: Admin User (can be any committee or admin type)
-INSERT INTO users (id, email, password_hash, first_name, last_name, user_type)
-VALUES (
-    '550e8400-e29b-41d4-a716-446655440010',
-    'admin@nimun.org',
-    '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', -- Password: admin123
-    'Admin',
-    'User',
-    'admin'
-) ON CONFLICT (email) DO NOTHING;
 
 -- Test Member 2: Registration Affairs Staff
 -- ID Format: RG-XX (Registration)

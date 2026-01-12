@@ -64,12 +64,14 @@ export function ForgotPassword() {
             const response = await api.requestPasswordReset(email);
             
             if (response.success) {
-                setMessage(response.message || 'If an account exists with this email, a password reset link has been sent.');
+                setMessage(response.message || 'Password reset link has been sent to your email address.');
             } else {
                 setError(response.error || 'Failed to send reset email');
             }
         } catch (err) {
-            setError('Failed to send reset email. Please try again.');
+            // Extract error message from API response
+            const errorMessage = err.message || 'Failed to send reset email. Please try again.';
+            setError(errorMessage);
         } finally {
             setIsLoading(false);
         }
