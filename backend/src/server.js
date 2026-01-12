@@ -47,6 +47,27 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 // Rate limiting
 app.use('/api', apiLimiter);
 
+// Root route - API information
+app.get('/', (req, res) => {
+    res.json({
+        success: true,
+        name: 'NIMUN Card API',
+        version: '1.0.0',
+        message: 'NIMUN Delegate Card System Backend API',
+        endpoints: {
+            health: '/health',
+            database: '/health/db',
+            auth: '/api/auth',
+            vouchers: '/api/vouchers',
+            rewards: '/api/rewards',
+            dashboard: '/api/dashboard',
+            profile: '/api/profile',
+            analytics: '/api/analytics'
+        },
+        timestamp: new Date().toISOString()
+    });
+});
+
 // Health check
 app.get('/health', (req, res) => {
     res.json({
