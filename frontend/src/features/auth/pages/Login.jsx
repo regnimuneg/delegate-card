@@ -93,6 +93,7 @@ export function Login() {
                 </div>
                 <div className="login-left-overlay"></div>
                 <div className="login-brand-content">
+                    <img src="/Logo_White.png" alt="NIMUN Logo" className="login-logo-image" />
                     <div className="login-logo">
                         <span className="login-logo-text">NIMUN</span>
                         <span className="login-logo-year">'26</span>

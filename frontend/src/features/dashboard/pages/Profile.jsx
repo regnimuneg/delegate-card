@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { QRCodeSVG } from 'qrcode.react';
 import { useAuth } from '../../auth';
+import { api } from '../../../shared/utils/api';
 import { ProfilePhotoUpload } from '../components/ProfilePhotoUpload';
 import { Navbar, Footer } from '../../../shared/components/layout';
 import { Button } from '../../../shared/components';
@@ -15,6 +16,35 @@ export function Profile() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
+    const [stats, setStats] = useState({
+        daysAttended: 0,
+        totalDays: 9,
+        attendanceRate: 0
+    });
+    const [loadingStats, setLoadingStats] = useState(true);
+
+    useEffect(() => {
+        const fetchStats = async () => {
+            try {
+                const response = await api.getAttendanceStats();
+                if (response.success) {
+                    setStats({
+                        daysAttended: response.daysAttended || 0,
+                        totalDays: response.totalDays || 9,
+                        attendanceRate: response.attendanceRate || 0
+                    });
+                }
+            } catch (error) {
+                console.error('Failed to fetch attendance stats:', error);
+            } finally {
+                setLoadingStats(false);
+            }
+        };
+
+        if (user) {
+            fetchStats();
+        }
+    }, [user]);
 
     if (!user) {
         return null;
@@ -23,14 +53,6 @@ export function Profile() {
     // QR code format: IC'26-{delegateId} (e.g., "IC'26-HRC-01")
     const delegateId = user.id;
     const qrCodeValue = `IC'26-${delegateId}`;
-
-    // Mock stats - would come from backend
-    const stats = {
-        daysAttended: 3,
-        totalDays: 9,
-        attendanceRate: Math.round((3 / 9) * 100),
-        awards: user.awards || null // e.g., "Best Delegate - DISEC"
-    };
 
     return (
         <div className="profile-page">

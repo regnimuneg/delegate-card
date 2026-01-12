@@ -71,6 +71,15 @@ body:has(.claim-page) {
     color: white;
 }
 
+.claim-logo-image {
+    width: 280px;
+    height: auto;
+    margin-bottom: var(--space-8);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .claim-logo {
     display: inline-flex;
     align-items: baseline;

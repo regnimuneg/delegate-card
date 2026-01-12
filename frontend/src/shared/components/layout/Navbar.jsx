@@ -46,7 +46,7 @@ export function Navbar({ user, onLogout, activeTab, onTabChange }) {
         <header className="navbar">
             <div className="navbar-content">
                 {/* Brand */}
-                <div className="navbar-brand">
+                <div className="navbar-brand" onClick={handleHomeClick} style={{ cursor: 'pointer' }}>
                     <img src="/logo24.png" alt="NIMUN Logo" className="navbar-logo" />
                     <span className="navbar-brand-text">NIMUN'26</span>
                     <span className="navbar-brand-subtitle">Delegate Portal</span>

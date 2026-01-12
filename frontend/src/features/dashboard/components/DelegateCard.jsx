@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
+import { QRCodeModal } from '../../../shared/components/QRCodeModal';
 import './DelegateCard.css';
 
 /**
@@ -7,6 +9,8 @@ import './DelegateCard.css';
  * Takes full width of container - no extra box wrapper
  */
 export function DelegateCard({ delegate, showQR = true }) {
+    const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+    
     const {
         firstName,
         lastName,
@@ -54,20 +58,28 @@ export function DelegateCard({ delegate, showQR = true }) {
 
                 {/* Static QR Code */}
                 {showQR && (
-                    <div className="delegate-card-qr">
-                        <span className="delegate-card-qr-label">Conference Access</span>
-                        <div className="delegate-card-qr-wrapper">
-                            <QRCodeSVG
-                                value={qrCodeValue}
-                                size={100}
-                                bgColor="transparent"
-                                fgColor="#FFFFFF"
-                                level="M"
-                            />
+                    <>
+                        <div className="delegate-card-qr" onClick={() => setIsQRModalOpen(true)} style={{ cursor: 'pointer' }}>
+                            <span className="delegate-card-qr-label">Conference Access</span>
+                            <div className="delegate-card-qr-wrapper">
+                                <QRCodeSVG
+                                    value={qrCodeValue}
+                                    size={100}
+                                    bgColor="transparent"
+                                    fgColor="#FFFFFF"
+                                    level="M"
+                                />
+                            </div>
+                            <span className="delegate-card-qr-slug">{delegateId}</span>
+                            <span className="delegate-card-qr-hint">Click to enlarge • For attendance, meals & activities</span>
                         </div>
-                        <span className="delegate-card-qr-slug">{delegateId}</span>
-                        <span className="delegate-card-qr-hint">For attendance, meals & activities</span>
-                    </div>
+                        <QRCodeModal
+                            qrValue={qrCodeValue}
+                            delegateId={delegateId}
+                            isOpen={isQRModalOpen}
+                            onClose={() => setIsQRModalOpen(false)}
+                        />
+                    </>
                 )}
 
                 {/* Motivational Tagline */}

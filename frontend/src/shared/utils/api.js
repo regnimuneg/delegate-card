@@ -27,6 +27,11 @@ function getApiBaseUrl() {
 
 const API_BASE_URL = getApiBaseUrl();
 
+// Debug: Log API URL in development
+if (import.meta.env.DEV) {
+    console.log('🔗 API Base URL:', API_BASE_URL);
+}
+
 /**
  * Get auth token from localStorage
  */
@@ -69,6 +74,9 @@ async function apiRequest(endpoint, options = {}) {
     }
 
     try {
+        if (import.meta.env.DEV) {
+            console.log('🌐 Making request to:', url);
+        }
         const response = await fetch(url, config);
         const data = await response.json();
 
@@ -158,6 +166,10 @@ export const api = {
     // Dashboard
     async getAttendance(limit = 50) {
         return apiRequest(`/dashboard/attendance?limit=${limit}`);
+    },
+
+    async getAttendanceStats() {
+        return apiRequest('/dashboard/stats');
     },
 
     async getFoodHistory(limit = 50) {

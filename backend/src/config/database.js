@@ -280,6 +280,60 @@ export async function createVoucherClaim(delegateId, voucherId, qrToken, expires
 }
 
 /**
+ * Get attendance statistics for a delegate
+ * Calculates days attended and attendance rate from delegates table
+ */
+export async function getAttendanceStats(delegateId) {
+    const { data: delegate, error } = await supabaseAdmin
+        .from('delegates')
+        .select(`
+            opening_ceremony_attended,
+            day1_session_attended,
+            day2_session_attended,
+            day3_session_attended,
+            day4_session_attended,
+            conf_day1_attended,
+            conf_day2_attended,
+            conf_day3_attended
+        `)
+        .eq('id', delegateId)
+        .maybeSingle();
+
+    if (error) {
+        throw error;
+    }
+
+    if (!delegate) {
+        return {
+            daysAttended: 0,
+            totalDays: 9,
+            attendanceRate: 0
+        };
+    }
+
+    // Count attended days (9 total: 4 session days + 1 opening + 3 conference days)
+    const daysAttended = [
+        delegate.opening_ceremony_attended,
+        delegate.day1_session_attended,
+        delegate.day2_session_attended,
+        delegate.day3_session_attended,
+        delegate.day4_session_attended,
+        delegate.conf_day1_attended,
+        delegate.conf_day2_attended,
+        delegate.conf_day3_attended
+    ].filter(Boolean).length;
+
+    const totalDays = 9; // 4 session days + 1 opening + 3 conference days
+    const attendanceRate = Math.round((daysAttended / totalDays) * 100);
+
+    return {
+        daysAttended,
+        totalDays,
+        attendanceRate
+    };
+}
+
+/**
  * Get attendance records for delegate
  */
 export async function getAttendanceRecords(delegateId, limit = 50) {
@@ -390,6 +444,7 @@ export default {
     testConnection,
     getDelegateById,
     getDelegateByEmail,
+    getAttendanceStats,
     getMemberByEmail,
     getDelegateByClaimToken,
     createDelegate,

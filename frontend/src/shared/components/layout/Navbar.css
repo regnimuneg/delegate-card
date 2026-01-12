@@ -33,6 +33,11 @@
     align-items: center;
     gap: var(--space-2);
     flex-shrink: 0;
+    transition: opacity 0.2s ease;
+}
+
+.navbar-brand:hover {
+    opacity: 0.8;
 }
 
 .navbar-logo {

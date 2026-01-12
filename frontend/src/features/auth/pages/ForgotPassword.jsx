@@ -92,6 +92,7 @@ export function ForgotPassword() {
                 </div>
                 <div className="forgot-password-left-overlay"></div>
                 <div className="forgot-password-brand-content">
+                    <img src="/Logo_White.png" alt="NIMUN Logo" className="forgot-password-logo-image" />
                     <div className="forgot-password-logo">
                         <span className="forgot-password-logo-text">NIMUN</span>
                         <span className="forgot-password-logo-year">'26</span>
@@ -116,6 +117,21 @@ export function ForgotPassword() {
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
                             <p>{message}</p>
+                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
+                                Only registered emails can reset passwords.
+                            </p>
+                            <Button
+                                variant="secondary"
+                                size="medium"
+                                onClick={() => {
+                                    setMessage('');
+                                    setError('');
+                                    setEmail('');
+                                }}
+                                style={{ marginTop: '1rem' }}
+                            >
+                                Request Another Reset
+                            </Button>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="forgot-password-form">

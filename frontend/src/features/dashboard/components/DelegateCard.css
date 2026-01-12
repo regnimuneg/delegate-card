@@ -134,6 +134,13 @@
     padding-top: var(--space-4);
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.delegate-card-qr:hover {
+    transform: scale(1.02);
+    opacity: 0.9;
 }
 
 .delegate-card-qr-label {
