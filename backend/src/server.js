@@ -121,7 +121,7 @@ async function startServer() {
     app.listen(SERVER_PORT, HOST, () => {
         if (isDevelopment) {
             console.log('═══════════════════════════════════════════════════');
-            console.log(`🚀 NIMUN Card API server running on port ${PORT}`);
+            console.log(`🚀 NIMUN Card API server running on port ${SERVER_PORT}`);
             console.log(`📡 CORS enabled for: ${isDevelopment && !CORS_ORIGIN ? 'All origins (dev mode)' : CORS_ORIGIN || 'http://localhost:5173'}`);
             console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
             console.log(`💾 Database: Connected`);

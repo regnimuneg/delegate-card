@@ -32,7 +32,7 @@ export function ForgotPassword() {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImageIndex((prev) => (prev + 1) % slideshowImages.length);
-        }, 5000); // Change image every 5 seconds
+        }, 2500); // Change image every 2.5 seconds
 
         return () => clearInterval(interval);
     }, []);
