@@ -110,63 +110,60 @@ export function ForgotPassword() {
                         Enter your email address and we'll send you a link to reset your password
                     </p>
 
-                    {message ? (
-                        <div className="forgot-password-success">
+                    {message && (
+                        <div className="forgot-password-success" style={{ marginBottom: '1rem' }}>
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
                             <p>{message}</p>
-                            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.5rem' }}>
-                                Only registered emails can reset passwords.
-                            </p>
-                            <Button
-                                variant="secondary"
-                                size="medium"
-                                onClick={() => {
-                                    setMessage('');
-                                    setError('');
-                                    setEmail('');
-                                }}
-                                style={{ marginTop: '1rem' }}
-                            >
-                                Request Another Reset
-                            </Button>
                         </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className="forgot-password-form">
-                            <Input
-                                label="Email"
-                                type="email"
-                                name="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="your.email@example.com"
-                                required
-                                autoComplete="email"
-                                autoFocus
-                            />
-
-                            {error && (
-                                <div className="forgot-password-error">
-                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-                                        <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 4.5a1 1 0 112 0v3a1 1 0 11-2 0v-3zm1 7.5a1, 1 0 100-2 1 1 0 000 2z" />
-                                    </svg>
-                                    {error}
-                                </div>
-                            )}
-
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="large"
-                                fullWidth
-                                loading={isLoading}
-                            >
-                                Send Reset Link
-                            </Button>
-                        </form>
                     )}
+
+                    <form onSubmit={handleSubmit} className="forgot-password-form">
+                        <Input
+                            label="Email"
+                            type="email"
+                            name="email"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                setMessage('');
+                                setError('');
+                            }}
+                            placeholder="your.email@example.com"
+                            required
+                            autoComplete="email"
+                            autoFocus={!message}
+                        />
+
+                        {error && (
+                            <div className="forgot-password-error">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M8 1a7 7 0 100 14A7 7 0 008 1zM7 4.5a1 1 0 112 0v3a1 1 0 11-2 0v-3zm1 7.5a1, 1 0 100-2 1 1 0 000 2z" />
+                                </svg>
+                                <div>
+                                    <p>{error}</p>
+                                    {error.includes('not registered') || error.includes('Email not registered') ? (
+                                        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '0.5rem', marginBottom: 0 }}>
+                                            Only registered emails can reset passwords.
+                                        </p>
+                                    ) : null}
+                                </div>
+                            </div>
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="primary"
+                            size="large"
+                            fullWidth
+                            loading={isLoading}
+                            disabled={isLoading}
+                        >
+                            {message ? 'Send Another Reset Link' : 'Send Reset Link'}
+                        </Button>
+                    </form>
 
                     <div className="forgot-password-back">
                         <Link to="/" className="forgot-password-back-link">

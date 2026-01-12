@@ -26,7 +26,7 @@
 /* ---- Variants ---- */
 .nimun-btn--primary {
     background: var(--nimun-blue);
-    color: var(--text-on-blue);
+    color: white;
     border: 2px solid var(--nimun-blue);
     box-shadow: var(--shadow-blue);
 }

@@ -345,6 +345,16 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
 
         // Save reset token to database
         const { supabaseAdmin } = await import('../db/supabase.js');
+        
+        // Invalidate any existing unused tokens for this user (optional - allows unlimited requests)
+        // This ensures only the most recent reset link works
+        await supabaseAdmin
+            .from('password_reset_tokens')
+            .update({ used: true })
+            .eq('user_id', user.user_id || user.id)
+            .eq('used', false);
+        
+        // Insert new token
         const { error: insertError } = await supabaseAdmin
             .from('password_reset_tokens')
             .insert({
