@@ -3,16 +3,22 @@
    ============================================ */
 
 .nimun-card {
-    background: var(--bg-card);
+    background: var(--gradient-card);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
-    transition: all var(--transition-base);
     border: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
 }
 
-.nimun-card:hover {
+/* Only add hover effects for interactive cards */
+.nimun-card--interactive {
+    transition: box-shadow var(--transition-base);
+    cursor: pointer;
+}
+
+.nimun-card--interactive:hover {
     box-shadow: var(--shadow-lg);
-    transform: translateY(-2px);
 }
 
 /* ---- Variants ---- */
@@ -33,6 +39,8 @@
 .nimun-card--blue {
     background: var(--nimun-blue);
     color: var(--text-on-blue);
+    position: relative;
+    overflow: hidden;
 }
 
 .nimun-card--blue p,
@@ -47,9 +55,8 @@
     border-color: rgba(0, 55, 192, 0.2);
 }
 
-.nimun-card--glow:hover {
+.nimun-card--glow.nimun-card--interactive:hover {
     box-shadow: var(--shadow-blue-lg);
-    transform: translateY(-2px);
     border-color: rgba(0, 55, 192, 0.3);
 }
 

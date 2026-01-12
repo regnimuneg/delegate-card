@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, Input, Card } from '../../../shared/components';
@@ -12,6 +12,20 @@ export function ClaimAccount() {
     const navigate = useNavigate();
     const { validateClaimToken, claimAccount, isLoading } = useAuth();
 
+    // Image slideshow URLs (local images from public folder)
+    const slideshowImages = [
+        '/slideshowimages/_NU27875.jpg',
+        '/slideshowimages/CCPCJ\'26.jpg',
+        '/slideshowimages/Council2.png',
+        '/slideshowimages/Group.jpg',
+        '/slideshowimages/henry.jpg',
+        '/slideshowimages/plac.jpg',
+        '/slideshowimages/plac2.jpg',
+        '/slideshowimages/Press\'26.jpg',
+        '/slideshowimages/salama.jpg'
+    ];
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [step, setStep] = useState('token'); // 'token' | 'password'
     const [token, setToken] = useState('');
     const [delegate, setDelegate] = useState(null);
@@ -20,6 +34,15 @@ export function ClaimAccount() {
         confirmPassword: ''
     });
     const [error, setError] = useState('');
+
+    // Image slideshow rotation
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % slideshowImages.length);
+        }, 5000); // Change image every 5 seconds
+
+        return () => clearInterval(interval);
+    }, [slideshowImages.length]);
 
     const handleTokenSubmit = async (e) => {
         e.preventDefault();
@@ -70,16 +93,31 @@ export function ClaimAccount() {
     };
 
     return (
-        <div className="claim-page page-center">
-            <div className="claim-container animate-slide-up">
-                {/* Logo/Brand Header */}
-                <div className="claim-brand">
+        <div className="claim-page">
+            {/* Left Panel - Branding & Slideshow */}
+            <div className="claim-left-panel">
+                <div className="claim-slideshow">
+                    {slideshowImages.map((image, index) => (
+                        <div
+                            key={index}
+                            className={`claim-slideshow-image ${index === currentImageIndex ? 'active' : ''}`}
+                            style={{ backgroundImage: `url(${image})` }}
+                        />
+                    ))}
+                </div>
+                <div className="claim-left-overlay"></div>
+                <div className="claim-brand-content">
                     <div className="claim-logo">
                         <span className="claim-logo-text">NIMUN</span>
                         <span className="claim-logo-year">'26</span>
                     </div>
-                    <p className="claim-tagline">Claim Your Account</p>
+                    <p className="claim-tagline">CLAIM YOUR ACCOUNT</p>
                 </div>
+            </div>
+
+            {/* Right Panel - Form */}
+            <div className="claim-right-panel">
+                <div className="claim-form-container">
 
                 {/* Step Indicator */}
                 <div className="claim-steps">
@@ -220,9 +258,10 @@ export function ClaimAccount() {
                     </Card>
                 )}
 
-                {/* Demo Token */}
-                <div className="claim-demo">
-                    <p>Demo Token: CLAIM-ABC123</p>
+                    {/* Demo Token */}
+                    <div className="claim-demo">
+                        <p>Demo Token: CLAIM-ABC123</p>
+                    </div>
                 </div>
             </div>
         </div>

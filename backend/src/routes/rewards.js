@@ -41,8 +41,8 @@ router.post('/activate', authenticate, validateRewardActivation, async (req, res
             expires_at: expiresAt
         });
 
-        // Create activity entry
-        await createActivityEntry(delegateId, {
+        // Create activity entry (use userId from JWT, not delegateId)
+        await createActivityEntry(req.user.userId, {
             activity_type: 'other',
             title: `Reward Activated: ${rewardType}`,
             description: `Generated QR code for ${rewardType} redemption`,
@@ -99,8 +99,8 @@ router.get('/verify/:token', optionalAuth, async (req, res, next) => {
                 rewardType: activation.reward_type,
                 delegate: {
                     id: activation.delegates.id,
-                    name: `${activation.delegates.users.first_name} ${activation.delegates.users.last_name}`,
-                    qrSlug: activation.delegates.qr_slug
+                    name: activation.delegates.name,
+                    qrCode: activation.delegates.qr_code
                 },
                 expiresAt: activation.expires_at
             }

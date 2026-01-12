@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, Login, ClaimAccount, ProtectedRoute } from './features/auth';
-import { Dashboard } from './features/dashboard';
+import { AuthProvider, Login, ClaimAccount, ForgotPassword, ResetPassword, ProtectedRoute } from './features/auth';
+import { Dashboard, Profile, Activity } from './features/dashboard';
 import './shared/styles/global.css';
 
 /**
@@ -15,6 +15,8 @@ function App() {
                     {/* Public Routes */}
                     <Route path="/" element={<Login />} />
                     <Route path="/claim" element={<ClaimAccount />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
 
                     {/* Protected Routes */}
                     <Route
@@ -22,6 +24,22 @@ function App() {
                         element={
                             <ProtectedRoute>
                                 <Dashboard />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/activity"
+                        element={
+                            <ProtectedRoute>
+                                <Activity />
                             </ProtectedRoute>
                         }
                     />

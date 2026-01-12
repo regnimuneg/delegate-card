@@ -108,8 +108,13 @@ export function AuthProvider({ children }) {
         api.logout();
     };
 
+    const updateUser = (updatedUser) => {
+        setUser(updatedUser);
+    };
+
     const value = {
         user,
+        setUser: updateUser,
         isLoading,
         isAuthenticated: !!user,
         login,

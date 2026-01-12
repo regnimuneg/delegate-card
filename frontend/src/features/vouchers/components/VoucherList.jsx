@@ -22,16 +22,29 @@ export function VoucherList({ delegateId, onClaimSuccess }) {
         if (!selectedVoucher) return;
 
         const result = await claimVoucher(selectedVoucher.id);
+        console.log('Claim result:', result);
 
         if (result.success) {
             // Notify parent with claim data for dashboard display
             if (onClaimSuccess) {
+                const timestamp = Date.now();
+                const claim = result.claim || {};
+                const qrToken = claim.qrToken || JSON.stringify({
+                    type: 'voucher_claim',
+                    vendorId: selectedVoucher.id,
+                    vendorName: selectedVoucher.name,
+                    timestamp,
+                });
+                const expiresAt = claim.expiresAt ? new Date(claim.expiresAt).getTime() : timestamp + (15 * 60 * 1000);
+                
                 onClaimSuccess({
                     vendorId: selectedVoucher.id,
                     vendorName: selectedVoucher.name,
                     icon: selectedVoucher.icon,
                     description: selectedVoucher.description,
-                    timestamp: Date.now()
+                    timestamp,
+                    qrToken,
+                    expiresAt
                 });
             }
             // Close the confirmation modal
@@ -50,11 +63,8 @@ export function VoucherList({ delegateId, onClaimSuccess }) {
     return (
         <div className="voucher-list">
             <div className="voucher-list-header">
-                <h3 className="voucher-list-title">
-                    Available Vouchers
-                </h3>
                 <span className="voucher-list-count">
-                    {availableVouchers.length} available
+                    {availableVouchers.length} ready to activate
                 </span>
             </div>
 

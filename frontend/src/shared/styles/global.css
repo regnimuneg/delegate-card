@@ -26,15 +26,17 @@ body {
     font-weight: var(--font-weight-normal);
     line-height: var(--line-height-normal);
     color: var(--text-primary);
-    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: var(--gradient-secondary);
+    background-attachment: fixed;
     min-height: 100vh;
+    position: relative;
 }
 
 #root {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
+    position: relative;
+    z-index: 1;
 }
+
 
 /* ---- Typography Defaults ---- */
 h1,
@@ -49,6 +51,9 @@ h6 {
     color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.02em;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 h1 {
@@ -78,6 +83,9 @@ h6 {
 p {
     margin-bottom: var(--space-4);
     color: var(--text-secondary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 a {

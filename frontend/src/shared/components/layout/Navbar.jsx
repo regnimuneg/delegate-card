@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '../Button';
 import './Navbar.css';
 
@@ -8,6 +9,11 @@ import './Navbar.css';
  */
 export function Navbar({ user, onLogout, activeTab, onTabChange }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const isProfilePage = location.pathname === '/profile';
+    const isActivityPage = location.pathname === '/activity';
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -18,21 +24,39 @@ export function Navbar({ user, onLogout, activeTab, onTabChange }) {
         setIsMenuOpen(false); // Close menu on mobile
     };
 
+    const handleProfileClick = () => {
+        navigate('/profile');
+        setIsMenuOpen(false);
+    };
+
+    const handleActivityClick = () => {
+        navigate('/activity');
+        setIsMenuOpen(false);
+    };
+
+    const handleHomeClick = () => {
+        if (isProfilePage || isActivityPage) {
+            navigate('/dashboard');
+        } else {
+            handleTabClick('home');
+        }
+    };
+
     return (
         <header className="navbar">
             <div className="navbar-content">
                 {/* Brand */}
                 <div className="navbar-brand">
                     <img src="/logo24.png" alt="NIMUN Logo" className="navbar-logo" />
-                    <span className="navbar-brand-text">NIMUN</span>
-                    <span className="navbar-brand-year">'26</span>
+                    <span className="navbar-brand-text">NIMUN'26</span>
+                    <span className="navbar-brand-subtitle">Delegate Portal</span>
                 </div>
 
                 {/* Desktop Navigation */}
                 <nav className="navbar-nav">
                     <button
-                        className={`navbar-nav-item ${activeTab === 'home' ? 'navbar-nav-item--active' : ''}`}
-                        onClick={() => handleTabClick('home')}
+                        className={`navbar-nav-item ${activeTab === 'home' && !isProfilePage && !isActivityPage ? 'navbar-nav-item--active' : ''}`}
+                        onClick={handleHomeClick}
                     >
                         <svg className="navbar-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -41,26 +65,23 @@ export function Navbar({ user, onLogout, activeTab, onTabChange }) {
                         <span>Home</span>
                     </button>
                     <button
-                        className={`navbar-nav-item ${activeTab === 'attendance' ? 'navbar-nav-item--active' : ''}`}
-                        onClick={() => handleTabClick('attendance')}
+                        className={`navbar-nav-item ${isActivityPage ? 'navbar-nav-item--active' : ''}`}
+                        onClick={handleActivityClick}
                     >
                         <svg className="navbar-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="12" y1="20" x2="12" y2="10"></line>
-                            <line x1="18" y1="20" x2="18" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="16"></line>
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                         </svg>
-                        <span>Attendance</span>
+                        <span>Activity</span>
                     </button>
                     <button
-                        className={`navbar-nav-item ${activeTab === 'food' ? 'navbar-nav-item--active' : ''}`}
-                        onClick={() => handleTabClick('food')}
+                        className={`navbar-nav-item ${isProfilePage ? 'navbar-nav-item--active' : ''}`}
+                        onClick={handleProfileClick}
                     >
                         <svg className="navbar-nav-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
-                            <path d="M7 2v20"></path>
-                            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <span>Food</span>
+                        <span>Profile</span>
                     </button>
                 </nav>
 
@@ -83,8 +104,8 @@ export function Navbar({ user, onLogout, activeTab, onTabChange }) {
             {isMenuOpen && (
                 <div className="navbar-mobile-menu">
                     <button
-                        className={`navbar-mobile-item ${activeTab === 'home' ? 'navbar-mobile-item--active' : ''}`}
-                        onClick={() => handleTabClick('home')}
+                        className={`navbar-mobile-item ${activeTab === 'home' && !isProfilePage && !isActivityPage ? 'navbar-mobile-item--active' : ''}`}
+                        onClick={handleHomeClick}
                     >
                         <svg className="navbar-mobile-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
@@ -93,26 +114,23 @@ export function Navbar({ user, onLogout, activeTab, onTabChange }) {
                         <span>Home</span>
                     </button>
                     <button
-                        className={`navbar-mobile-item ${activeTab === 'attendance' ? 'navbar-mobile-item--active' : ''}`}
-                        onClick={() => handleTabClick('attendance')}
+                        className={`navbar-mobile-item ${isActivityPage ? 'navbar-mobile-item--active' : ''}`}
+                        onClick={handleActivityClick}
                     >
                         <svg className="navbar-mobile-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <line x1="12" y1="20" x2="12" y2="10"></line>
-                            <line x1="18" y1="20" x2="18" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="16"></line>
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                         </svg>
-                        <span>Attendance</span>
+                        <span>Activity</span>
                     </button>
                     <button
-                        className={`navbar-mobile-item ${activeTab === 'food' ? 'navbar-mobile-item--active' : ''}`}
-                        onClick={() => handleTabClick('food')}
+                        className={`navbar-mobile-item ${isProfilePage ? 'navbar-mobile-item--active' : ''}`}
+                        onClick={handleProfileClick}
                     >
                         <svg className="navbar-mobile-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
-                            <path d="M7 2v20"></path>
-                            <path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path>
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
                         </svg>
-                        <span>Food</span>
+                        <span>Profile</span>
                     </button>
                     <div className="navbar-mobile-divider"></div>
                     <button className="navbar-mobile-item navbar-mobile-item--logout" onClick={onLogout}>

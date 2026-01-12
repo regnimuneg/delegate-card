@@ -7,61 +7,93 @@
 }
 
 .activity-timeline-title {
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-4);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    display: none; /* Title handled by parent */
 }
 
 /* ---- List ---- */
 .activity-timeline-list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: 6px;
+    max-height: none;
+    overflow-y: visible;
+}
+
+/* On phones, show first 6 activities to fill the box */
+@media (max-width: 480px) {
+    .activity-timeline-list .activity-timeline-item:nth-child(n+7) {
+        display: none;
+    }
+}
+
+/* On very small phones, show first 5 activities */
+@media (max-width: 360px) {
+    .activity-timeline-list .activity-timeline-item:nth-child(n+6) {
+        display: none;
+    }
 }
 
 /* ---- Item ---- */
 .activity-timeline-item {
     display: flex;
-    gap: var(--space-3);
-    padding: var(--space-4);
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
-    animation: slideUp var(--transition-slow) ease-out both;
+    gap: 8px;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+    min-width: 0;
+}
+
+@media (max-width: 480px) {
+    .activity-timeline-item {
+        gap: 6px;
+        padding: 6px;
+        border-radius: 8px;
+    }
 }
 
 .activity-timeline-icon {
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
+    background: rgba(0, 55, 192, 0.1);
+    border-radius: 8px;
+    color: var(--nimun-blue);
 }
 
 .activity-timeline-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 14px;
+    height: 14px;
+}
+
+@media (max-width: 480px) {
+    .activity-timeline-icon {
+        width: 24px;
+        height: 24px;
+        border-radius: 6px;
+    }
+
+    .activity-timeline-icon svg {
+        width: 12px;
+        height: 12px;
+    }
 }
 
 /* Type-specific icon backgrounds */
 .activity-timeline-item--attendance .activity-timeline-icon {
-    background: var(--nimun-blue-subtle);
+    background: rgba(0, 55, 192, 0.1);
     color: var(--nimun-blue);
 }
 
 .activity-timeline-item--food .activity-timeline-icon {
-    background: var(--status-success-bg);
+    background: rgba(16, 185, 129, 0.1);
     color: var(--status-success);
 }
 
 .activity-timeline-item--game .activity-timeline-icon {
-    background: var(--status-warning-bg);
+    background: rgba(245, 158, 11, 0.1);
     color: var(--status-warning);
 }
 
@@ -80,32 +112,30 @@
 }
 
 .activity-timeline-item-title {
-    font-size: var(--font-size-sm);
+    font-size: 11px;
     font-weight: var(--font-weight-semibold);
     color: var(--text-primary);
+    word-break: keep-all;
+    overflow-wrap: normal;
+    line-height: 1.2;
+}
+
+@media (max-width: 480px) {
+    .activity-timeline-item-title {
+        font-size: 10px;
+    }
 }
 
 .activity-timeline-time {
-    font-size: var(--font-size-xs);
+    font-size: 9px;
     color: var(--text-muted);
     white-space: nowrap;
 }
 
-.activity-timeline-description {
-    font-size: var(--font-size-sm);
-    color: var(--text-secondary);
-    margin: 0;
-}
-
-.activity-timeline-points {
-    display: inline-block;
-    margin-top: var(--space-2);
-    padding: var(--space-1) var(--space-2);
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    color: var(--status-warning);
-    background: var(--status-warning-bg);
-    border-radius: var(--radius-capsule);
+@media (max-width: 480px) {
+    .activity-timeline-time {
+        font-size: 8px;
+    }
 }
 
 /* ---- Empty State ---- */

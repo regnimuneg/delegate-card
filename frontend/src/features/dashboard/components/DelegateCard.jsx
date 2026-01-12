@@ -1,10 +1,10 @@
 import { QRCodeSVG } from 'qrcode.react';
-import { Card } from '../../../shared/components';
 import './DelegateCard.css';
 
 /**
  * DelegateCard Component
  * Displays the delegate's identity card with static QR code
+ * Takes full width of container - no extra box wrapper
  */
 export function DelegateCard({ delegate, showQR = true }) {
     const {
@@ -12,15 +12,17 @@ export function DelegateCard({ delegate, showQR = true }) {
         lastName,
         committee,
         council,
+        qrCode,
         qrSlug,
         photo
     } = delegate;
 
     const fullName = `${firstName} ${lastName}`;
-    const qrUrl = `${window.location.origin}/delegate/${qrSlug}`;
+    const delegateId = delegate.id; // Just the ID like "HRC-01"
+    const qrCodeValue = `IC'26-${delegateId}`; // QR code format: IC'26-HRC-01
 
     return (
-        <Card variant="blue" padding="large" glow className="delegate-card">
+        <div className="delegate-card">
             <div className="delegate-card-inner">
                 {/* Header with NIMUN branding */}
                 <div className="delegate-card-header">
@@ -53,20 +55,27 @@ export function DelegateCard({ delegate, showQR = true }) {
                 {/* Static QR Code */}
                 {showQR && (
                     <div className="delegate-card-qr">
+                        <span className="delegate-card-qr-label">Conference Access</span>
                         <div className="delegate-card-qr-wrapper">
                             <QRCodeSVG
-                                value={qrUrl}
+                                value={qrCodeValue}
                                 size={100}
                                 bgColor="transparent"
                                 fgColor="#FFFFFF"
                                 level="M"
                             />
                         </div>
-                        <span className="delegate-card-qr-slug">{qrSlug}</span>
+                        <span className="delegate-card-qr-slug">{delegateId}</span>
+                        <span className="delegate-card-qr-hint">For attendance, meals & activities</span>
                     </div>
                 )}
+
+                {/* Motivational Tagline */}
+                <div className="delegate-card-tagline">
+                    Leave Your Mark!
+                </div>
             </div>
-        </Card>
+        </div>
     );
 }
 

@@ -9,24 +9,69 @@ import { supabase, supabaseAdmin } from '../db/supabase.js';
  */
 export async function testConnection() {
     try {
-        const { data, error } = await supabase.from('users').select('count').limit(1);
-        if (error) throw error;
+        // Try a simple query to verify connection
+        const { data, error } = await supabase
+            .from('users')
+            .select('id')
+            .limit(1);
+        
+        if (error) {
+            // Check for specific error types
+            if (error.message.includes('relation "users" does not exist') || 
+                error.message.includes("Could not find the table 'public.users'")) {
+                return { 
+                    success: false, 
+                    error: 'Database schema not found!\n\n' +
+                           '   📋 Action required:\n' +
+                           '   1. Go to Supabase Dashboard → SQL Editor\n' +
+                           '   2. Open: backend/src/db/schema.sql\n' +
+                           '   3. Copy the entire file content\n' +
+                           '   4. Paste in SQL Editor and click "Run"\n' +
+                           '   5. Wait for "Success. No rows returned" message\n\n' +
+                           '   This will create all required tables (users, delegates, vouchers, etc.)'
+                };
+            }
+            if (error.message.includes('JWT')) {
+                return { 
+                    success: false, 
+                    error: 'Invalid API key. Check SUPABASE_ANON_KEY in .env file.' 
+                };
+            }
+            if (error.message.includes('getaddrinfo') || error.message.includes('ENOTFOUND')) {
+                return { 
+                    success: false, 
+                    error: 'Cannot connect to Supabase. Check SUPABASE_URL in .env file (should start with https://).' 
+                };
+            }
+            throw error;
+        }
+        
         return { success: true };
     } catch (error) {
-        console.error('Database connection error:', error);
-        return { success: false, error: error.message };
+        // Handle connection errors
+        if (error.message.includes('getaddrinfo') || error.message.includes('ENOTFOUND')) {
+            return { 
+                success: false, 
+                error: `Cannot resolve Supabase hostname. Check SUPABASE_URL in .env file.\n   Current: ${process.env.SUPABASE_URL || 'Not set'}\n   Should be: https://xxxxx.supabase.co` 
+            };
+        }
+        
+        return { 
+            success: false, 
+            error: error.message || 'Unknown database connection error' 
+        };
     }
 }
 
 /**
- * Get delegate by ID
+ * Get delegate by ID (council-based ID like HRC-01)
  */
 export async function getDelegateById(delegateId) {
     const { data, error } = await supabaseAdmin
         .from('delegates')
         .select(`
             *,
-            users:users!delegates_id_fkey (
+            users:users!delegates_user_id_fkey (
                 id,
                 email,
                 first_name,
@@ -36,7 +81,7 @@ export async function getDelegateById(delegateId) {
             )
         `)
         .eq('id', delegateId)
-        .single();
+        .maybeSingle(); // Use maybeSingle() to handle no results gracefully
 
     if (error) throw error;
     return data;
@@ -51,21 +96,105 @@ export async function getDelegateByEmail(email) {
         .select('*')
         .eq('email', email.toLowerCase())
         .eq('user_type', 'delegate')
-        .single();
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
-    if (userError || !user) return null;
+    if (userError) {
+        console.log('❌ User lookup error:', userError.message);
+        return null;
+    }
+    
+    if (!user) {
+        console.log('❌ User not found in users table');
+        return null;
+    }
 
     const { data: delegate, error: delegateError } = await supabaseAdmin
         .from('delegates')
         .select('*')
-        .eq('id', user.id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle(); // Use maybeSingle() instead of single()
 
-    if (delegateError) throw delegateError;
+    if (delegateError) {
+        console.log('❌ Delegate lookup error:', delegateError.message);
+        throw delegateError;
+    }
+    
+    if (!delegate) {
+        console.log('❌ Delegate not found for user:', user.id);
+        return null;
+    }
 
     return {
         ...user,
         ...delegate
+    };
+}
+
+/**
+ * Get admin by email
+ */
+export async function getAdminByEmail(email) {
+    const { data: user, error: userError } = await supabaseAdmin
+        .from('users')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .eq('user_type', 'admin')
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
+
+    if (userError) {
+        console.log('❌ Admin user lookup error:', userError.message);
+        return null;
+    }
+    
+    if (!user) {
+        console.log('❌ Admin user not found in users table');
+        return null;
+    }
+
+    // Admin users don't have a separate table, just return the user
+    return user;
+}
+
+/**
+ * Get member by email
+ */
+export async function getMemberByEmail(email) {
+    const { data: user, error: userError } = await supabaseAdmin
+        .from('users')
+        .select('*')
+        .eq('email', email.toLowerCase())
+        .eq('user_type', 'member')
+        .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
+
+    if (userError) {
+        console.log('❌ Member user lookup error:', userError.message);
+        return null;
+    }
+    
+    if (!user) {
+        console.log('❌ Member user not found in users table');
+        return null;
+    }
+
+    const { data: member, error: memberError } = await supabaseAdmin
+        .from('members')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle(); // Use maybeSingle() instead of single()
+
+    if (memberError) {
+        console.log('❌ Member lookup error:', memberError.message);
+        throw memberError;
+    }
+    
+    if (!member) {
+        console.log('❌ Member not found for user:', user.id);
+        return null;
+    }
+
+    return {
+        ...user,
+        ...member
     };
 }
 
@@ -77,7 +206,7 @@ export async function getDelegateByClaimToken(token) {
         .from('delegates')
         .select(`
             *,
-            users:users!delegates_id_fkey (
+            users:users!delegates_user_id_fkey (
                 id,
                 email,
                 first_name,
@@ -272,8 +401,9 @@ export async function getRewardActivationByToken(qrToken) {
             *,
             delegates:delegates!reward_activations_delegate_id_fkey (
                 id,
-                qr_slug,
-                users:users!delegates_id_fkey (
+                name,
+                qr_code,
+                users:users!delegates_user_id_fkey (
                     first_name,
                     last_name
                 )
@@ -292,6 +422,8 @@ export default {
     testConnection,
     getDelegateById,
     getDelegateByEmail,
+    getMemberByEmail,
+    getAdminByEmail,
     getDelegateByClaimToken,
     createDelegate,
     updateDelegate,

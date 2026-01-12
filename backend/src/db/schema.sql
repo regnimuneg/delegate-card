@@ -1,8 +1,26 @@
 -- ============================================
--- NIMUN Database Schema
+-- NIMUN Database Schema (Refactored)
 -- Shared by Delegate Card System & Delegate Tracking System
 -- Supabase/PostgreSQL
 -- ============================================
+
+-- ============================================
+-- DROP TABLES (in dependency order)
+-- WARNING: This will delete all existing data!
+-- ============================================
+DROP TABLE IF EXISTS password_reset_tokens CASCADE;
+DROP TABLE IF EXISTS reward_activations CASCADE;
+DROP TABLE IF EXISTS activity_timeline CASCADE;
+DROP TABLE IF EXISTS food_history CASCADE;
+DROP TABLE IF EXISTS attendance_records CASCADE;
+DROP TABLE IF EXISTS voucher_claims CASCADE;
+DROP TABLE IF EXISTS vouchers CASCADE;
+DROP TABLE IF EXISTS delegates CASCADE;
+DROP TABLE IF EXISTS members CASCADE;
+DROP TABLE IF EXISTS users CASCADE;
+
+-- Drop functions and triggers if they exist
+DROP FUNCTION IF EXISTS update_updated_at_column() CASCADE;
 
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
@@ -12,44 +30,200 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL, -- Required for all users (delegates, members, admins)
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     date_of_birth DATE,
     photo_url TEXT,
-    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member')),
+    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('admin', 'delegate', 'member')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
 );
 
 -- ============================================
+-- PASSWORD RESET TOKENS TABLE
+-- ============================================
+CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(100) UNIQUE NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================
 -- DELEGATES TABLE
+-- ID Format: Council-based
+--   HRC: HRC-XX
+--   ICJ: ICJ-XX
+--   DISEC: DSC-XX
+--   PRESS: PRS-XX
 -- ============================================
 CREATE TABLE IF NOT EXISTS delegates (
-    id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    qr_slug VARCHAR(50) UNIQUE NOT NULL,
+    id VARCHAR(20) PRIMARY KEY, -- Format: COUNCIL-XX (e.g., HRC-01, ICJ-15, DSC-12, PRS-05)
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(200) NOT NULL, -- Full name
+    council VARCHAR(100) NOT NULL, -- Council name (e.g., HRC, UNSC, DISEC)
     claim_token VARCHAR(50) UNIQUE,
     claim_token_used BOOLEAN DEFAULT FALSE,
-    council VARCHAR(100) NOT NULL,
-    committee VARCHAR(100),
+    qr_code VARCHAR(100) UNIQUE NOT NULL, -- QR code identifier
     status VARCHAR(20) DEFAULT 'unclaimed' CHECK (status IN ('unclaimed', 'active', 'inactive')),
-    sessions_attended INTEGER DEFAULT 0,
-    days_attended INTEGER DEFAULT 0,
-    awards INTEGER DEFAULT 0,
+    
+    -- Attendance tracking per day
+    -- Opening Ceremony
+    opening_ceremony_attended BOOLEAN DEFAULT FALSE,
+    opening_ceremony_checkin TIMESTAMP WITH TIME ZONE,
+    opening_ceremony_checkout TIMESTAMP WITH TIME ZONE,
+    opening_ceremony_food BOOLEAN DEFAULT FALSE,
+    opening_ceremony_activities TEXT, -- JSON or comma-separated
+    opening_ceremony_comments TEXT, -- If left early or notes
+    
+    -- Day 1
+    day1_session_attended BOOLEAN DEFAULT FALSE,
+    day1_checkin TIMESTAMP WITH TIME ZONE,
+    day1_checkout TIMESTAMP WITH TIME ZONE,
+    day1_food BOOLEAN DEFAULT FALSE,
+    day1_activities TEXT,
+    day1_comments TEXT,
+    
+    -- Day 2
+    day2_session_attended BOOLEAN DEFAULT FALSE,
+    day2_checkin TIMESTAMP WITH TIME ZONE,
+    day2_checkout TIMESTAMP WITH TIME ZONE,
+    day2_food BOOLEAN DEFAULT FALSE,
+    day2_activities TEXT,
+    day2_comments TEXT,
+    
+    -- Day 3
+    day3_session_attended BOOLEAN DEFAULT FALSE,
+    day3_checkin TIMESTAMP WITH TIME ZONE,
+    day3_checkout TIMESTAMP WITH TIME ZONE,
+    day3_food BOOLEAN DEFAULT FALSE,
+    day3_activities TEXT,
+    day3_comments TEXT,
+    
+    -- Day 4
+    day4_session_attended BOOLEAN DEFAULT FALSE,
+    day4_checkin TIMESTAMP WITH TIME ZONE,
+    day4_checkout TIMESTAMP WITH TIME ZONE,
+    day4_food BOOLEAN DEFAULT FALSE,
+    day4_activities TEXT,
+    day4_comments TEXT,
+    
+    -- Conference Days (conf d1-d3)
+    conf_day1_attended BOOLEAN DEFAULT FALSE,
+    conf_day1_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day1_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day1_food BOOLEAN DEFAULT FALSE,
+    conf_day1_activities TEXT,
+    conf_day1_comments TEXT,
+    
+    conf_day2_attended BOOLEAN DEFAULT FALSE,
+    conf_day2_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day2_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day2_food BOOLEAN DEFAULT FALSE,
+    conf_day2_activities TEXT,
+    conf_day2_comments TEXT,
+    
+    conf_day3_attended BOOLEAN DEFAULT FALSE,
+    conf_day3_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day3_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day3_food BOOLEAN DEFAULT FALSE,
+    conf_day3_activities TEXT,
+    conf_day3_comments TEXT,
+    
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ============================================
 -- MEMBERS TABLE (Staff, Chairs, etc.)
+-- Committees: Executive, Registration Affairs, Socials & Events, 
+--             Public Relations, Media & Design, Operations & Logistics
+-- ID Format: Committee-based
+--   Executive: EX-XX
+--   Registration: RG-XX
+--   PR: PR-XX
+--   Socials: SO-XX
+--   Media: MD-XX
+--   Ops: OP-XX
 -- ============================================
 CREATE TABLE IF NOT EXISTS members (
-    id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    role VARCHAR(100) NOT NULL, -- e.g., 'Chair', 'Vice-Chair', 'Staff', 'Admin'
-    committee VARCHAR(100) NOT NULL,
+    id VARCHAR(20) PRIMARY KEY, -- Format: COMMITTEE-XX (e.g., EX-01, RG-05, PR-03, SO-12, MD-08, OP-15)
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    name VARCHAR(200) NOT NULL, -- Full name
+    phone_number VARCHAR(20) NOT NULL, -- Phone number (primary contact for members)
+    role VARCHAR(100) NOT NULL, -- e.g., 'Head Of Registration Affairs', 'Head Of Media & Design', 'Chair', 'Vice-Chair', 'Staff', 'Coordinator'
+    committee VARCHAR(100) NOT NULL CHECK (committee IN (
+        'Executive',
+        'Registration Affairs',
+        'Socials & Events',
+        'Public Relations',
+        'Media & Design',
+        'Operations & Logistics'
+    )),
     permissions JSONB DEFAULT '{}', -- Store role-specific permissions
+    
+    -- Same attendance structure as delegates (optional - can be NULL)
+    opening_ceremony_attended BOOLEAN DEFAULT FALSE,
+    opening_ceremony_checkin TIMESTAMP WITH TIME ZONE,
+    opening_ceremony_checkout TIMESTAMP WITH TIME ZONE,
+    opening_ceremony_food BOOLEAN DEFAULT FALSE,
+    opening_ceremony_activities TEXT,
+    opening_ceremony_comments TEXT,
+    
+    day1_session_attended BOOLEAN DEFAULT FALSE,
+    day1_checkin TIMESTAMP WITH TIME ZONE,
+    day1_checkout TIMESTAMP WITH TIME ZONE,
+    day1_food BOOLEAN DEFAULT FALSE,
+    day1_activities TEXT,
+    day1_comments TEXT,
+    
+    day2_session_attended BOOLEAN DEFAULT FALSE,
+    day2_checkin TIMESTAMP WITH TIME ZONE,
+    day2_checkout TIMESTAMP WITH TIME ZONE,
+    day2_food BOOLEAN DEFAULT FALSE,
+    day2_activities TEXT,
+    day2_comments TEXT,
+    
+    day3_session_attended BOOLEAN DEFAULT FALSE,
+    day3_checkin TIMESTAMP WITH TIME ZONE,
+    day3_checkout TIMESTAMP WITH TIME ZONE,
+    day3_food BOOLEAN DEFAULT FALSE,
+    day3_activities TEXT,
+    day3_comments TEXT,
+    
+    day4_session_attended BOOLEAN DEFAULT FALSE,
+    day4_checkin TIMESTAMP WITH TIME ZONE,
+    day4_checkout TIMESTAMP WITH TIME ZONE,
+    day4_food BOOLEAN DEFAULT FALSE,
+    day4_activities TEXT,
+    day4_comments TEXT,
+    
+    conf_day1_attended BOOLEAN DEFAULT FALSE,
+    conf_day1_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day1_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day1_food BOOLEAN DEFAULT FALSE,
+    conf_day1_activities TEXT,
+    conf_day1_comments TEXT,
+    
+    conf_day2_attended BOOLEAN DEFAULT FALSE,
+    conf_day2_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day2_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day2_food BOOLEAN DEFAULT FALSE,
+    conf_day2_activities TEXT,
+    conf_day2_comments TEXT,
+    
+    conf_day3_attended BOOLEAN DEFAULT FALSE,
+    conf_day3_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day3_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day3_food BOOLEAN DEFAULT FALSE,
+    conf_day3_activities TEXT,
+    conf_day3_comments TEXT,
+    
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -77,7 +251,7 @@ CREATE TABLE IF NOT EXISTS vouchers (
 -- ============================================
 CREATE TABLE IF NOT EXISTS voucher_claims (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    delegate_id UUID NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
+    delegate_id VARCHAR(20) NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
     voucher_id UUID NOT NULL REFERENCES vouchers(id) ON DELETE CASCADE,
     claimed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     qr_token TEXT, -- Dynamic QR token for redemption
@@ -88,18 +262,21 @@ CREATE TABLE IF NOT EXISTS voucher_claims (
 );
 
 -- ============================================
--- ATTENDANCE RECORDS TABLE
+-- ATTENDANCE RECORDS TABLE (Legacy/Detailed)
+-- For more detailed session-by-session tracking if needed
 -- ============================================
 CREATE TABLE IF NOT EXISTS attendance_records (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    delegate_id UUID NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
+    delegate_id VARCHAR(20) NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
     session_name VARCHAR(200) NOT NULL,
     session_date DATE NOT NULL,
+    session_type VARCHAR(50) CHECK (session_type IN ('opening_ceremony', 'day1', 'day2', 'day3', 'day4', 'conf_day1', 'conf_day2', 'conf_day3')),
     check_in_time TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     check_out_time TIMESTAMP WITH TIME ZONE,
     location VARCHAR(200),
     points_awarded INTEGER DEFAULT 0,
-    notes TEXT
+    notes TEXT,
+    comments TEXT -- If delegate leaves early
 );
 
 -- ============================================
@@ -107,8 +284,9 @@ CREATE TABLE IF NOT EXISTS attendance_records (
 -- ============================================
 CREATE TABLE IF NOT EXISTS food_history (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    delegate_id UUID NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
+    delegate_id VARCHAR(20) NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
     meal_type VARCHAR(50) NOT NULL CHECK (meal_type IN ('breakfast', 'lunch', 'dinner', 'snack')),
+    meal_day VARCHAR(50), -- Which day: opening_ceremony, day1, day2, day3, day4, conf_day1, conf_day2, conf_day3
     location VARCHAR(200),
     claimed_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     voucher_claim_id UUID REFERENCES voucher_claims(id) ON DELETE SET NULL
@@ -133,7 +311,7 @@ CREATE TABLE IF NOT EXISTS activity_timeline (
 -- ============================================
 CREATE TABLE IF NOT EXISTS reward_activations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    delegate_id UUID NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
+    delegate_id VARCHAR(20) NOT NULL REFERENCES delegates(id) ON DELETE CASCADE,
     reward_type VARCHAR(50) NOT NULL CHECK (reward_type IN ('lunch', 'dinner', 'snack', 'merch')),
     qr_token TEXT NOT NULL,
     qr_data JSONB NOT NULL, -- Store full QR payload
@@ -151,15 +329,23 @@ CREATE TABLE IF NOT EXISTS reward_activations (
 CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
 CREATE INDEX IF NOT EXISTS idx_users_type ON users(user_type);
 
+-- Password reset tokens indexes
+CREATE INDEX IF NOT EXISTS idx_password_reset_user ON password_reset_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_password_reset_token ON password_reset_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_password_reset_expires ON password_reset_tokens(expires_at);
+
 -- Delegates indexes
-CREATE INDEX IF NOT EXISTS idx_delegates_qr_slug ON delegates(qr_slug);
+CREATE INDEX IF NOT EXISTS idx_delegates_user_id ON delegates(user_id);
+CREATE INDEX IF NOT EXISTS idx_delegates_qr_code ON delegates(qr_code);
 CREATE INDEX IF NOT EXISTS idx_delegates_claim_token ON delegates(claim_token);
 CREATE INDEX IF NOT EXISTS idx_delegates_status ON delegates(status);
 CREATE INDEX IF NOT EXISTS idx_delegates_council ON delegates(council);
 
 -- Members indexes
+CREATE INDEX IF NOT EXISTS idx_members_user_id ON members(user_id);
 CREATE INDEX IF NOT EXISTS idx_members_committee ON members(committee);
 CREATE INDEX IF NOT EXISTS idx_members_role ON members(role);
+CREATE INDEX IF NOT EXISTS idx_members_phone ON members(phone_number);
 
 -- Voucher claims indexes
 CREATE INDEX IF NOT EXISTS idx_voucher_claims_delegate ON voucher_claims(delegate_id);
@@ -170,10 +356,12 @@ CREATE INDEX IF NOT EXISTS idx_voucher_claims_qr_token ON voucher_claims(qr_toke
 -- Attendance indexes
 CREATE INDEX IF NOT EXISTS idx_attendance_delegate ON attendance_records(delegate_id);
 CREATE INDEX IF NOT EXISTS idx_attendance_date ON attendance_records(session_date);
+CREATE INDEX IF NOT EXISTS idx_attendance_type ON attendance_records(session_type);
 
 -- Food history indexes
 CREATE INDEX IF NOT EXISTS idx_food_delegate ON food_history(delegate_id);
 CREATE INDEX IF NOT EXISTS idx_food_claimed_at ON food_history(claimed_at);
+CREATE INDEX IF NOT EXISTS idx_food_meal_day ON food_history(meal_day);
 
 -- Activity timeline indexes
 CREATE INDEX IF NOT EXISTS idx_activity_user ON activity_timeline(user_id);
@@ -236,10 +424,18 @@ CREATE POLICY "Users can view own data" ON users
 
 -- Delegates: Delegates can view their own data
 CREATE POLICY "Delegates can view own data" ON delegates
-    FOR SELECT USING (auth.uid() = id);
+    FOR SELECT USING (auth.uid() = user_id);
 
 -- Delegates: Service role can manage all delegates
 CREATE POLICY "Service role can manage delegates" ON delegates
+    FOR ALL USING (auth.role() = 'service_role');
+
+-- Members: Members can view their own data
+CREATE POLICY "Members can view own data" ON members
+    FOR SELECT USING (auth.uid() = user_id);
+
+-- Members: Service role can manage all members
+CREATE POLICY "Service role can manage members" ON members
     FOR ALL USING (auth.role() = 'service_role');
 
 -- Vouchers: Everyone can view active vouchers
@@ -248,15 +444,15 @@ CREATE POLICY "Everyone can view active vouchers" ON vouchers
 
 -- Voucher Claims: Delegates can view their own claims
 CREATE POLICY "Delegates can view own claims" ON voucher_claims
-    FOR SELECT USING (auth.uid() = delegate_id);
+    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Attendance: Delegates can view their own attendance
 CREATE POLICY "Delegates can view own attendance" ON attendance_records
-    FOR SELECT USING (auth.uid() = delegate_id);
+    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Food History: Delegates can view their own food history
 CREATE POLICY "Delegates can view own food history" ON food_history
-    FOR SELECT USING (auth.uid() = delegate_id);
+    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Activity Timeline: Users can view their own activities
 CREATE POLICY "Users can view own activities" ON activity_timeline
@@ -264,8 +460,7 @@ CREATE POLICY "Users can view own activities" ON activity_timeline
 
 -- Reward Activations: Delegates can view their own activations
 CREATE POLICY "Delegates can view own reward activations" ON reward_activations
-    FOR SELECT USING (auth.uid() = delegate_id);
+    FOR SELECT USING (auth.uid() = (SELECT user_id FROM delegates WHERE id = delegate_id));
 
 -- Note: For production, you'll need to configure Supabase Auth
 -- and adjust RLS policies based on your authentication setup
-

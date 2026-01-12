@@ -42,14 +42,20 @@
 }
 
 .voucher-modal-icon {
-    font-size: var(--font-size-3xl);
-    width: 56px;
-    height: 56px;
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--nimun-blue-subtle);
     border-radius: var(--radius-lg);
+    color: var(--nimun-blue);
+}
+
+.voucher-modal-icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .voucher-modal-title {
@@ -149,8 +155,12 @@
 /* Actions */
 .voucher-modal-actions {
     display: flex;
+    flex-direction: column;
     gap: var(--space-3);
-    justify-content: flex-end;
+}
+
+.voucher-modal-actions button {
+    width: 100%;
 }
 
 /* Success State */

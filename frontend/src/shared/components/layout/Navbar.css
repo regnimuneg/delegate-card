@@ -5,37 +5,26 @@
 
 .navbar {
     position: fixed;
-    top: var(--space-3);
+    top: 10px;
     left: 50%;
     transform: translateX(-50%);
-    width: calc(100% - var(--space-6));
+    width: calc(100% - 20px);
     max-width: var(--container-xl);
     z-index: var(--z-sticky);
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-radius: var(--radius-xl);
-    box-shadow:
-        0 8px 32px rgba(0, 55, 192, 0.12),
-        0 2px 8px rgba(0, 0, 0, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.6);
-    transition: all var(--transition-base);
-}
-
-.navbar:hover {
-    box-shadow:
-        0 12px 40px rgba(0, 55, 192, 0.15),
-        0 4px 12px rgba(0, 0, 0, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 .navbar-content {
-    padding: var(--space-3) var(--space-4);
+    padding: 10px 14px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: var(--space-4);
+    gap: var(--space-3);
 }
 
 /* ---- Brand ---- */
@@ -47,27 +36,28 @@
 }
 
 .navbar-logo {
-    height: 32px;
+    height: 28px;
     width: auto;
     object-fit: contain;
-    transition: transform var(--transition-base);
-}
-
-.navbar-logo:hover {
-    transform: scale(1.05);
 }
 
 .navbar-brand-text {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-extrabold);
     color: var(--nimun-blue);
-    letter-spacing: 0.05em;
+    letter-spacing: 0.03em;
 }
 
-.navbar-brand-year {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
+.navbar-brand-subtitle {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
     color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+    .navbar-brand-subtitle {
+        display: none;
+    }
 }
 
 /* ---- Desktop Navigation (Hidden on Mobile) ---- */
@@ -102,9 +92,7 @@
 }
 
 .navbar-nav-item--active {
-    background: linear-gradient(135deg,
-            rgba(0, 55, 192, 0.12) 0%,
-            rgba(0, 55, 192, 0.08) 100%);
+    background: var(--gradient-overlay);
     color: var(--nimun-blue);
     box-shadow:
         0 2px 8px rgba(0, 55, 192, 0.15),
@@ -126,8 +114,8 @@
 .navbar-hamburger {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: var(--space-2);
+    gap: 3px;
+    padding: 8px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -136,11 +124,11 @@
 
 .navbar-hamburger:hover {
     background: rgba(0, 55, 192, 0.05);
-    border-radius: var(--radius-md);
+    border-radius: 8px;
 }
 
 .navbar-hamburger-line {
-    width: 24px;
+    width: 20px;
     height: 2px;
     background: var(--nimun-blue);
     border-radius: 2px;
@@ -163,8 +151,8 @@
 .navbar-mobile-menu {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
-    padding: var(--space-3) var(--space-4);
+    gap: 4px;
+    padding: 10px 14px;
     padding-top: 0;
     border-top: 1px solid rgba(0, 0, 0, 0.05);
     animation: slideDown 0.3s ease-out;
@@ -187,13 +175,13 @@
 .navbar-mobile-item {
     display: flex;
     align-items: center;
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
+    gap: 10px;
+    padding: 10px 12px;
     background: transparent;
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: 10px;
     color: var(--text-secondary);
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
     text-align: left;
     cursor: pointer;
@@ -206,9 +194,7 @@
 }
 
 .navbar-mobile-item--active {
-    background: linear-gradient(135deg,
-            rgba(0, 55, 192, 0.12) 0%,
-            rgba(0, 55, 192, 0.08) 100%);
+    background: var(--gradient-overlay);
     color: var(--nimun-blue);
     box-shadow:
         0 2px 8px rgba(0, 55, 192, 0.15),

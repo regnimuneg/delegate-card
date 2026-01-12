@@ -3,7 +3,22 @@
  * Handles all API requests to the backend
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+// Use environment variable if set, otherwise detect from current hostname
+// This allows mobile devices to connect to the backend on the same network
+function getApiBaseUrl() {
+    if (import.meta.env.VITE_API_URL) {
+        return import.meta.env.VITE_API_URL;
+    }
+    
+    // Get the current hostname (works for both localhost and network IP)
+    const hostname = window.location.hostname;
+    const protocol = window.location.protocol;
+    
+    // Use port 3000 for backend
+    return `${protocol}//${hostname}:3000/api`;
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Get auth token from localStorage
@@ -144,6 +159,49 @@ export const api = {
 
     async getActivityTimeline(limit = 50) {
         return apiRequest(`/dashboard/activity?limit=${limit}`);
+    },
+
+    // Profile
+    async updateProfilePhoto(photoUrl) {
+        return apiRequest('/profile/photo', {
+            method: 'PUT',
+            body: { photoUrl }
+        });
+    },
+
+    // Password Reset
+    async requestPasswordReset(email) {
+        return apiRequest('/auth/password/reset/request', {
+            method: 'POST',
+            body: { email }
+        });
+    },
+
+    async verifyResetToken(token) {
+        return apiRequest('/auth/password/reset/verify', {
+            method: 'POST',
+            body: { token }
+        });
+    },
+
+    async resetPassword(token, password) {
+        return apiRequest('/auth/password/reset', {
+            method: 'POST',
+            body: { token, password }
+        });
+    },
+
+    // Analytics
+    async getUserVoucherUsage(delegateId) {
+        return apiRequest(`/analytics/vouchers/user/${delegateId}`);
+    },
+
+    async getVendorUsage(vendorName) {
+        return apiRequest(`/analytics/vouchers/vendor/${encodeURIComponent(vendorName)}`);
+    },
+
+    async getVoucherSummary() {
+        return apiRequest('/analytics/vouchers/summary');
     }
 };
 

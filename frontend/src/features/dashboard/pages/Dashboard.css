@@ -1,499 +1,286 @@
 /* ============================================
-   Dashboard Page Styles
-   Bento Grid Layout with Proper Spacing
+   Dashboard Page - Clean Bento Layout
+   Inspired by modern fitness dashboards
    ============================================ */
 
 .dashboard-page {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background: linear-gradient(180deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    position: relative;
 }
 
 /* ---- Main Content ---- */
 .dashboard-main {
     flex: 1;
-    padding: var(--space-20) var(--space-4) var(--space-8);
-    margin-top: 80px;
+    padding: var(--space-4);
+    padding-top: calc(80px + var(--space-4));
     width: 100%;
 }
 
 .dashboard-container {
-    max-width: var(--container-xl);
+    max-width: 1200px;
     margin: 0 auto;
     width: 100%;
-    padding: 0;
 }
 
 /* ---- Welcome Section ---- */
 .dashboard-welcome {
-    text-align: center;
-    margin-bottom: var(--space-8);
-}
-
-@media (min-width: 768px) {
-    .dashboard-welcome {
-        text-align: left;
-    }
+    margin-bottom: var(--space-4);
 }
 
 .dashboard-welcome h1 {
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    margin: 0 0 var(--space-1) 0;
+    color: var(--text-primary);
     text-transform: none;
-    margin-bottom: var(--space-2);
 }
 
 .dashboard-welcome p {
-    font-size: var(--font-size-base);
+    font-size: var(--font-size-sm);
     color: var(--text-secondary);
     margin: 0;
 }
 
-/* ---- Active Claim Display ---- */
-.dashboard-active-claim {
-    margin-bottom: var(--space-8);
-}
-
-/* ---- Bento Grid Layout ---- */
+/* ============================================
+   Bento Grid - Mobile First (2 columns)
+   ============================================ */
 .bento-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-5);
-    margin-bottom: var(--space-8);
-}
-
-/* ---- Bento Items ---- */
-.bento-item {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: var(--radius-xl);
-    padding: var(--space-5);
-    box-shadow:
-        0 8px 24px rgba(0, 55, 192, 0.08),
-        0 2px 6px rgba(0, 0, 0, 0.04),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transition: all var(--transition-base);
-    position: relative;
-    overflow: hidden;
-}
-
-.bento-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg,
-            var(--nimun-blue) 0%,
-            var(--nimun-blue-light) 50%,
-            var(--nimun-blue) 100%);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-}
-
-.bento-item:hover::before {
-    opacity: 1;
-}
-
-.bento-item:hover {
-    transform: translateY(-4px);
-    box-shadow:
-        0 16px 40px rgba(0, 55, 192, 0.12),
-        0 4px 12px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
-    border-color: rgba(255, 255, 255, 0.7);
-}
-
-/* Card - Remove background as DelegateCard has its own */
-.bento-item--card {
-    background: transparent;
-    box-shadow: none;
-    padding: 0;
-    backdrop-filter: none;
-    border: none;
-}
-
-.bento-item--card:hover {
-    transform: none;
-}
-
-.bento-item--card::before {
-    display: none;
-}
-
-/* Stats Section */
-.bento-item--stats {
-    padding: var(--space-6);
-}
-
-/* Vouchers and Activity - Full Width */
-.bento-item--vouchers,
-.bento-item--activity {
-    grid-column: 1 / -1;
-}
-
-/* ---- Stats Section with 3D Cards ---- */
-.dashboard-stats-title {
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-bold);
-    margin-bottom: var(--space-4);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-primary);
-}
-
-.dashboard-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto;
     gap: var(--space-3);
 }
 
-.dashboard-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-1);
-    padding: var(--space-4) var(--space-2);
-    background: linear-gradient(135deg,
-            rgba(0, 55, 192, 0.08) 0%,
-            rgba(0, 55, 192, 0.12) 100%);
-    border-radius: var(--radius-md);
-    text-align: center;
+/* ---- Base Bento Item ---- */
+.bento-item {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: var(--space-3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
     position: relative;
     overflow: hidden;
-    box-shadow:
-        0 4px 12px rgba(0, 55, 192, 0.1),
-        inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(0, 55, 192, 0.15);
-    transition: all var(--transition-bounce);
 }
 
-.dashboard-stat::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg,
-            transparent 30%,
-            rgba(255, 255, 255, 0.3) 50%,
-            transparent 70%);
-    transform: rotate(45deg);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-}
-
-.dashboard-stat:hover::before {
-    opacity: 1;
-}
-
-.dashboard-stat:hover {
-    transform: translateY(-4px) scale(1.05);
-    box-shadow:
-        0 8px 24px rgba(0, 55, 192, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    border-color: rgba(0, 55, 192, 0.3);
-}
-
-.dashboard-stat:active {
-    transform: translateY(-2px) scale(1.02);
-}
-
-.dashboard-stat-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--space-1);
-    color: var(--nimun-blue);
-    transition: all var(--transition-base);
-}
-
-.dashboard-stat-icon svg {
-    flex-shrink: 0;
-}
-
-.dashboard-stat-value {
-    font-size: var(--font-size-2xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--nimun-blue);
-    line-height: 1;
-    text-shadow: 0 2px 4px rgba(0, 55, 192, 0.1);
-}
-
-.dashboard-stat-label {
-    font-size: var(--font-size-xs);
-    font-weight: var(--font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary);
-}
-
-/* ---- Tab Content ---- */
-.dashboard-tab-content {
-    padding: 0;
-    background: transparent;
+/* ---- Delegate Card ---- */
+.bento-item--card {
+    grid-column: 1;
+    grid-row: 1 / 3;
+    background: var(--nimun-blue);
     box-shadow: none;
-    backdrop-filter: none;
-    border: none;
+    padding: 0;
+    border-radius: 20px;
+    overflow: hidden;
 }
 
-.dashboard-tab-content:hover {
-    transform: none;
+/* ---- Schedule Info ---- */
+.bento-item--info {
+    grid-column: 2;
+    grid-row: 1;
+    background: rgba(255, 255, 255, 0.95);
+    min-height: auto;
+    padding: 12px;
 }
 
-.dashboard-tab-content::before {
+/* ---- Activity Timeline ---- */
+.bento-item--activity {
+    grid-column: 2;
+    grid-row: 2;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* ---- Vouchers ---- */
+.bento-item--vouchers {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+/* ============================================
+   Schedule/Info Box Styles
+   ============================================ */
+.dashboard-info-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    gap: 8px;
+}
+
+.dashboard-info-title {
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.dashboard-current-day {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    background: var(--nimun-blue);
+    color: white;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+}
+
+.dashboard-current-day::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+}
+
+.dashboard-info-badge {
     display: none;
 }
 
-/* ---- Generic Section Styles ---- */
-.dashboard-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(12px);
-    border-radius: var(--radius-xl);
-    padding: var(--space-6);
-    box-shadow:
-        0 8px 24px rgba(0, 55, 192, 0.08),
-        0 2px 6px rgba(0, 0, 0, 0.04),
-        inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+.dashboard-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dashboard-timeline-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.dashboard-timeline-group-label {
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-left: 2px;
+}
+
+.dashboard-timeline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.dashboard-timeline-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(0, 55, 192, 0.04);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 55, 192, 0.08);
+}
+
+.dashboard-timeline-item--active {
+    background: var(--nimun-blue);
+    border-color: var(--nimun-blue);
+}
+
+.dashboard-timeline-item--active .dashboard-timeline-date,
+.dashboard-timeline-item--active .dashboard-timeline-day {
+    color: white;
+}
+
+.dashboard-timeline-day {
+    font-size: 14px;
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.dashboard-timeline-date {
+    font-size: 14px;
+    font-weight: var(--font-weight-bold);
+    color: var(--nimun-blue);
+}
+
+/* ============================================
+   Activity Section
+   ============================================ */
+.dashboard-activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-2);
+}
+
+.dashboard-activity-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.dashboard-activity-view-all {
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid rgba(0, 55, 192, 0.2);
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--nimun-blue);
+    cursor: pointer;
     transition: all var(--transition-base);
-    position: relative;
-    overflow: hidden;
 }
 
-.dashboard-section::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg,
-            var(--nimun-blue) 0%,
-            var(--nimun-blue-light) 50%,
-            var(--nimun-blue) 100%);
-    opacity: 0;
-    transition: opacity var(--transition-base);
-}
-
-.dashboard-section:hover::before {
-    opacity: 1;
-}
-
-.dashboard-section:hover {
-    transform: translateY(-4px);
-    box-shadow:
-        0 16px 40px rgba(0, 55, 192, 0.12),
-        0 4px 12px rgba(0, 0, 0, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 1);
+.dashboard-activity-view-all:hover {
+    background: rgba(0, 55, 192, 0.05);
 }
 
 /* ============================================
-   Tablet Breakpoint (768px+)
+   Benefits/Vouchers Section
    ============================================ */
-@media (min-width: 768px) {
+.dashboard-benefits-header {
+    margin-bottom: var(--space-3);
+}
+
+.dashboard-benefits-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 2px 0;
+}
+
+.dashboard-benefits-subtitle {
+    font-size: var(--font-size-xs);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ============================================
+   Tab Content
+   ============================================ */
+.dashboard-section,
+.dashboard-tab-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: var(--space-4);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* ============================================
+   Tablet (640px+)
+   ============================================ */
+@media (min-width: 640px) {
     .dashboard-main {
-        padding: var(--space-24) var(--space-6) var(--space-10);
-        margin-top: 90px;
-    }
-
-    .dashboard-container {
-        padding: 0;
-    }
-
-    .dashboard-welcome {
-        margin-bottom: var(--space-10);
-        text-align: left;
+        padding: var(--space-5);
+        padding-top: calc(80px + var(--space-5));
     }
 
     .dashboard-welcome h1 {
-        font-size: var(--font-size-3xl);
-    }
-
-    .dashboard-welcome p {
-        font-size: var(--font-size-lg);
-    }
-
-    /* Bento Grid - Two Columns */
-    .bento-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--space-6);
-        margin-bottom: var(--space-10);
-    }
-
-    .bento-item {
-        padding: var(--space-6);
-    }
-
-    .bento-item--stats {
-        padding: var(--space-7);
-    }
-
-    /* Card and Stats side by side on first row */
-    .bento-item--card {
-        grid-column: 1 / 2;
-        grid-row: 1;
-    }
-
-    .bento-item--stats {
-        grid-column: 2 / 3;
-        grid-row: 1;
-    }
-
-    /* Vouchers and Activity full width */
-    .bento-item--vouchers {
-        grid-column: 1 / -1;
-        grid-row: 2;
-    }
-
-    .bento-item--activity {
-        grid-column: 1 / -1;
-        grid-row: 3;
-    }
-
-    .dashboard-stats-title {
-        font-size: var(--font-size-lg);
-        margin-bottom: var(--space-5);
-    }
-
-    .dashboard-stats-grid {
-        gap: var(--space-4);
-    }
-
-    .dashboard-stat {
-        padding: var(--space-5) var(--space-3);
-    }
-
-    .dashboard-stat-value {
-        font-size: var(--font-size-3xl);
-    }
-
-    .dashboard-section {
-        padding: var(--space-7);
-    }
-}
-
-/* ============================================
-   Desktop Breakpoint (1024px+)
-   ============================================ */
-@media (min-width: 1024px) {
-    .dashboard-main {
-        padding: var(--space-28) var(--space-8) var(--space-12);
-        margin-top: 100px;
-    }
-
-    .dashboard-container {
-        padding: 0;
-    }
-
-    .dashboard-welcome {
-        margin-bottom: var(--space-12);
-        text-align: left;
-    }
-
-    /* Bento Grid - More Complex Layout */
-    .bento-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-8);
-    }
-
-    .bento-item {
-        padding: var(--space-7);
-    }
-
-    /* Card takes 1 column */
-    .bento-item--card {
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-    }
-
-    /* Stats takes 2 columns */
-    .bento-item--stats {
-        grid-column: 2 / 4;
-        grid-row: 1 / 2;
-        padding: var(--space-8);
-    }
-
-    /* Vouchers and Activity side by side */
-    .bento-item--vouchers {
-        grid-column: 1 / 2;
-        grid-row: 2 / 4;
-    }
-
-    .bento-item--activity {
-        grid-column: 2 / 4;
-        grid-row: 2 / 4;
-    }
-
-    .dashboard-stats-grid {
-        gap: var(--space-5);
-    }
-
-    .dashboard-section {
-        padding: var(--space-8);
-    }
-}
-
-/* ============================================
-   Large Desktop Breakpoint (1280px+)
-   ============================================ */
-@media (min-width: 1280px) {
-    .bento-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
-    /* Card takes 1 column */
-    .bento-item--card {
-        grid-column: 1 / 2;
-        grid-row: 1 / 2;
-    }
-
-    /* Stats takes 3 columns */
-    .bento-item--stats {
-        grid-column: 2 / 5;
-        grid-row: 1 / 2;
-    }
-
-    /* Vouchers takes 2 columns */
-    .bento-item--vouchers {
-        grid-column: 1 / 3;
-        grid-row: 2 / 3;
-    }
-
-    /* Activity takes 2 columns */
-    .bento-item--activity {
-        grid-column: 3 / 5;
-        grid-row: 2 / 3;
-    }
-}
-
-/* ============================================
-   Small Phone Optimization (max 360px)
-   ============================================ */
-@media (max-width: 360px) {
-    .dashboard-main {
-        padding: var(--space-16) var(--space-3) var(--space-6);
-        margin-top: 70px;
-    }
-
-    .dashboard-container {
-        padding: 0;
-    }
-
-    .dashboard-welcome {
-        text-align: left;
-    }
-
-    .dashboard-welcome h1 {
-        font-size: var(--font-size-xl);
-    }
-
-    .dashboard-welcome p {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-2xl);
     }
 
     .bento-grid {
@@ -502,25 +289,336 @@
 
     .bento-item {
         padding: var(--space-4);
+        border-radius: 24px;
     }
 
-    .bento-item--stats {
+    .bento-item--info {
+        min-height: auto;
+        padding: var(--space-3);
+    }
+
+    .dashboard-info-title {
+        font-size: var(--font-size-sm);
+    }
+
+    .dashboard-timeline {
+        gap: 8px;
+    }
+
+    .dashboard-timeline-group {
+        gap: 3px;
+    }
+
+    .dashboard-timeline-group-label {
+        font-size: 11px;
+    }
+
+    .dashboard-timeline-item {
+        padding: 8px 12px;
+    }
+
+    .dashboard-timeline-day {
+        font-size: 13px;
+    }
+
+    .dashboard-timeline-date {
+        font-size: 13px;
+    }
+}
+
+/* ============================================
+   Desktop (1024px+)
+   ============================================ */
+@media (min-width: 1024px) {
+    .dashboard-main {
+        padding: var(--space-6);
+        padding-top: calc(90px + var(--space-6));
+    }
+
+    .dashboard-welcome {
+        margin-bottom: var(--space-5);
+    }
+
+    .dashboard-welcome h1 {
+        font-size: var(--font-size-3xl);
+    }
+
+    .dashboard-welcome p {
+        font-size: var(--font-size-base);
+    }
+
+    /* 3-column grid on desktop */
+    .bento-grid {
+        grid-template-columns: 340px 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: var(--space-5);
+    }
+
+    .bento-item {
         padding: var(--space-5);
     }
 
-    .dashboard-stats-grid {
-        gap: var(--space-2);
+    /* Card spans both rows */
+    .bento-item--card {
+        grid-column: 1;
+        grid-row: 1 / 3;
     }
 
-    .dashboard-stat {
-        padding: var(--space-3) var(--space-1);
+    /* Schedule in top middle */
+    .bento-item--info {
+        grid-column: 2;
+        grid-row: 1;
     }
 
-    .dashboard-stat-icon {
+    /* Activity in top right */
+    .bento-item--activity {
+        grid-column: 3;
+        grid-row: 1;
+    }
+
+    /* Vouchers span middle and right on row 2 */
+    .bento-item--vouchers {
+        grid-column: 2 / 4;
+        grid-row: 2;
+    }
+}
+
+/* ============================================
+   Large Desktop (1400px+)
+   ============================================ */
+@media (min-width: 1400px) {
+    .dashboard-container {
+        max-width: 1400px;
+    }
+
+    .bento-grid {
+        grid-template-columns: 380px 1fr 1fr;
+    }
+}
+
+/* ============================================
+   Phone Optimization (max 480px)
+   Layout: Card (full) → Days + Recent (side by side) → Vouchers (full)
+   ============================================ */
+@media (max-width: 480px) {
+    .dashboard-main {
+        padding: var(--space-3);
+        padding-top: calc(70px + var(--space-3));
+    }
+
+    .dashboard-welcome {
+        margin-bottom: var(--space-3);
+    }
+
+    .dashboard-welcome h1 {
         font-size: var(--font-size-lg);
     }
 
-    .dashboard-stat-value {
-        font-size: var(--font-size-xl);
+    .dashboard-welcome p {
+        font-size: var(--font-size-xs);
+    }
+
+    .bento-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 10px;
+    }
+
+    .bento-item {
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    /* Card: full width, row 1 */
+    .bento-item--card {
+        grid-column: 1 / -1;
+        grid-row: 1;
+        border-radius: 16px;
+    }
+
+    /* Schedule: left side, row 2 */
+    .bento-item--info {
+        grid-column: 1;
+        grid-row: 2;
+        min-height: auto;
+        padding: 12px;
+    }
+
+    /* Activity: right side, row 2 */
+    .bento-item--activity {
+        grid-column: 2;
+        grid-row: 2;
+        padding: 12px;
+    }
+
+    /* Vouchers: full width, row 3 */
+    .bento-item--vouchers {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        padding: 12px;
+    }
+
+    .dashboard-info-header {
+        margin-bottom: 8px;
+    }
+
+    .dashboard-info-title {
+        font-size: 11px;
+    }
+
+    .dashboard-current-day {
+        font-size: 8px;
+        padding: 3px 8px;
+    }
+
+    /* Vertical timeline on phones */
+    .dashboard-timeline {
+        gap: 8px;
+    }
+
+    .dashboard-timeline-group {
+        gap: 3px;
+    }
+
+    .dashboard-timeline-group-label {
+        font-size: 10px;
+        letter-spacing: 0.06em;
+    }
+
+    .dashboard-timeline-items {
+        gap: 2px;
+    }
+
+    .dashboard-timeline-item {
+        padding: 8px 10px;
+        border-radius: 6px;
+    }
+
+    .dashboard-timeline-day {
+        font-size: 12px;
+    }
+
+    .dashboard-timeline-date {
+        font-size: 12px;
+    }
+
+    .dashboard-timeline-item--active {
+        padding: 8px 10px;
+    }
+
+    .dashboard-activity-title {
+        font-size: 11px;
+        margin-bottom: 8px;
+    }
+
+    .dashboard-benefits-header {
+        margin-bottom: 10px;
+    }
+
+    .dashboard-benefits-title {
+        font-size: var(--font-size-sm);
+    }
+
+    .dashboard-benefits-subtitle {
+        font-size: 10px;
+    }
+}
+
+/* ============================================
+   Very Small Phone (max 360px)
+   ============================================ */
+@media (max-width: 360px) {
+    .dashboard-main {
+        padding: 10px;
+        padding-top: calc(65px + 10px);
+    }
+
+    .dashboard-welcome h1 {
+        font-size: var(--font-size-base);
+    }
+
+    .bento-grid {
+        gap: 8px;
+    }
+
+    .bento-item {
+        padding: 10px;
+        border-radius: 14px;
+    }
+
+    .bento-item--info {
+        padding: 8px;
+    }
+
+    .bento-item--activity {
+        padding: 8px;
+    }
+
+    .dashboard-info-title {
+        font-size: 9px;
+    }
+
+    .dashboard-current-day {
+        font-size: 7px;
+        padding: 2px 5px;
+    }
+
+    .dashboard-timeline {
+        gap: 6px;
+    }
+
+    .dashboard-timeline-group-label {
+        font-size: 9px;
+    }
+
+    .dashboard-timeline-item {
+        padding: 6px 8px;
+    }
+
+    .dashboard-timeline-day {
+        font-size: 11px;
+    }
+
+    .dashboard-timeline-date {
+        font-size: 11px;
+    }
+
+    .dashboard-activity-title {
+        font-size: 10px;
+    }
+
+    .dashboard-benefits-title {
+        font-size: var(--font-size-xs);
+    }
+
+    .dashboard-benefits-subtitle {
+        font-size: 9px;
+    }
+}
+
+/* ============================================
+   Animations
+   ============================================ */
+.animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

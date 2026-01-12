@@ -15,6 +15,7 @@ const router = express.Router();
 router.get('/attendance', authenticate, async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
+        // req.user.id is the council-based delegate ID (e.g., HRC-01)
         const records = await getAttendanceRecords(req.user.id, limit);
 
         res.json({
@@ -33,6 +34,7 @@ router.get('/attendance', authenticate, async (req, res, next) => {
 router.get('/food', authenticate, async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
+        // req.user.id is the council-based delegate ID (e.g., HRC-01)
         const records = await getFoodHistory(req.user.id, limit);
 
         res.json({
@@ -51,7 +53,8 @@ router.get('/food', authenticate, async (req, res, next) => {
 router.get('/activity', authenticate, async (req, res, next) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
-        const activities = await getActivityTimeline(req.user.id, limit);
+        // req.user.userId is the UUID from users table
+        const activities = await getActivityTimeline(req.user.userId, limit);
 
         res.json({
             success: true,

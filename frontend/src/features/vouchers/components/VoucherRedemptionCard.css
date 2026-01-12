@@ -1,0 +1,371 @@
+/* ============================================
+   Voucher Redemption Card Styles
+   Center of attention modal overlay
+   ============================================ */
+
+.voucher-redemption-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    animation: fadeIn var(--transition-base) ease-out;
+}
+
+.voucher-redemption-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.voucher-redemption-container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 400px;
+    animation: scaleIn var(--transition-slow) cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.voucher-redemption-card {
+    width: 100%;
+    margin: 0;
+}
+
+.voucher-redemption-card-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-4);
+    position: relative;
+}
+
+/* ---- Header ---- */
+.voucher-redemption-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.voucher-redemption-card-brand {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-extrabold);
+    letter-spacing: 0.1em;
+    opacity: 0.9;
+}
+
+.voucher-redemption-card-type {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.15em;
+    padding: var(--space-1) var(--space-2);
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-capsule);
+}
+
+/* ---- Timer Section ---- */
+.voucher-redemption-timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    padding: var(--space-3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.voucher-redemption-timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.voucher-redemption-timer-display svg {
+    opacity: 0.8;
+}
+
+.voucher-redemption-timer-value {
+    font-size: 28px;
+    font-weight: var(--font-weight-bold);
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', monospace;
+    letter-spacing: 0.1em;
+}
+
+.voucher-redemption-timer-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.voucher-redemption-timer-bar-fill {
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+    transition: width 1s linear;
+}
+
+.voucher-redemption-timer-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+}
+
+.voucher-redemption-timer--warning .voucher-redemption-timer-value {
+    color: #fbbf24;
+    animation: timerPulse 1s ease-in-out infinite;
+}
+
+.voucher-redemption-timer--warning .voucher-redemption-timer-bar-fill {
+    background: #fbbf24;
+}
+
+@keyframes timerPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ---- Toggle Buttons ---- */
+.voucher-redemption-toggle {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+}
+
+.voucher-redemption-toggle-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.voucher-redemption-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.voucher-redemption-toggle-btn--active {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+}
+
+/* ---- Content Area ---- */
+.voucher-redemption-content {
+    width: 100%;
+    min-height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ---- Info View ---- */
+.voucher-redemption-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    text-align: center;
+    padding: var(--space-2) 0;
+}
+
+.voucher-redemption-info-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.voucher-redemption-info-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.voucher-redemption-info-name {
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: #fff;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.voucher-redemption-info-desc {
+    font-size: var(--font-size-sm);
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+    max-width: 280px;
+}
+
+.voucher-redemption-info-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-capsule);
+}
+
+/* ---- Expired Message ---- */
+.voucher-redemption-card-expired-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    text-align: center;
+    opacity: 0.7;
+}
+
+.voucher-redemption-card-expired-msg svg {
+    opacity: 0.6;
+}
+
+.voucher-redemption-card-expired-msg span {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+}
+
+.voucher-redemption-card-expired-msg p {
+    font-size: var(--font-size-sm);
+    margin: 0;
+    opacity: 0.8;
+}
+
+.voucher-redemption-card--expired {
+    opacity: 0.8;
+}
+
+/* ---- QR Code ---- */
+.voucher-redemption-card-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding-top: var(--space-3);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+}
+
+.voucher-redemption-card-qr-wrapper {
+    padding: var(--space-3);
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-md);
+}
+
+.voucher-redemption-card-qr-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    text-transform: uppercase;
+}
+
+
+/* ---- Close Button ---- */
+.voucher-redemption-card-close {
+    position: absolute;
+    top: var(--space-2);
+    right: var(--space-2);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: var(--text-on-blue);
+    cursor: pointer;
+    transition: all var(--transition-base);
+}
+
+.voucher-redemption-card-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+    .voucher-redemption-container {
+        max-width: 100%;
+    }
+
+    .voucher-redemption-card-inner {
+        gap: var(--space-3);
+    }
+
+    .voucher-redemption-timer {
+        padding: 10px;
+    }
+
+    .voucher-redemption-timer-value {
+        font-size: 24px;
+    }
+
+    .voucher-redemption-toggle-btn {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+
+    .voucher-redemption-content {
+        min-height: 160px;
+    }
+
+    .voucher-redemption-info-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .voucher-redemption-info-icon svg {
+        width: 28px;
+        height: 28px;
+    }
+
+    .voucher-redemption-info-name {
+        font-size: var(--font-size-lg);
+    }
+
+    .voucher-redemption-card-qr-wrapper {
+        padding: var(--space-2);
+    }
+}
+

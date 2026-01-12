@@ -7,7 +7,10 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
-    "migrate": "node src/db/migrate.js"
+    "migrate": "node src/db/migrate.js",
+    "verify": "node src/utils/verifyConfig.js",
+    "check-schema": "node src/db/checkSchema.js",
+    "test-connection": "node src/utils/testSupabaseConnection.js"
   },
   "keywords": ["nimun", "delegate", "api"],
   "author": "",
@@ -19,7 +22,8 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.8"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"

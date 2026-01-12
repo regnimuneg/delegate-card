@@ -50,16 +50,17 @@ export function useVouchers(delegateId) {
      * Claim a voucher
      * Returns: { success: boolean, error?: string, claim?: object }
      */
-    const claimVoucher = useCallback(async (voucher) => {
+    const claimVoucher = useCallback(async (voucherId) => {
+        const voucher = vouchers.find(v => v.id === voucherId);
         if (!voucher || !voucher.canClaim) {
             return { success: false, error: 'Voucher cannot be claimed' };
         }
 
-        setClaimingVendorId(voucher.id);
+        setClaimingVendorId(voucherId);
         setIsLoading(true);
 
         try {
-            const response = await api.claimVoucher(voucher.id);
+            const response = await api.claimVoucher(voucherId);
             if (response.success && response.claim) {
                 // Reload vouchers to get updated usage
                 const vouchersResponse = await api.getVouchers();
@@ -75,11 +76,12 @@ export function useVouchers(delegateId) {
                 return { success: false, error: response.error || 'Failed to claim voucher' };
             }
         } catch (error) {
+            console.error('Claim voucher error:', error);
             setIsLoading(false);
             setClaimingVendorId(null);
             return { success: false, error: error.message || 'Failed to claim voucher' };
         }
-    }, []);
+    }, [vouchers]);
 
     return {
         vouchers,

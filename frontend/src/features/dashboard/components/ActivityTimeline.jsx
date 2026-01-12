@@ -7,37 +7,57 @@ const MOCK_ACTIVITIES = [
         id: 1,
         type: 'attendance',
         title: 'Session Check-in',
-        description: 'DISEC - Opening Session',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-        icon: 'location',
-        points: null
+        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
+        icon: 'location'
     },
     {
         id: 2,
         type: 'food',
         title: 'Lunch Claimed',
-        description: 'Main Hall Cafeteria',
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
-        icon: 'food',
-        points: null
+        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
+        icon: 'food'
     },
     {
         id: 3,
         type: 'game',
-        title: 'Quiz Completed',
-        description: 'UN History Trivia',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000), // Yesterday
-        icon: 'game',
-        points: 50
+        title: 'Quiz Done',
+        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
+        icon: 'game'
     },
     {
         id: 4,
+        type: 'food',
+        title: 'Snack Redeemed',
+        timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000),
+        icon: 'food'
+    },
+    {
+        id: 5,
+        type: 'attendance',
+        title: 'Day 2 Check-in',
+        timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000),
+        icon: 'check'
+    },
+    {
+        id: 6,
+        type: 'food',
+        title: 'Dinner Claimed',
+        timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000),
+        icon: 'food'
+    },
+    {
+        id: 7,
+        type: 'attendance',
+        title: 'Day 1 Check-in',
+        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
+        icon: 'check'
+    },
+    {
+        id: 8,
         type: 'attendance',
         title: 'Registration',
-        description: 'Conference Check-in',
-        timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000), // 2 days ago
-        icon: 'check',
-        points: null
+        timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000),
+        icon: 'check'
     }
 ];
 
@@ -65,8 +85,11 @@ function formatRelativeTime(date) {
 /**
  * ActivityTimeline Component
  * Displays history of delegate activities (attendance, food, games)
+ * @param {number} limit - Maximum number of activities to show (default: 5)
  */
-export function ActivityTimeline({ activities = MOCK_ACTIVITIES }) {
+export function ActivityTimeline({ activities = MOCK_ACTIVITIES, limit = 5 }) {
+    // Apply limit
+    const displayActivities = activities.slice(0, limit);
     if (activities.length === 0) {
         return (
             <Card padding="medium" className="activity-timeline-empty">
@@ -94,7 +117,7 @@ export function ActivityTimeline({ activities = MOCK_ACTIVITIES }) {
             <h3 className="activity-timeline-title">Recent Activity</h3>
 
             <div className="activity-timeline-list">
-                {activities.map((activity, index) => (
+                {displayActivities.map((activity, index) => (
                     <div
                         key={activity.id}
                         className={`activity-timeline-item activity-timeline-item--${activity.type}`}
@@ -133,10 +156,6 @@ export function ActivityTimeline({ activities = MOCK_ACTIVITIES }) {
                                     {formatRelativeTime(activity.timestamp)}
                                 </span>
                             </div>
-                            <p className="activity-timeline-description">{activity.description}</p>
-                            {activity.points && (
-                                <span className="activity-timeline-points">+{activity.points} pts</span>
-                            )}
                         </div>
                     </div>
                 ))}

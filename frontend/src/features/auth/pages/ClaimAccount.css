@@ -1,49 +1,130 @@
 /* ============================================
-   Claim Account Page Styles
+   Claim Account Page - Split Screen Design
    ============================================ */
 
+/* Allow minimal scrolling */
+body:has(.claim-page) {
+    overflow: auto;
+    height: 100vh;
+}
+
 .claim-page {
-    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, rgba(0, 55, 192, 0.1) 100%);
+    display: flex;
+    width: 100vw;
+    min-height: 100vh;
+    position: relative;
 }
 
-.claim-container {
+/* ============================================
+   Left Panel - Branding & Slideshow
+   ============================================ */
+.claim-left-panel {
+    position: relative;
+    width: 50%;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.claim-slideshow {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    max-width: 460px;
-    padding: var(--space-4);
+    height: 100%;
+    z-index: 1;
 }
 
-/* ---- Brand Header ---- */
-.claim-brand {
+.claim-slideshow-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out;
+}
+
+.claim-slideshow-image.active {
+    opacity: 1;
+}
+
+.claim-left-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 55, 192, 0.7); /* Semi-transparent blue matching button */
+    z-index: 2;
+}
+
+.claim-brand-content {
+    position: relative;
+    z-index: 3;
     text-align: center;
-    margin-bottom: var(--space-6);
+    color: white;
 }
 
 .claim-logo {
     display: inline-flex;
     align-items: baseline;
-    gap: var(--space-1);
+    gap: var(--space-2);
+    margin-bottom: var(--space-3);
 }
 
 .claim-logo-text {
-    font-size: var(--font-size-4xl);
+    font-size: 5rem;
     font-weight: var(--font-weight-extrabold);
-    color: var(--nimun-blue);
+    color: white;
     letter-spacing: 0.05em;
+    line-height: 1;
 }
 
 .claim-logo-year {
-    font-size: var(--font-size-xl);
+    font-size: 2.5rem;
     font-weight: var(--font-weight-bold);
-    color: var(--text-muted);
+    color: white;
+    opacity: 0.95;
 }
 
 .claim-tagline {
-    margin-top: var(--space-2);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-base);
     font-weight: var(--font-weight-medium);
-    color: var(--text-secondary);
+    color: white;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.2em;
+    opacity: 0.9;
+}
+
+/* ============================================
+   Right Panel - Form
+   ============================================ */
+.claim-right-panel {
+    width: 50%;
+    height: 100vh;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+.claim-form-container {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin: auto;
 }
 
 /* ---- Step Indicator ---- */
@@ -52,7 +133,7 @@
     align-items: center;
     justify-content: center;
     gap: var(--space-3);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
 }
 
 .claim-step {
@@ -111,18 +192,20 @@
 /* ---- Claim Card ---- */
 .claim-card {
     text-align: center;
+    margin: 0;
 }
 
 .claim-title {
-    font-size: var(--font-size-2xl);
-    margin-bottom: var(--space-2);
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-1);
     text-transform: none;
+    color: var(--text-primary);
 }
 
 .claim-subtitle {
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
     color: var(--text-muted);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-3);
 }
 
 .claim-subtitle strong {
@@ -132,7 +215,7 @@
 
 /* ---- Welcome Section ---- */
 .claim-welcome {
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-3);
 }
 
 .claim-welcome-icon {
@@ -152,7 +235,7 @@
 .claim-form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-4);
+    gap: var(--space-3);
     text-align: left;
 }
 
@@ -169,7 +252,7 @@
 
 /* ---- Login Prompt ---- */
 .claim-login-prompt {
-    margin-top: var(--space-6);
+    margin-top: var(--space-3);
     text-align: center;
 }
 
@@ -191,7 +274,7 @@
 
 /* ---- Back Button ---- */
 .claim-back-btn {
-    margin-top: var(--space-4);
+    margin-top: var(--space-3);
     font-size: var(--font-size-sm);
     color: var(--text-muted);
     background: none;
@@ -206,7 +289,6 @@
 
 /* ---- Demo Notice ---- */
 .claim-demo {
-    margin-top: var(--space-6);
     text-align: center;
 }
 
@@ -216,4 +298,154 @@
     background: rgba(0, 55, 192, 0.05);
     padding: var(--space-2) var(--space-4);
     border-radius: var(--radius-capsule);
+}
+
+/* Shrink images on mobile */
+@media (max-width: 768px) {
+    .claim-slideshow-image {
+        background-size: 150% auto;
+        background-position: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .claim-slideshow-image {
+        background-size: 200% auto;
+        background-position: center;
+    }
+}
+
+/* ============================================
+   Tablet (max 1024px) - Stack vertically
+   ============================================ */
+@media (max-width: 1024px) {
+    .claim-page {
+        flex-direction: column;
+    }
+
+    .claim-left-panel {
+        width: 100%;
+        height: 30vh;
+        min-height: 200px;
+    }
+
+    .claim-right-panel {
+        width: 100%;
+        height: 70vh;
+        padding: var(--space-3);
+    }
+
+    .claim-form-container {
+        gap: var(--space-2);
+    }
+
+    .claim-logo-text {
+        font-size: 4rem;
+    }
+
+    .claim-logo-year {
+        font-size: 2rem;
+    }
+
+    .claim-tagline {
+        font-size: var(--font-size-sm);
+    }
+
+    .claim-steps {
+        margin-bottom: var(--space-3);
+    }
+}
+
+/* ============================================
+   Mobile (max 768px)
+   ============================================ */
+@media (max-width: 768px) {
+    .claim-left-panel {
+        height: 25vh;
+        min-height: 180px;
+    }
+
+    .claim-right-panel {
+        height: 75vh;
+        padding: var(--space-2);
+    }
+
+    .claim-form-container {
+        max-width: 100%;
+        gap: var(--space-2);
+    }
+
+    .claim-logo-text {
+        font-size: 3rem;
+    }
+
+    .claim-logo-year {
+        font-size: 1.5rem;
+    }
+
+    .claim-tagline {
+        font-size: var(--font-size-xs);
+        letter-spacing: 0.15em;
+    }
+
+    .claim-steps {
+        margin-bottom: var(--space-2);
+        gap: var(--space-2);
+    }
+
+    .claim-card {
+        padding: var(--space-4) !important;
+    }
+}
+
+/* ============================================
+   Small Mobile (max 480px)
+   ============================================ */
+@media (max-width: 480px) {
+    .claim-left-panel {
+        height: 20vh;
+        min-height: 150px;
+    }
+
+    .claim-right-panel {
+        height: 80vh;
+        padding: var(--space-2);
+    }
+
+    .claim-logo-text {
+        font-size: 2.5rem;
+    }
+
+    .claim-logo-year {
+        font-size: 1.25rem;
+    }
+
+    .claim-tagline {
+        font-size: 10px;
+        letter-spacing: 0.1em;
+    }
+
+    .claim-card {
+        padding: var(--space-3) !important;
+    }
+
+    .claim-title {
+        font-size: var(--font-size-base);
+        margin-bottom: var(--space-1);
+    }
+
+    .claim-subtitle {
+        font-size: 10px;
+        margin-bottom: var(--space-2);
+    }
+
+    .claim-form {
+        gap: var(--space-2);
+    }
+
+    .claim-demo p {
+        font-size: 8px;
+        padding: var(--space-1) var(--space-2);
+        line-height: 1.2;
+    }
 }

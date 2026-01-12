@@ -1,0 +1,73 @@
+/* 3D Background Elements - Decorative, behind content */
+.background-3d {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.background-3d-element {
+    position: absolute;
+    opacity: 0.06;
+}
+
+.background-3d-1 {
+    top: 15%;
+    left: 3%;
+    width: 120px;
+    height: auto;
+}
+
+.background-3d-2 {
+    top: 10%;
+    right: 5%;
+    width: 100px;
+    height: auto;
+}
+
+.background-3d-3 {
+    bottom: 25%;
+    left: 5%;
+    width: 110px;
+    height: auto;
+}
+
+.background-3d-4 {
+    top: 55%;
+    right: 3%;
+    width: 100px;
+    height: auto;
+}
+
+.background-3d-5 {
+    bottom: 10%;
+    right: 10%;
+    width: 90px;
+    height: auto;
+}
+
+.background-3d-6 {
+    bottom: 5%;
+    left: 15%;
+    width: 100px;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .background-3d-element {
+        opacity: 0.04;
+    }
+    
+    .background-3d-1,
+    .background-3d-2,
+    .background-3d-3,
+    .background-3d-4,
+    .background-3d-5,
+    .background-3d-6 {
+        width: 60px;
+    }
+}

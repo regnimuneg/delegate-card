@@ -10,40 +10,47 @@
 .voucher-list-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: var(--space-5);
-}
-
-.voucher-list-title {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    font-size: var(--font-size-xl);
-    font-weight: var(--font-weight-bold);
-    color: var(--text-primary);
-    margin: 0;
-    text-transform: none;
-    letter-spacing: normal;
-}
-
-.voucher-list-title-icon {
-    font-size: var(--font-size-2xl);
+    justify-content: flex-end;
+    margin-bottom: 10px;
 }
 
 .voucher-list-count {
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-muted);
+    font-size: 10px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--nimun-blue);
     background: var(--nimun-blue-subtle);
-    padding: var(--space-1) var(--space-3);
-    border-radius: var(--radius-capsule);
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+@media (max-width: 480px) {
+    .voucher-list-count {
+        font-size: 9px;
+        padding: 3px 8px;
+    }
 }
 
 /* Grid */
 .voucher-list-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-4);
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+@media (max-width: 640px) {
+    .voucher-list-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
+@media (max-width: 400px) {
+    .voucher-list-grid {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
 }
 
 .voucher-list-grid--compact {

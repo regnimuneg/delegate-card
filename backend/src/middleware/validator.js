@@ -1,4 +1,4 @@
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 
 /**
  * Validation result handler
@@ -58,9 +58,10 @@ export const validateClaimAccount = [
 
 /**
  * Voucher claim validation rules
+ * Note: voucherId comes from URL params, not body
  */
 export const validateVoucherClaim = [
-    body('voucherId')
+    param('id')
         .isUUID()
         .withMessage('Valid voucher ID is required'),
     handleValidationErrors
@@ -73,6 +74,31 @@ export const validateRewardActivation = [
     body('rewardType')
         .isIn(['lunch', 'dinner', 'snack', 'merch'])
         .withMessage('Invalid reward type'),
+    handleValidationErrors
+];
+
+/**
+ * Request password reset validation rules
+ */
+export const validatePasswordResetRequest = [
+    body('email')
+        .isEmail()
+        .normalizeEmail()
+        .withMessage('Valid email is required'),
+    handleValidationErrors
+];
+
+/**
+ * Reset password validation rules
+ */
+export const validatePasswordReset = [
+    body('token')
+        .notEmpty()
+        .trim()
+        .withMessage('Reset token is required'),
+    body('password')
+        .isLength({ min: 6 })
+        .withMessage('Password must be at least 6 characters'),
     handleValidationErrors
 ];
 

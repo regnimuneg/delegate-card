@@ -1,0 +1,232 @@
+/* ============================================
+   Activity Page Styles
+   ============================================ */
+
+.activity-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+}
+
+.activity-main {
+    flex: 1;
+    padding: var(--space-4);
+    padding-top: calc(80px + var(--space-4));
+}
+
+.activity-container {
+    max-width: 700px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* ---- Header ---- */
+.activity-header {
+    margin-bottom: var(--space-4);
+}
+
+.activity-header h1 {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin: 0 0 var(--space-1) 0;
+    text-transform: none;
+}
+
+.activity-header p {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+/* ---- Filters ---- */
+.activity-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: var(--space-4);
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-bottom: 8px;
+    padding-right: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.activity-filters::-webkit-scrollbar {
+    height: 4px;
+}
+
+.activity-filters::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 2px;
+}
+
+.activity-filters::-webkit-scrollbar-thumb {
+    background: rgba(0, 55, 192, 0.3);
+    border-radius: 2px;
+}
+
+.activity-filters::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 55, 192, 0.5);
+}
+
+.activity-filter {
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 20px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.activity-filter:hover {
+    background: rgba(0, 55, 192, 0.05);
+    color: var(--nimun-blue);
+}
+
+.activity-filter--active {
+    background: var(--nimun-blue);
+    color: white;
+    border-color: var(--nimun-blue);
+}
+
+.activity-filter--active:hover {
+    background: var(--nimun-blue);
+    color: white;
+}
+
+/* ---- Activity List ---- */
+.activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.activity-item {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.activity-item-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 55, 192, 0.1);
+    border-radius: 10px;
+    color: var(--nimun-blue);
+}
+
+.activity-item--food .activity-item-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--status-success);
+}
+
+.activity-item--game .activity-item-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--status-warning);
+}
+
+.activity-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.activity-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.activity-item-title {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.activity-item-points {
+    padding: 2px 8px;
+    background: rgba(245, 158, 11, 0.15);
+    color: var(--status-warning);
+    border-radius: 12px;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+}
+
+.activity-item-description {
+    font-size: var(--font-size-sm);
+    color: var(--text-secondary);
+    margin: 0 0 6px 0;
+}
+
+.activity-item-time {
+    font-size: var(--font-size-xs);
+    color: var(--text-muted);
+}
+
+/* ---- Empty State ---- */
+.activity-empty {
+    text-align: center;
+    padding: var(--space-6);
+    color: var(--text-muted);
+}
+
+/* ============================================
+   Phone (max 480px)
+   ============================================ */
+@media (max-width: 480px) {
+    .activity-main {
+        padding: var(--space-3);
+        padding-top: calc(75px + var(--space-3));
+    }
+
+    .activity-header h1 {
+        font-size: var(--font-size-xl);
+    }
+
+    .activity-filters {
+        gap: 6px;
+        margin-left: -4px;
+        margin-right: -4px;
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+
+    .activity-filter {
+        padding: 6px 12px;
+        font-size: var(--font-size-xs);
+    }
+
+    .activity-item {
+        padding: 12px;
+        gap: 10px;
+    }
+
+    .activity-item-icon {
+        width: 36px;
+        height: 36px;
+    }
+
+    .activity-item-title {
+        font-size: var(--font-size-sm);
+    }
+
+    .activity-item-description {
+        font-size: var(--font-size-xs);
+    }
+}
+
