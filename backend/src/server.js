@@ -21,6 +21,9 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy - required for rate limiting behind reverse proxy (Render, etc.)
+app.set('trust proxy', true);
+
 // CORS configuration - allow localhost and network IPs in development
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const CORS_ORIGIN = process.env.CORS_ORIGIN;
