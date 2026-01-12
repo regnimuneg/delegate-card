@@ -8,12 +8,14 @@ dotenv.config();
  * Uses SMTP configuration from environment variables
  */
 const createTransporter = () => {
+    // Render requires port 587 with secure: false (blocks port 25)
+    // All credentials must come from environment variables
     return nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: parseInt(process.env.SMTP_PORT || '587'),
-        secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+        port: 587, // Render requires port 587
+        secure: false, // Required for Render (port 587 uses STARTTLS, not SSL)
         auth: {
-            user: process.env.SMTP_USER || 'reg.nimun.eg@gmail.com',
+            user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASSWORD
         },
         connectionTimeout: 10000, // 10 seconds
