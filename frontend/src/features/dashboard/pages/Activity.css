@@ -144,6 +144,11 @@
     color: var(--status-warning);
 }
 
+.activity-item--voucher .activity-item-icon {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+}
+
 .activity-item-content {
     flex: 1;
     min-width: 0;

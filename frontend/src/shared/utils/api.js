@@ -211,6 +211,10 @@ export const api = {
     },
 
     // Analytics
+    async getMyAnalytics() {
+        return apiRequest('/analytics/user/me');
+    },
+
     async getUserVoucherUsage(delegateId) {
         return apiRequest(`/analytics/vouchers/user/${delegateId}`);
     },
@@ -221,6 +225,14 @@ export const api = {
 
     async getVoucherSummary() {
         return apiRequest('/analytics/vouchers/summary');
+    },
+
+    async getAllUsersAnalytics() {
+        return apiRequest('/analytics/users');
+    },
+
+    async getAllVendorsAnalytics() {
+        return apiRequest('/analytics/vendors');
     }
 };
 

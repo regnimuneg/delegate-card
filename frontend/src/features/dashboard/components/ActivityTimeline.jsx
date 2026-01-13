@@ -1,70 +1,14 @@
+import { useState, useEffect } from 'react';
 import { Card } from '../../../shared/components';
+import { api } from '../../../shared/utils/api';
+import { useAuth } from '../../auth';
 import './ActivityTimeline.css';
-
-// Mock activity data
-const MOCK_ACTIVITIES = [
-    {
-        id: 1,
-        type: 'attendance',
-        title: 'Session Check-in',
-        timestamp: new Date(Date.now() - 1 * 60 * 60 * 1000),
-        icon: 'location'
-    },
-    {
-        id: 2,
-        type: 'food',
-        title: 'Lunch Claimed',
-        timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000),
-        icon: 'food'
-    },
-    {
-        id: 3,
-        type: 'game',
-        title: 'Quiz Done',
-        timestamp: new Date(Date.now() - 5 * 60 * 60 * 1000),
-        icon: 'game'
-    },
-    {
-        id: 4,
-        type: 'food',
-        title: 'Snack Redeemed',
-        timestamp: new Date(Date.now() - 7 * 60 * 60 * 1000),
-        icon: 'food'
-    },
-    {
-        id: 5,
-        type: 'attendance',
-        title: 'Day 2 Check-in',
-        timestamp: new Date(Date.now() - 10 * 60 * 60 * 1000),
-        icon: 'check'
-    },
-    {
-        id: 6,
-        type: 'food',
-        title: 'Dinner Claimed',
-        timestamp: new Date(Date.now() - 20 * 60 * 60 * 1000),
-        icon: 'food'
-    },
-    {
-        id: 7,
-        type: 'attendance',
-        title: 'Day 1 Check-in',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        icon: 'check'
-    },
-    {
-        id: 8,
-        type: 'attendance',
-        title: 'Registration',
-        timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        icon: 'check'
-    }
-];
 
 /**
  * Format relative time
  */
-function formatRelativeTime(date) {
+function formatRelativeTime(dateString) {
+    const date = new Date(dateString);
     const now = new Date();
     const diffMs = now - date;
     const diffMins = Math.floor(diffMs / 60000);
@@ -83,11 +27,81 @@ function formatRelativeTime(date) {
 }
 
 /**
+ * Map activity type to icon
+ */
+function getIconForType(activityType) {
+    switch (activityType) {
+        case 'attendance':
+            return 'location';
+        case 'food':
+            return 'food';
+        case 'game':
+        case 'award':
+            return 'game';
+        case 'voucher':
+            return 'check';
+        default:
+            return 'check';
+    }
+}
+
+/**
+ * Transform database activity to frontend format
+ */
+function transformActivity(activity) {
+    return {
+        id: activity.id,
+        type: activity.activity_type,
+        title: activity.title,
+        timestamp: activity.created_at,
+        icon: getIconForType(activity.activity_type)
+    };
+}
+
+/**
  * ActivityTimeline Component
  * Displays history of delegate activities (attendance, food, games)
  * @param {number} limit - Maximum number of activities to show (default: 5)
+ * @param {Array} activities - Optional pre-fetched activities (if not provided, will fetch)
  */
-export function ActivityTimeline({ activities = MOCK_ACTIVITIES, limit = 5 }) {
+export function ActivityTimeline({ activities: propActivities, limit = 5 }) {
+    const { user } = useAuth();
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(!propActivities);
+
+    useEffect(() => {
+        // If activities are provided as prop, use them
+        if (propActivities) {
+            setActivities(propActivities);
+            setLoading(false);
+            return;
+        }
+
+        // Otherwise, fetch from API
+        const fetchActivities = async () => {
+            if (!user) return;
+            
+            setLoading(true);
+            
+            try {
+                const response = await api.getActivityTimeline(limit);
+                if (response.success && response.activities) {
+                    const transformed = response.activities.map(transformActivity);
+                    setActivities(transformed);
+                } else {
+                    setActivities([]);
+                }
+            } catch (err) {
+                console.error('Failed to fetch activities:', err);
+                setActivities([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchActivities();
+    }, [user, propActivities, limit]);
+
     // Apply limit
     const displayActivities = activities.slice(0, limit);
     if (activities.length === 0) {

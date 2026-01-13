@@ -1,90 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth';
 import { Navbar, Footer } from '../../../shared/components/layout';
+import { api } from '../../../shared/utils/api';
 import './Activity.css';
-
-// Full activity history mock data
-const ALL_ACTIVITIES = [
-    {
-        id: 1,
-        type: 'attendance',
-        title: 'Session Check-in',
-        description: 'DISEC - Opening Session',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-        icon: 'location',
-        points: null
-    },
-    {
-        id: 2,
-        type: 'food',
-        title: 'Lunch Claimed',
-        description: 'Main Hall Cafeteria',
-        timestamp: new Date(Date.now() - 4 * 60 * 60 * 1000),
-        icon: 'food',
-        points: null
-    },
-    {
-        id: 3,
-        type: 'game',
-        title: 'Quiz Completed',
-        description: 'UN History Trivia',
-        timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000),
-        icon: 'game',
-        points: 50
-    },
-    {
-        id: 4,
-        type: 'attendance',
-        title: 'Registration',
-        description: 'Conference Check-in',
-        timestamp: new Date(Date.now() - 48 * 60 * 60 * 1000),
-        icon: 'check',
-        points: null
-    },
-    {
-        id: 5,
-        type: 'food',
-        title: 'Dinner Claimed',
-        description: 'Grand Ballroom',
-        timestamp: new Date(Date.now() - 52 * 60 * 60 * 1000),
-        icon: 'food',
-        points: null
-    },
-    {
-        id: 6,
-        type: 'attendance',
-        title: 'Opening Ceremony',
-        description: 'Main Auditorium',
-        timestamp: new Date(Date.now() - 72 * 60 * 60 * 1000),
-        icon: 'location',
-        points: null
-    },
-    {
-        id: 7,
-        type: 'game',
-        title: 'Trivia Night',
-        description: 'Team Competition',
-        timestamp: new Date(Date.now() - 96 * 60 * 60 * 1000),
-        icon: 'game',
-        points: 75
-    },
-    {
-        id: 8,
-        type: 'food',
-        title: 'Breakfast Claimed',
-        description: 'Delegate Lounge',
-        timestamp: new Date(Date.now() - 100 * 60 * 60 * 1000),
-        icon: 'food',
-        points: null
-    }
-];
 
 /**
  * Format date for display
  */
 function formatDate(date) {
+    const dateObj = date instanceof Date ? date : new Date(date);
     const options = { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-    return date.toLocaleDateString('en-US', options);
+    return dateObj.toLocaleDateString('en-US', options);
+}
+
+/**
+ * Map activity type to icon
+ */
+function getIconForType(activityType) {
+    switch (activityType) {
+        case 'attendance':
+            return 'location';
+        case 'food':
+            return 'food';
+        case 'game':
+        case 'award':
+            return 'game';
+        case 'voucher':
+            return 'check';
+        default:
+            return 'check';
+    }
+}
+
+/**
+ * Transform database activity to frontend format
+ */
+function transformActivity(activity) {
+    return {
+        id: activity.id,
+        type: activity.activity_type,
+        title: activity.title,
+        description: activity.description || '',
+        timestamp: new Date(activity.created_at),
+        icon: getIconForType(activity.activity_type),
+        points: activity.points || null
+    };
 }
 
 /**
@@ -95,20 +55,51 @@ export function Activity() {
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('activity');
     const [filter, setFilter] = useState('all');
+    const [activities, setActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchActivities = async () => {
+            if (!user) return;
+            
+            setLoading(true);
+            setError(null);
+            
+            try {
+                const response = await api.getActivityTimeline(100);
+                if (response.success && response.activities) {
+                    const transformed = response.activities.map(transformActivity);
+                    setActivities(transformed);
+                } else {
+                    setActivities([]);
+                }
+            } catch (err) {
+                console.error('Failed to fetch activities:', err);
+                setError('Failed to load activities');
+                setActivities([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchActivities();
+    }, [user]);
 
     if (!user) {
         return null;
     }
 
     const filteredActivities = filter === 'all' 
-        ? ALL_ACTIVITIES 
-        : ALL_ACTIVITIES.filter(a => a.type === filter);
+        ? activities 
+        : activities.filter(a => a.type === filter);
 
     const activityCounts = {
-        all: ALL_ACTIVITIES.length,
-        attendance: ALL_ACTIVITIES.filter(a => a.type === 'attendance').length,
-        food: ALL_ACTIVITIES.filter(a => a.type === 'food').length,
-        game: ALL_ACTIVITIES.filter(a => a.type === 'game').length
+        all: activities.length,
+        attendance: activities.filter(a => a.type === 'attendance').length,
+        food: activities.filter(a => a.type === 'food').length,
+        game: activities.filter(a => a.type === 'game' || a.type === 'award').length,
+        voucher: activities.filter(a => a.type === 'voucher').length
     };
 
     return (
@@ -154,6 +145,12 @@ export function Activity() {
                         >
                             Games ({activityCounts.game})
                         </button>
+                        <button 
+                            className={`activity-filter ${filter === 'voucher' ? 'activity-filter--active' : ''}`}
+                            onClick={() => setFilter('voucher')}
+                        >
+                            Vouchers ({activityCounts.voucher})
+                        </button>
                     </div>
 
                     {/* Activity List */}
@@ -196,14 +193,26 @@ export function Activity() {
                                             <span className="activity-item-points">+{activity.points} pts</span>
                                         )}
                                     </div>
-                                    <p className="activity-item-description">{activity.description}</p>
+                                    <p className="activity-item-description">{activity.description || activity.title}</p>
                                     <span className="activity-item-time">{formatDate(activity.timestamp)}</span>
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    {filteredActivities.length === 0 && (
+                    {loading && (
+                        <div className="activity-empty">
+                            <p>Loading activities...</p>
+                        </div>
+                    )}
+                    
+                    {!loading && error && (
+                        <div className="activity-empty">
+                            <p>{error}</p>
+                        </div>
+                    )}
+                    
+                    {!loading && !error && filteredActivities.length === 0 && (
                         <div className="activity-empty">
                             <p>No activities found for this filter</p>
                         </div>
