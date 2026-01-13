@@ -4,26 +4,53 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 /**
- * Create email transporter
- * Uses SMTP configuration from environment variables
+ * Send email using Resend HTTP API (works on Render - no SMTP ports needed)
+ * Falls back to SMTP for local development
+ */
+async function sendEmailViaResend(to, subject, html, text, from) {
+    if (!process.env.RESEND_API_KEY) {
+        throw new Error('RESEND_API_KEY is not set');
+    }
+
+    const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            from: from || process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev',
+            to: [to],
+            subject: subject,
+            html: html,
+            text: text
+        })
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to send email via Resend');
+    }
+
+    return await response.json();
+}
+
+/**
+ * Create email transporter (for local development with SMTP)
+ * Note: Render blocks SMTP ports 25, 465, 587 - use Resend API in production
  */
 const createTransporter = () => {
-    // Render requires port 587 with secure: false (blocks port 25)
-    // All credentials must come from environment variables
     return nodemailer.createTransport({
         host: process.env.SMTP_HOST || 'smtp.gmail.com',
-        port: 587, // Render requires port 587
-        secure: false, // Required for Render (port 587 uses STARTTLS, not SSL)
+        port: parseInt(process.env.SMTP_PORT || '587'),
+        secure: process.env.SMTP_SECURE === 'true',
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASSWORD
         },
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000, // 10 seconds
-        socketTimeout: 10000, // 10 seconds
-        pool: true, // Use connection pooling
-        maxConnections: 5,
-        maxMessages: 100
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 10000
     });
 };
 
@@ -35,17 +62,15 @@ const createTransporter = () => {
  * @returns {Promise<Object>} - Email send result
  */
 export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delegate') {
-    const transporter = createTransporter();
-    
     // Reset URL - adjust based on your frontend URL
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
-    const mailOptions = {
-        from: `"NIMUN'26" <${process.env.SMTP_USER || 'reg.nimun.eg@gmail.com'}>`,
-        to: to,
-        subject: 'Reset Your NIMUN\'26 Delegate Portal Password',
-        html: `
+    const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.SMTP_USER || 'reg.nimun.eg@gmail.com';
+    const from = `"NIMUN'26" <${fromEmail}>`;
+    const subject = 'Reset Your NIMUN\'26 Delegate Portal Password';
+    
+    const html = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -87,8 +112,9 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
                 </div>
             </body>
             </html>
-        `,
-        text: `
+        `;
+    
+    const text = `
             NIMUN'26 Delegate Portal - Password Reset
             
             Hello ${firstName},
@@ -104,12 +130,24 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
             
             Best regards,
             NIMUN'26 Registration Team
-        `
-    };
+        `;
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        // Log success (sanitized)
+        // Use Resend API if available (works on Render - no SMTP ports needed)
+        if (process.env.RESEND_API_KEY) {
+            const result = await sendEmailViaResend(to, subject, html, text, from);
+            return { success: true, messageId: result.id };
+        }
+        
+        // Fallback to SMTP (for local development only - won't work on Render free tier)
+        const transporter = createTransporter();
+        const info = await transporter.sendMail({
+            from: from,
+            to: to,
+            subject: subject,
+            html: html,
+            text: text
+        });
         return { success: true, messageId: info.messageId };
     } catch (error) {
         // Error is logged by caller
