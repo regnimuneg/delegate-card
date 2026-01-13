@@ -80,7 +80,25 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
                     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
                     .header { background: #0037C0; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
                     .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 8px 8px; }
-                    .button { display: inline-block; background: #0037C0; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; margin: 20px 0; }
+                    .button { 
+                        display: inline-block; 
+                        background: #0037C0; 
+                        color: #FFFFFF !important; 
+                        padding: 16px 32px; 
+                        text-decoration: none; 
+                        border-radius: 8px; 
+                        margin: 24px 0; 
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-align: center;
+                        box-shadow: 0 4px 12px rgba(0, 55, 192, 0.3);
+                        border: 2px solid #0037C0;
+                    }
+                    .button:hover {
+                        background: #0029A3;
+                        border-color: #0029A3;
+                    }
+                    .button-container { text-align: center; margin: 30px 0; }
                     .footer { text-align: center; margin-top: 20px; font-size: 12px; color: #666; }
                 </style>
             </head>
@@ -95,8 +113,10 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
                         <p>Hello ${firstName},</p>
                         <p>We received a request to reset your password for your NIMUN'26 Delegate Portal account.</p>
                         <p>Click the button below to reset your password:</p>
-                        <a href="${resetUrl}" class="button">Reset Password</a>
-                        <p>Or copy and paste this link into your browser:</p>
+                        <div class="button-container">
+                            <a href="${resetUrl}" class="button">Reset Password</a>
+                        </div>
+                        <p style="margin-top: 24px;">Or copy and paste this link into your browser:</p>
                         <p style="word-break: break-all; color: #0037C0;">${resetUrl}</p>
                         <p><strong>This link will expire in 1 hour.</strong></p>
                         <p>If you didn't request a password reset, please ignore this email. Your password will remain unchanged.</p>
