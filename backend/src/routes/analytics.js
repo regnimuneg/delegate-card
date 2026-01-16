@@ -248,14 +248,24 @@ router.get('/vouchers/vendor/:vendorName', authenticate, async (req, res, next) 
         const delegateIds = [...new Set(claims.map(c => c.delegate_id))];
         const { data: delegates, error: delegatesError } = await supabaseAdmin
             .from('delegates')
-            .select('id, name, council')
+            .select(`
+                id,
+                council,
+                users:users!delegates_user_id_fkey (
+                    first_name,
+                    last_name
+                )
+            `)
             .in('id', delegateIds);
 
         if (delegatesError) throw delegatesError;
 
         const delegateMap = {};
         delegates.forEach(d => {
-            delegateMap[d.id] = d;
+            delegateMap[d.id] = {
+                ...d,
+                name: d.users ? `${d.users.first_name} ${d.users.last_name}` : 'Unknown'
+            };
         });
 
         if (claimsError) throw claimsError;
@@ -298,7 +308,7 @@ router.get('/vouchers/vendor/:vendorName', authenticate, async (req, res, next) 
             if (!usageByDelegate[delegateId]) {
                 usageByDelegate[delegateId] = {
                     delegateId,
-                    delegateName: delegate?.name,
+                    delegateName: delegate?.name || 'Unknown',
                     council: delegate?.council,
                     totalClaims: 0,
                     totalRedeemed: 0
@@ -332,7 +342,7 @@ router.get('/vouchers/vendor/:vendorName', authenticate, async (req, res, next) 
                     id: claim.id,
                     voucherId: claim.voucher_id,
                     delegateId: claim.delegate_id,
-                    delegateName: delegate?.name,
+                    delegateName: delegate ? `${delegate.users?.first_name || ''} ${delegate.users?.last_name || ''}`.trim() || 'Unknown' : 'Unknown',
                     council: delegate?.council,
                     claimedAt: claim.claimed_at,
                     redeemedAt: claim.redeemed_at,
@@ -488,8 +498,16 @@ router.get('/users', authenticate, async (req, res, next) => {
         // Get all delegates
         const { data: delegates, error: delegatesError } = await supabaseAdmin
             .from('delegates')
-            .select('id, name, council, email, users(email, first_name, last_name)')
-            .order('name', { ascending: true });
+            .select(`
+                id,
+                council,
+                users:users!delegates_user_id_fkey (
+                    email,
+                    first_name,
+                    last_name
+                )
+            `)
+            .order('id', { ascending: true });
 
         if (delegatesError) throw delegatesError;
 
@@ -529,11 +547,15 @@ router.get('/users', authenticate, async (req, res, next) => {
                 }
             });
 
+            const userName = delegate.users 
+                ? `${delegate.users.first_name} ${delegate.users.last_name}`
+                : 'Unknown';
+
             return {
                 delegateId: delegate.id,
-                name: delegate.name,
+                name: userName,
                 council: delegate.council,
-                email: delegate.users?.email || delegate.email,
+                email: delegate.users?.email || null,
                 summary: {
                     totalClaims: userClaims.length,
                     totalRedeemed: userClaims.filter(c => c.status === 'redeemed').length,

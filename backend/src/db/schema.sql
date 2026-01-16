@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20), -- Phone number for all users
     date_of_birth DATE,
     photo_url TEXT,
     user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member')),
@@ -65,7 +66,7 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
 CREATE TABLE IF NOT EXISTS delegates (
     id VARCHAR(20) PRIMARY KEY, -- Format: COUNCIL-XX (e.g., HRC-01, ICJ-15, DSC-12, PRS-05)
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(200) NOT NULL, -- Full name
+    -- Note: name is stored in users.first_name + users.last_name
     council VARCHAR(100) NOT NULL, -- Council name (e.g., HRC, UNSC, DISEC)
     claim_token VARCHAR(50) UNIQUE,
     claim_token_used BOOLEAN DEFAULT FALSE,
@@ -157,8 +158,8 @@ CREATE TABLE IF NOT EXISTS delegates (
 CREATE TABLE IF NOT EXISTS members (
     id VARCHAR(20) PRIMARY KEY, -- Format: COMMITTEE-XX (e.g., EX-01, RG-05, PR-03, SO-12, MD-08, OP-15)
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(200) NOT NULL, -- Full name
-    phone_number VARCHAR(20) NOT NULL, -- Phone number (primary contact for members)
+    -- Note: name is stored in users.first_name + users.last_name
+    -- Note: phone_number is stored in users.phone_number
     role VARCHAR(100) NOT NULL, -- e.g., 'Head Of Registration Affairs', 'Head Of Media & Design', 'Chair', 'Vice-Chair', 'Staff', 'Coordinator'
     committee VARCHAR(100) NOT NULL CHECK (committee IN (
         'Executive',
@@ -351,7 +352,6 @@ CREATE INDEX IF NOT EXISTS idx_delegates_council ON delegates(council);
 CREATE INDEX IF NOT EXISTS idx_members_user_id ON members(user_id);
 CREATE INDEX IF NOT EXISTS idx_members_committee ON members(committee);
 CREATE INDEX IF NOT EXISTS idx_members_role ON members(role);
-CREATE INDEX IF NOT EXISTS idx_members_phone ON members(phone_number);
 
 -- Voucher claims indexes
 CREATE INDEX IF NOT EXISTS idx_voucher_claims_delegate ON voucher_claims(delegate_id);

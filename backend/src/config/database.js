@@ -423,7 +423,6 @@ export async function getRewardActivationByToken(qrToken) {
             *,
             delegates:delegates!reward_activations_delegate_id_fkey (
                 id,
-                name,
                 qr_code,
                 users:users!delegates_user_id_fkey (
                     first_name,

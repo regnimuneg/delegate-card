@@ -99,7 +99,9 @@ router.get('/verify/:token', optionalAuth, async (req, res, next) => {
                 rewardType: activation.reward_type,
                 delegate: {
                     id: activation.delegates.id,
-                    name: activation.delegates.name,
+                    name: activation.delegates.users 
+                        ? `${activation.delegates.users.first_name} ${activation.delegates.users.last_name}`
+                        : 'Unknown',
                     qrCode: activation.delegates.qr_code
                 },
                 expiresAt: activation.expires_at

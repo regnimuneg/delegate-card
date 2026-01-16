@@ -32,7 +32,7 @@ VALUES (
 ) ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO delegates (
-    id, user_id, name, council, claim_token, claim_token_used, qr_code, status,
+    id, user_id, council, claim_token, claim_token_used, qr_code, status,
     opening_ceremony_attended, opening_ceremony_checkin, opening_ceremony_food,
     day1_session_attended, day1_checkin, day1_food,
     day2_session_attended, day2_checkin, day2_food
@@ -40,7 +40,6 @@ INSERT INTO delegates (
 VALUES (
     'HRC-01',
     '550e8400-e29b-41d4-a716-446655440001',
-    'Sarah Ibrahim',
     'HRC',
     'CLAIM-XYZ789',
     TRUE,
@@ -65,12 +64,11 @@ VALUES (
 ) ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO delegates (
-    id, user_id, name, council, claim_token, claim_token_used, qr_code, status
+    id, user_id, council, claim_token, claim_token_used, qr_code, status
 )
 VALUES (
     'ICJ-05',
     '550e8400-e29b-41d4-a716-446655440002',
-    'Ahmed Hassan',
     'ICJ',
     'CLAIM-ABC123',
     FALSE,
@@ -92,12 +90,11 @@ VALUES (
 ) ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO delegates (
-    id, user_id, name, council, claim_token, claim_token_used, qr_code, status
+    id, user_id, council, claim_token, claim_token_used, qr_code, status
 )
 VALUES (
     'HRC-02',
     '550e8400-e29b-41d4-a716-446655440004',
-    'Adham Abdelaal',
     'HRC',
     'CLAIM-HRC002',
     FALSE,
@@ -119,14 +116,13 @@ VALUES (
 ) ON CONFLICT (email) DO NOTHING;
 
 INSERT INTO delegates (
-    id, user_id, name, council, claim_token, claim_token_used, qr_code, status,
+    id, user_id, council, claim_token, claim_token_used, qr_code, status,
     opening_ceremony_attended, opening_ceremony_checkin, opening_ceremony_food,
     day1_session_attended, day1_checkin, day1_food, day1_comments
 )
 VALUES (
     'DSC-12',
     '550e8400-e29b-41d4-a716-446655440003',
-    'Fatima Ali',
     'DISEC',
     'CLAIM-DEF456',
     TRUE,
@@ -144,87 +140,83 @@ VALUES (
 -- EX-01 to EX-04: Reserved for high board (not created in seed data)
 
 -- Executive Member: Adham Abdelaal (EX-05)
-INSERT INTO users (id, email, password_hash, first_name, last_name, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440013',
     'adham.abdelaal@nimun.org',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq', -- Password: demo123 (PLACEHOLDER - MUST BE REPLACED)
     'Adham',
     'Abdelaal',
+    '+201234567890', -- Replace with actual phone number
     'member'
 ) ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO members (id, user_id, name, phone_number, role, committee)
+INSERT INTO members (id, user_id, role, committee)
 VALUES (
     'EX-05',
     '550e8400-e29b-41d4-a716-446655440013',
-    'Adham Abdelaal',
-    '+201234567890', -- Replace with actual phone number
     'Head Of Registration Affairs', -- Executive role
     'Executive'
 ) ON CONFLICT (id) DO NOTHING;
 
 -- Executive Member: Malak Ehab (EX-06)
-INSERT INTO users (id, email, password_hash, first_name, last_name, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440014',
     'malak.ehab@nimun.org',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq', -- Password: demo123 (PLACEHOLDER - MUST BE REPLACED)
     'Malak',
     'Ehab',
+    '+201234567891', -- Replace with actual phone number
     'member'
 ) ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO members (id, user_id, name, phone_number, role, committee)
+INSERT INTO members (id, user_id, role, committee)
 VALUES (
     'EX-06',
     '550e8400-e29b-41d4-a716-446655440014',
-    'Malak Ehab',
-    '+201234567891', -- Replace with actual phone number
     'Chair Of UNHRC', -- Executive role (replace with actual role)
     'Executive'
 ) ON CONFLICT (id) DO NOTHING;
 
 -- Test Member 2: Registration Affairs Staff
 -- ID Format: RG-XX (Registration)
-INSERT INTO users (id, email, password_hash, first_name, last_name, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440011',
     'staff.reg@nimun.org',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq', -- Password: demo123 (PLACEHOLDER - MUST BE REPLACED)
     'Registration',
     'Staff',
+    '+201234567892', -- Replace with actual phone number
     'member'
 ) ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO members (id, user_id, name, phone_number, role, committee)
+INSERT INTO members (id, user_id, role, committee)
 VALUES (
     'RG-01',
     '550e8400-e29b-41d4-a716-446655440011',
-    'Registration Staff',
-    '+201234567892', -- Replace with actual phone number
     'Coordinator',
     'Registration Affairs'
 ) ON CONFLICT (id) DO NOTHING;
 
 -- Test Member 3: Media & Design
 -- ID Format: MD-XX (Media & Design)
-INSERT INTO users (id, email, password_hash, first_name, last_name, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440012',
     'media@nimun.org',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq',
     'Media',
     'Designer',
+    '+201234567893', -- Replace with actual phone number
     'member'
 ) ON CONFLICT (email) DO NOTHING;
 
-INSERT INTO members (id, user_id, name, phone_number, role, committee)
+INSERT INTO members (id, user_id, role, committee)
 VALUES (
     'MD-01',
     '550e8400-e29b-41d4-a716-446655440012',
-    'Media Designer',
-    '+201234567893', -- Replace with actual phone number
     'Lead',
     'Media & Design'
 ) ON CONFLICT (id) DO NOTHING;
@@ -440,12 +432,12 @@ ON CONFLICT DO NOTHING;
 -- SELECT id, email, first_name, last_name, user_type FROM users;
 
 -- Check delegates
--- SELECT d.id, d.name, d.council, u.email, d.status 
+-- SELECT d.id, CONCAT(u.first_name, ' ', u.last_name) AS name, d.council, u.email, d.status 
 -- FROM delegates d 
 -- JOIN users u ON d.user_id = u.id;
 
 -- Check members
--- SELECT m.id, m.name, m.committee, m.role, u.email
+-- SELECT m.id, CONCAT(u.first_name, ' ', u.last_name) AS name, m.committee, m.role, u.email, u.phone_number
 -- FROM members m
 -- JOIN users u ON m.user_id = u.id;
 

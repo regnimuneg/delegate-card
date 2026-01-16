@@ -104,7 +104,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 email: user.email,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                name: user.name,
+                name: `${user.first_name} ${user.last_name}`,
                 dateOfBirth: user.date_of_birth,
                 photo: user.photo_url,
                 council: user.council,
@@ -119,7 +119,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 email: user.email,
                 firstName: user.first_name,
                 lastName: user.last_name,
-                name: user.name,
+                name: `${user.first_name} ${user.last_name}`,
                 phoneNumber: user.phone_number,
                 role: user.role,
                 committee: user.committee
@@ -177,7 +177,7 @@ router.post('/claim/validate', validateClaimToken, async (req, res, next) => {
             userId: delegate.users.id, // UUID
             firstName: delegate.users.first_name,
             lastName: delegate.users.last_name,
-            name: delegate.name,
+            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
             email: delegate.users.email,
             council: delegate.council
         };
@@ -256,7 +256,7 @@ router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
             email: delegate.users.email,
             firstName: delegate.users.first_name,
             lastName: delegate.users.last_name,
-            name: delegate.name,
+            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
             dateOfBirth: delegate.users.date_of_birth,
             photo: delegate.users.photo_url,
             council: delegate.council,
@@ -297,7 +297,7 @@ router.get('/me', authenticate, async (req, res, next) => {
             email: delegate.users.email,
             firstName: delegate.users.first_name,
             lastName: delegate.users.last_name,
-            name: delegate.name,
+            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
             dateOfBirth: delegate.users.date_of_birth,
             photo: delegate.users.photo_url,
             council: delegate.council,

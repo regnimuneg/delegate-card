@@ -33,14 +33,159 @@ function getIconForType(activityType) {
 }
 
 /**
+ * Format attendance title professionally
+ */
+function formatAttendanceTitle(title) {
+    // Map common attendance title patterns to professional names
+    const titleMap = {
+        'sessions.day1': 'Day 1 Session',
+        'sessions.day2': 'Day 2 Session',
+        'sessions.day3': 'Day 3 Session',
+        'sessions.day4': 'Day 4 Session',
+        'sessions.opening': 'Opening Ceremony',
+        'sessions.conf_day1': 'Conference Day 1',
+        'sessions.conf_day2': 'Conference Day 2',
+        'sessions.conf_day3': 'Conference Day 3',
+        'day1_session': 'Day 1 Session',
+        'day2_session': 'Day 2 Session',
+        'day3_session': 'Day 3 Session',
+        'day4_session': 'Day 4 Session',
+        'opening_ceremony': 'Opening Ceremony',
+        'conf_day1': 'Conference Day 1',
+        'conf_day2': 'Conference Day 2',
+        'conf_day3': 'Conference Day 3',
+    };
+
+    // Check if title matches any pattern
+    for (const [pattern, formatted] of Object.entries(titleMap)) {
+        if (title.toLowerCase().includes(pattern.toLowerCase())) {
+            return formatted;
+        }
+    }
+
+    // Fallback: clean up common patterns
+    return title
+        .replace(/sessions\./gi, '')
+        .replace(/attendance/gi, '')
+        .replace(/day(\d+)/gi, 'Day $1')
+        .replace(/conf_day(\d+)/gi, 'Conference Day $1')
+        .replace(/opening/gi, 'Opening Ceremony')
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+/**
+ * Format attendance description professionally
+ */
+function formatAttendanceDescription(description) {
+    if (!description) return '';
+    
+    // Extract attendance status
+    if (description.toLowerCase().includes('marked attended as true') || 
+        description.toLowerCase().includes('attended as true')) {
+        return 'Attended';
+    }
+    if (description.toLowerCase().includes('marked attended as false') || 
+        description.toLowerCase().includes('attended as false')) {
+        return 'Not Attended';
+    }
+    
+    return description;
+}
+
+/**
+ * Get attendance field key from title for deduplication
+ */
+function getAttendanceFieldKey(title) {
+    // Extract the attendance field identifier from title
+    const patterns = [
+        { pattern: /day1|sessions\.day1/i, key: 'day1_session' },
+        { pattern: /day2|sessions\.day2/i, key: 'day2_session' },
+        { pattern: /day3|sessions\.day3/i, key: 'day3_session' },
+        { pattern: /day4|sessions\.day4/i, key: 'day4_session' },
+        { pattern: /opening|sessions\.opening/i, key: 'opening_ceremony' },
+        { pattern: /conf_day1|sessions\.conf_day1/i, key: 'conf_day1' },
+        { pattern: /conf_day2|sessions\.conf_day2/i, key: 'conf_day2' },
+        { pattern: /conf_day3|sessions\.conf_day3/i, key: 'conf_day3' },
+    ];
+
+    for (const { pattern, key } of patterns) {
+        if (pattern.test(title)) {
+            return key;
+        }
+    }
+    
+    return null;
+}
+
+/**
+ * Check if activity indicates "Not Attended"
+ * Checks the original description from database before transformation
+ */
+function isNotAttended(activity) {
+    if (activity.activity_type !== 'attendance') return false;
+    const desc = (activity.description || '').toLowerCase();
+    return desc.includes('marked attended as false') ||
+           desc.includes('attended as false');
+}
+
+/**
+ * Deduplicate attendance entries - keep only latest state per field
+ * If latest state is "Not Attended", remove it from UI (don't show it)
+ */
+function deduplicateAttendanceEntries(activities) {
+    const attendanceMap = new Map();
+    const otherActivities = [];
+
+    // Separate attendance from other activities
+    activities.forEach(activity => {
+        if (activity.activity_type === 'attendance') {
+            const fieldKey = getAttendanceFieldKey(activity.title);
+            if (fieldKey) {
+                // Keep only the most recent entry for each attendance field
+                const existing = attendanceMap.get(fieldKey);
+                if (!existing || new Date(activity.created_at) > new Date(existing.created_at)) {
+                    attendanceMap.set(fieldKey, activity);
+                }
+            } else {
+                // If we can't identify the field, keep it
+                otherActivities.push(activity);
+            }
+        } else {
+            otherActivities.push(activity);
+        }
+    });
+
+    // Filter out "Not Attended" entries - don't show them in UI
+    const deduplicated = Array.from(attendanceMap.values())
+        .filter(activity => !isNotAttended(activity));
+    
+    const allActivities = [...deduplicated, ...otherActivities];
+
+    // Sort by timestamp (most recent first)
+    return allActivities.sort((a, b) => 
+        new Date(b.created_at) - new Date(a.created_at)
+    );
+}
+
+/**
  * Transform database activity to frontend format
  */
 function transformActivity(activity) {
+    const isAttendance = activity.activity_type === 'attendance';
+    const formattedTitle = isAttendance 
+        ? formatAttendanceTitle(activity.title)
+        : activity.title;
+    const formattedDescription = isAttendance
+        ? formatAttendanceDescription(activity.description)
+        : (activity.description || '');
+
     return {
         id: activity.id,
         type: activity.activity_type,
-        title: activity.title,
-        description: activity.description || '',
+        title: formattedTitle,
+        description: formattedDescription,
         timestamp: new Date(activity.created_at),
         icon: getIconForType(activity.activity_type),
         points: activity.points || null
@@ -69,7 +214,9 @@ export function Activity() {
             try {
                 const response = await api.getActivityTimeline(100);
                 if (response.success && response.activities) {
-                    const transformed = response.activities.map(transformActivity);
+                    // First deduplicate (checking original descriptions), then transform
+                    const deduplicated = deduplicateAttendanceEntries(response.activities);
+                    const transformed = deduplicated.map(transformActivity);
                     setActivities(transformed);
                 } else {
                     setActivities([]);
@@ -193,7 +340,9 @@ export function Activity() {
                                             <span className="activity-item-points">+{activity.points} pts</span>
                                         )}
                                     </div>
-                                    <p className="activity-item-description">{activity.description || activity.title}</p>
+                                    {activity.description && activity.description !== activity.title && (
+                                        <p className="activity-item-description">{activity.description}</p>
+                                    )}
                                     <span className="activity-item-time">{formatDate(activity.timestamp)}</span>
                                 </div>
                             </div>
