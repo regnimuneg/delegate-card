@@ -14,51 +14,51 @@ export async function testConnection() {
             .from('users')
             .select('id')
             .limit(1);
-        
+
         if (error) {
             // Check for specific error types
-            if (error.message.includes('relation "users" does not exist') || 
+            if (error.message.includes('relation "users" does not exist') ||
                 error.message.includes("Could not find the table 'public.users'")) {
-                return { 
-                    success: false, 
+                return {
+                    success: false,
                     error: 'Database schema not found!\n\n' +
-                           '   📋 Action required:\n' +
-                           '   1. Go to Supabase Dashboard → SQL Editor\n' +
-                           '   2. Open: backend/src/db/schema.sql\n' +
-                           '   3. Copy the entire file content\n' +
-                           '   4. Paste in SQL Editor and click "Run"\n' +
-                           '   5. Wait for "Success. No rows returned" message\n\n' +
-                           '   This will create all required tables (users, delegates, vouchers, etc.)'
+                        '   📋 Action required:\n' +
+                        '   1. Go to Supabase Dashboard → SQL Editor\n' +
+                        '   2. Open: backend/src/db/schema.sql\n' +
+                        '   3. Copy the entire file content\n' +
+                        '   4. Paste in SQL Editor and click "Run"\n' +
+                        '   5. Wait for "Success. No rows returned" message\n\n' +
+                        '   This will create all required tables (users, delegates, vouchers, etc.)'
                 };
             }
             if (error.message.includes('JWT')) {
-                return { 
-                    success: false, 
-                    error: 'Invalid API key. Check SUPABASE_ANON_KEY in .env file.' 
+                return {
+                    success: false,
+                    error: 'Invalid API key. Check SUPABASE_ANON_KEY in .env file.'
                 };
             }
             if (error.message.includes('getaddrinfo') || error.message.includes('ENOTFOUND')) {
-                return { 
-                    success: false, 
-                    error: 'Cannot connect to Supabase. Check SUPABASE_URL in .env file (should start with https://).' 
+                return {
+                    success: false,
+                    error: 'Cannot connect to Supabase. Check SUPABASE_URL in .env file (should start with https://).'
                 };
             }
             throw error;
         }
-        
+
         return { success: true };
     } catch (error) {
         // Handle connection errors
         if (error.message.includes('getaddrinfo') || error.message.includes('ENOTFOUND')) {
-            return { 
-                success: false, 
-                error: `Cannot resolve Supabase hostname. Check SUPABASE_URL in .env file.\n   Current: ${process.env.SUPABASE_URL || 'Not set'}\n   Should be: https://xxxxx.supabase.co` 
+            return {
+                success: false,
+                error: `Cannot resolve Supabase hostname. Check SUPABASE_URL in .env file.\n   Current: ${process.env.SUPABASE_URL || 'Not set'}\n   Should be: https://xxxxx.supabase.co`
             };
         }
-        
-        return { 
-            success: false, 
-            error: error.message || 'Unknown database connection error' 
+
+        return {
+            success: false,
+            error: error.message || 'Unknown database connection error'
         };
     }
 }
@@ -76,7 +76,6 @@ export async function getDelegateById(delegateId) {
                 email,
                 first_name,
                 last_name,
-                date_of_birth,
                 photo_url
             )
         `)
@@ -88,7 +87,31 @@ export async function getDelegateById(delegateId) {
 }
 
 /**
- * Get delegate by email
+ * Get member by ID
+ */
+export async function getMemberById(memberId) {
+    const { data, error } = await supabaseAdmin
+        .from('members')
+        .select(`
+            *,
+            users:users!members_user_id_fkey (
+                id,
+                email,
+                first_name,
+                last_name,
+                phone_number,
+                photo_url
+            )
+        `)
+        .eq('id', memberId)
+        .maybeSingle();
+
+    if (error) throw error;
+    return data;
+}
+
+/**
+ * Get delegate by email hiding users and delegates table query specific details
  */
 export async function getDelegateByEmail(email) {
     const { data: user, error: userError } = await supabaseAdmin
@@ -101,7 +124,7 @@ export async function getDelegateByEmail(email) {
     if (userError) {
         return null;
     }
-    
+
     if (!user) {
         return null;
     }
@@ -115,7 +138,7 @@ export async function getDelegateByEmail(email) {
     if (delegateError) {
         throw delegateError;
     }
-    
+
     if (!delegate) {
         return null;
     }
@@ -141,7 +164,7 @@ export async function getMemberByEmail(email) {
     if (userError) {
         return null;
     }
-    
+
     if (!user) {
         return null;
     }
@@ -155,7 +178,7 @@ export async function getMemberByEmail(email) {
     if (memberError) {
         throw memberError;
     }
-    
+
     if (!member) {
         return null;
     }
@@ -167,10 +190,14 @@ export async function getMemberByEmail(email) {
 }
 
 /**
- * Get delegate by claim token
+ * Get user by claim token (checks both delegates and members tables)
+ * Returns { type: 'delegate' | 'member', data: ... } or null
  */
-export async function getDelegateByClaimToken(token) {
-    const { data, error } = await supabaseAdmin
+export async function getByClaimToken(token) {
+    console.log('🔍 Looking up claim token:', token.toUpperCase());
+
+    // First, check delegates table
+    const { data: delegateData, error: delegateError } = await supabaseAdmin
         .from('delegates')
         .select(`
             *,
@@ -179,16 +206,54 @@ export async function getDelegateByClaimToken(token) {
                 email,
                 first_name,
                 last_name,
-                date_of_birth,
                 photo_url
             )
         `)
         .eq('claim_token', token.toUpperCase())
         .eq('claim_token_used', false)
-        .single();
+        .maybeSingle();
 
-    if (error) return null;
-    return data;
+    if (delegateData) {
+        console.log('✅ Token found in delegates, ID:', delegateData.id);
+        return { type: 'delegate', data: delegateData };
+    }
+
+    // If not in delegates, check members table
+    const { data: memberData, error: memberError } = await supabaseAdmin
+        .from('members')
+        .select(`
+            *,
+            users:users!members_user_id_fkey (
+                id,
+                email,
+                first_name,
+                last_name,
+                phone_number,
+                photo_url
+            )
+        `)
+        .eq('claim_token', token.toUpperCase())
+        .eq('claim_token_used', false)
+        .maybeSingle();
+
+    if (memberData) {
+        console.log('✅ Token found in members, ID:', memberData.id);
+        return { type: 'member', data: memberData };
+    }
+
+    console.log('❌ Token not found in delegates or members');
+    return null;
+}
+
+/**
+ * Get delegate by claim token (legacy - use getByClaimToken instead)
+ */
+export async function getDelegateByClaimToken(token) {
+    const result = await getByClaimToken(token);
+    if (result && result.type === 'delegate') {
+        return result.data;
+    }
+    return null;
 }
 
 /**
@@ -280,12 +345,14 @@ export async function createVoucherClaim(delegateId, voucherId, qrToken, expires
 }
 
 /**
- * Get attendance statistics for a delegate
- * Calculates days attended and attendance rate from delegates table
+ * Get attendance statistics for a user (delegate or member)
+ * Calculates days attended and attendance rate
  */
-export async function getAttendanceStats(delegateId) {
-    const { data: delegate, error } = await supabaseAdmin
-        .from('delegates')
+export async function getAttendanceStats(userId, userType = 'delegate') {
+    const table = userType === 'member' ? 'members' : 'delegates';
+
+    const { data: user, error } = await supabaseAdmin
+        .from(table)
         .select(`
             opening_ceremony_attended,
             day1_session_attended,
@@ -296,14 +363,14 @@ export async function getAttendanceStats(delegateId) {
             conf_day2_attended,
             conf_day3_attended
         `)
-        .eq('id', delegateId)
+        .eq('id', userId)
         .maybeSingle();
 
     if (error) {
         throw error;
     }
 
-    if (!delegate) {
+    if (!user) {
         return {
             daysAttended: 0,
             totalDays: 9,
@@ -313,14 +380,14 @@ export async function getAttendanceStats(delegateId) {
 
     // Count attended days (9 total: 4 session days + 1 opening + 3 conference days)
     const daysAttended = [
-        delegate.opening_ceremony_attended,
-        delegate.day1_session_attended,
-        delegate.day2_session_attended,
-        delegate.day3_session_attended,
-        delegate.day4_session_attended,
-        delegate.conf_day1_attended,
-        delegate.conf_day2_attended,
-        delegate.conf_day3_attended
+        user.opening_ceremony_attended,
+        user.day1_session_attended,
+        user.day2_session_attended,
+        user.day3_session_attended,
+        user.day4_session_attended,
+        user.conf_day1_attended,
+        user.conf_day2_attended,
+        user.conf_day3_attended
     ].filter(Boolean).length;
 
     const totalDays = 9; // 4 session days + 1 opening + 3 conference days
@@ -442,6 +509,7 @@ export async function getRewardActivationByToken(qrToken) {
 export default {
     testConnection,
     getDelegateById,
+    getMemberById,
     getDelegateByEmail,
     getAttendanceStats,
     getMemberByEmail,

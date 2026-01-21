@@ -72,8 +72,8 @@ router.get('/activity', authenticate, async (req, res, next) => {
  */
 router.get('/stats', authenticate, async (req, res, next) => {
     try {
-        // req.user.id is the council-based delegate ID (e.g., HRC-01)
-        const stats = await getAttendanceStats(req.user.id);
+        // req.user.id is the council-based delegate ID or committee-based member ID
+        const stats = await getAttendanceStats(req.user.id, req.user.userType);
 
         res.json({
             success: true,

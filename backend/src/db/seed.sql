@@ -20,13 +20,14 @@
 
 -- Test Delegate 1: Sarah Ibrahim (HRC-01) - Already claimed
 -- ID Format: HRC-XX
-INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, date_of_birth, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440001',
     'sarah.ibrahim@example.com',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq', -- Password: demo123 (PLACEHOLDER - MUST BE REPLACED)
     'Sarah',
     'Ibrahim',
+    '+201234567894', -- Replace with actual phone number
     '2000-05-15',
     'delegate'
 ) ON CONFLICT (email) DO NOTHING;
@@ -52,13 +53,14 @@ VALUES (
 
 -- Test Delegate 2: Ahmed Hassan (ICJ-05) - Unclaimed
 -- ID Format: ICJ-XX
-INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, date_of_birth, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440002',
     'ahmed.hassan@example.com',
     '$2b$10$placeholder_hash_will_be_updated_on_claim',
     'Ahmed',
     'Hassan',
+    '+201234567895', -- Replace with actual phone number
     '1999-08-22',
     'delegate'
 ) ON CONFLICT (email) DO NOTHING;
@@ -78,13 +80,14 @@ VALUES (
 
 -- Test Delegate 3: Adham Abdelaal (HRC-02) - Unclaimed
 -- ID Format: HRC-XX
-INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, date_of_birth, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440004',
     'adhamaeabdelaal@gmail.com',
     '$2b$10$placeholder_hash_will_be_updated_on_claim',
     'Adham',
     'Abdelaal',
+    '+201234567896', -- Replace with actual phone number
     '2000-01-01',
     'delegate'
 ) ON CONFLICT (email) DO NOTHING;
@@ -104,13 +107,14 @@ VALUES (
 
 -- Test Delegate 4: Fatima Ali (DSC-12) - Active
 -- ID Format: DSC-XX (DISEC)
-INSERT INTO users (id, email, password_hash, first_name, last_name, date_of_birth, user_type)
+INSERT INTO users (id, email, password_hash, first_name, last_name, phone_number, date_of_birth, user_type)
 VALUES (
     '550e8400-e29b-41d4-a716-446655440003',
     'fatima.ali@example.com',
     '$2b$10$rOzJqJqJqJqJqJqJqJqJqOqJqJqJqJqJqJqJqJqJqJqJqJqJqJqJq', -- Password: demo123 (PLACEHOLDER - MUST BE REPLACED)
     'Fatima',
     'Ali',
+    '+201234567897', -- Replace with actual phone number
     '2001-03-10',
     'delegate'
 ) ON CONFLICT (email) DO NOTHING;

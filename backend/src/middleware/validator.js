@@ -4,8 +4,12 @@ import { body, param, validationResult } from 'express-validator';
  * Validation result handler
  */
 export function handleValidationErrors(req, res, next) {
+    if (process.env.NODE_ENV !== 'production') {
+        console.log(`📥 [${req.method}] ${req.path} body:`, req.body);
+    }
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+        console.error('❌ Validation failed:', errors.array());
         return res.status(400).json({
             success: false,
             error: 'Validation failed',
@@ -36,8 +40,8 @@ export const validateClaimToken = [
     body('token')
         .notEmpty()
         .trim()
-        .matches(/^CLAIM-[A-Z0-9]{6}$/)
-        .withMessage('Invalid claim token format'),
+        .matches(/^[A-Z0-9]{6}$/)
+        .withMessage('Invalid claim token format (should be 6 characters)'),
     handleValidationErrors
 ];
 
@@ -48,8 +52,8 @@ export const validateClaimAccount = [
     body('token')
         .notEmpty()
         .trim()
-        .matches(/^CLAIM-[A-Z0-9]{6}$/)
-        .withMessage('Invalid claim token format'),
+        .matches(/^[A-Z0-9]{6}$/)
+        .withMessage('Invalid claim token format (should be 6 characters)'),
     body('password')
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters'),

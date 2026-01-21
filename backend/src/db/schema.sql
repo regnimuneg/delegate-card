@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS voucher_claims CASCADE;
 DROP TABLE IF EXISTS vouchers CASCADE;
 DROP TABLE IF EXISTS delegates CASCADE;
 DROP TABLE IF EXISTS members CASCADE;
+DROP TABLE IF EXISTS invitations CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
 -- Drop functions and triggers if they exist
@@ -30,14 +31,13 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) UNIQUE NOT NULL, -- Required for all users (delegates, members, admins)
+    email VARCHAR(255) UNIQUE, -- email is unique but can be NULL (for printed invites etc)
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20), -- Phone number for all users
-    date_of_birth DATE,
     photo_url TEXT,
-    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member')),
+    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member', 'invitation')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS delegates (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     -- Note: name is stored in users.first_name + users.last_name
     council VARCHAR(100) NOT NULL, -- Council name (e.g., HRC, UNSC, DISEC)
-    claim_token VARCHAR(50) UNIQUE,
+    claim_token VARCHAR(5) UNIQUE,
     claim_token_used BOOLEAN DEFAULT FALSE,
     qr_code VARCHAR(100) UNIQUE NOT NULL, -- QR code identifier
     status VARCHAR(20) DEFAULT 'unclaimed' CHECK (status IN ('unclaimed', 'active', 'inactive')),
@@ -169,6 +169,8 @@ CREATE TABLE IF NOT EXISTS members (
         'Media & Design',
         'Operations & Logistics'
     )),
+    claim_token VARCHAR(50) UNIQUE,
+    claim_token_used BOOLEAN DEFAULT FALSE,
     permissions JSONB DEFAULT '{}', -- Store role-specific permissions
     
     -- Same attendance structure as delegates (optional - can be NULL)
@@ -230,6 +232,41 @@ CREATE TABLE IF NOT EXISTS members (
     conf_day3_lunch BOOLEAN DEFAULT FALSE,
     conf_day3_activities TEXT,
     conf_day3_comments TEXT,
+    
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================
+-- INVITATIONS TABLE (VIPs, Special Guests)
+-- ============================================
+CREATE TABLE IF NOT EXISTS invitations (
+    id VARCHAR(20) PRIMARY KEY, -- Format: Category-XX
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    role VARCHAR(100) NOT NULL, 
+    committee VARCHAR(100), -- Can be 'Executives'' Invitation', 'Alumni', etc.
+    claim_token VARCHAR(50) UNIQUE,
+    claim_token_used BOOLEAN DEFAULT FALSE,
+    status VARCHAR(20) DEFAULT 'active',
+    
+    -- Basic attendance tracking
+    conf_day1_attended BOOLEAN DEFAULT FALSE,
+    conf_day1_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day1_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day1_breakfast BOOLEAN DEFAULT FALSE,
+    conf_day1_lunch BOOLEAN DEFAULT FALSE,
+    
+    conf_day2_attended BOOLEAN DEFAULT FALSE,
+    conf_day2_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day2_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day2_breakfast BOOLEAN DEFAULT FALSE,
+    conf_day2_lunch BOOLEAN DEFAULT FALSE,
+    
+    conf_day3_attended BOOLEAN DEFAULT FALSE,
+    conf_day3_checkin TIMESTAMP WITH TIME ZONE,
+    conf_day3_checkout TIMESTAMP WITH TIME ZONE,
+    conf_day3_breakfast BOOLEAN DEFAULT FALSE,
+    conf_day3_lunch BOOLEAN DEFAULT FALSE,
     
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP

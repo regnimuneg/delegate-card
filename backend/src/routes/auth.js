@@ -35,13 +35,13 @@ const router = express.Router();
 router.post('/login', validateLogin, async (req, res, next) => {
     try {
         const { email, password } = req.body;
-        
+
         console.log('🔐 Login attempt:', { email: email?.toLowerCase() });
 
         // Try to get delegate first
         let user = await getDelegateByEmail(email);
         let userType = 'delegate';
-        
+
         console.log('👤 Delegate lookup result:', user ? 'Found' : 'Not found');
 
         // If not a delegate, try member
@@ -59,7 +59,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 error: 'Invalid email or password'
             });
         }
-        
+
         console.log('✅ User found:', { id: user.id, userType, email: user.email });
 
         // Check if delegate account is claimed (members don't have this status)
@@ -82,7 +82,7 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 error: 'Invalid email or password'
             });
         }
-        
+
         console.log('✅ Password verified successfully');
 
         // Generate JWT token
@@ -105,7 +105,6 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 firstName: user.first_name,
                 lastName: user.last_name,
                 name: `${user.first_name} ${user.last_name}`,
-                dateOfBirth: user.date_of_birth,
                 photo: user.photo_url,
                 council: user.council,
                 qrCode: user.qr_code,
@@ -149,42 +148,70 @@ router.post('/login', validateLogin, async (req, res, next) => {
 
 /**
  * POST /api/auth/claim/validate
- * Validate a claim token
+ * Validate a claim token (works for both delegates and members)
  */
 router.post('/claim/validate', validateClaimToken, async (req, res, next) => {
     try {
         const { token } = req.body;
 
-        const delegate = await getDelegateByClaimToken(token);
+        // Import the new function that checks both tables
+        const { getByClaimToken } = await import('../config/database.js');
+        const result = await getByClaimToken(token);
 
-        if (!delegate) {
+        if (!result) {
             return res.status(404).json({
                 success: false,
                 error: 'Invalid claim token'
             });
         }
 
-        if (delegate.status === 'active') {
+        const { type, data } = result;
+
+        // Check if already active (delegates have status, members don't)
+        if (type === 'delegate' && data.status === 'active') {
             return res.status(400).json({
                 success: false,
                 error: 'This account has already been claimed'
             });
         }
 
-        // Return delegate info (without sensitive data)
-        const delegateData = {
-            id: delegate.id, // Council-based ID
-            userId: delegate.users.id, // UUID
-            firstName: delegate.users.first_name,
-            lastName: delegate.users.last_name,
-            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
-            email: delegate.users.email,
-            council: delegate.council
-        };
+        if (data.claim_token_used) {
+            return res.status(400).json({
+                success: false,
+                error: 'This account has already been claimed'
+            });
+        }
+
+        // Return user info based on type
+        let userData;
+        if (type === 'delegate') {
+            userData = {
+                id: data.id,
+                userId: data.users.id,
+                firstName: data.users.first_name,
+                lastName: data.users.last_name,
+                name: `${data.users.first_name} ${data.users.last_name}`,
+                email: data.users.email,
+                council: data.council
+            };
+        } else {
+            // Member
+            userData = {
+                id: data.id,
+                userId: data.users.id,
+                firstName: data.users.first_name,
+                lastName: data.users.last_name,
+                name: `${data.users.first_name} ${data.users.last_name}`,
+                email: data.users.email,
+                committee: data.committee,
+                role: data.role
+            };
+        }
 
         res.json({
             success: true,
-            delegate: delegateData
+            userType: type,
+            delegate: userData // Keep 'delegate' key for backward compatibility
         });
     } catch (error) {
         next(error);
@@ -193,22 +220,34 @@ router.post('/claim/validate', validateClaimToken, async (req, res, next) => {
 
 /**
  * POST /api/auth/claim/complete
- * Complete account claiming with password
+ * Complete account claiming with password (works for both delegates and members)
  */
 router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
     try {
         const { token, password } = req.body;
 
-        const delegate = await getDelegateByClaimToken(token);
+        // Import the new function that checks both tables
+        const { getByClaimToken } = await import('../config/database.js');
+        const result = await getByClaimToken(token);
 
-        if (!delegate) {
+        if (!result) {
             return res.status(404).json({
                 success: false,
                 error: 'Invalid claim token'
             });
         }
 
-        if (delegate.status === 'active') {
+        const { type, data } = result;
+
+        // Check if already claimed
+        if (type === 'delegate' && data.status === 'active') {
+            return res.status(400).json({
+                success: false,
+                error: 'This account has already been claimed'
+            });
+        }
+
+        if (data.claim_token_used) {
             return res.status(400).json({
                 success: false,
                 error: 'This account has already been claimed'
@@ -218,23 +257,33 @@ router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
         // Hash password
         const passwordHash = await hashPassword(password);
 
-        // Update delegate
-        await updateDelegate(delegate.id, {
-            status: 'active',
-            claim_token_used: true
-        });
+        // Update the appropriate table
+        const { supabaseAdmin } = await import('../db/supabase.js');
+
+        if (type === 'delegate') {
+            await updateDelegate(data.id, {
+                status: 'active',
+                claim_token_used: true
+            });
+        } else {
+            // Update member
+            const { error: memberUpdateError } = await supabaseAdmin
+                .from('members')
+                .update({ claim_token_used: true })
+                .eq('id', data.id);
+            if (memberUpdateError) throw memberUpdateError;
+        }
 
         // Update user password
-        const { supabaseAdmin } = await import('../db/supabase.js');
         const { error: updateError } = await supabaseAdmin
             .from('users')
             .update({ password_hash: passwordHash })
-            .eq('id', delegate.user_id); // Use user_id, not delegate.id
+            .eq('id', data.user_id);
 
         if (updateError) throw updateError;
 
         // Create activity entry
-        await createActivityEntry(delegate.user_id, { // Use user_id for activity timeline
+        await createActivityEntry(data.user_id, {
             activity_type: 'other',
             title: 'Account Claimed',
             description: 'Account successfully claimed and activated'
@@ -242,32 +291,47 @@ router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
 
         // Generate JWT token
         const jwtToken = generateToken({
-            id: delegate.id, // Council-based ID
-            userId: delegate.user_id, // UUID
-            email: delegate.users.email,
-            userType: 'delegate',
-            qrCode: delegate.qr_code
+            id: data.id,
+            userId: data.user_id,
+            email: data.users.email,
+            userType: type,
+            qrCode: type === 'delegate' ? data.qr_code : undefined
         });
 
-        // Return user data
-        const userData = {
-            id: delegate.id, // Council-based ID
-            userId: delegate.user_id, // UUID
-            email: delegate.users.email,
-            firstName: delegate.users.first_name,
-            lastName: delegate.users.last_name,
-            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
-            dateOfBirth: delegate.users.date_of_birth,
-            photo: delegate.users.photo_url,
-            council: delegate.council,
-            qrCode: delegate.qr_code,
-            status: delegate.status
-        };
+        // Return user data based on type
+        let userData;
+        if (type === 'delegate') {
+            userData = {
+                id: data.id,
+                userId: data.user_id,
+                email: data.users.email,
+                firstName: data.users.first_name,
+                lastName: data.users.last_name,
+                name: `${data.users.first_name} ${data.users.last_name}`,
+                photo: data.users.photo_url,
+                council: data.council,
+                qrCode: data.qr_code,
+                status: 'active'
+            };
+        } else {
+            userData = {
+                id: data.id,
+                userId: data.user_id,
+                email: data.users.email,
+                firstName: data.users.first_name,
+                lastName: data.users.last_name,
+                name: `${data.users.first_name} ${data.users.last_name}`,
+                photo: data.users.photo_url,
+                committee: data.committee,
+                role: data.role
+            };
+        }
 
         res.json({
             success: true,
             token: jwtToken,
-            user: userData
+            user: userData,
+            userType: type
         });
     } catch (error) {
         next(error);
@@ -280,30 +344,61 @@ router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
  */
 router.get('/me', authenticate, async (req, res, next) => {
     try {
-        const { getDelegateById } = await import('../config/database.js');
-        // req.user.id is the council-based ID (e.g., HRC-01)
-        const delegate = await getDelegateById(req.user.id);
+        const { getDelegateById, getMemberById } = await import('../config/database.js');
 
-        if (!delegate) {
-            return res.status(404).json({
-                success: false,
-                error: 'User not found'
-            });
+        // Check user type
+        const userType = req.user.userType; // 'delegate', 'member', etc.
+
+        let userData;
+
+        if (userType === 'member') {
+            const member = await getMemberById(req.user.id);
+
+            if (!member) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'User not found'
+                });
+            }
+
+            userData = {
+                id: member.id, // Committee-based ID
+                userId: member.user_id, // UUID
+                email: member.users.email,
+                firstName: member.users.first_name,
+                lastName: member.users.last_name,
+                name: `${member.users.first_name} ${member.users.last_name}`,
+                phoneNumber: member.users.phone_number,
+                role: member.role,
+                committee: member.committee,
+                photo: member.users.photo_url,
+                status: 'active' // Members are always active if they can login
+            };
+        } else {
+            // Default to delegate
+            // req.user.id is the council-based ID (e.g., HRC-01)
+            const delegate = await getDelegateById(req.user.id);
+
+            if (!delegate) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'User not found'
+                });
+            }
+
+            userData = {
+                id: delegate.id, // Council-based ID
+                userId: delegate.user_id, // UUID
+                email: delegate.users.email,
+                firstName: delegate.users.first_name,
+                lastName: delegate.users.last_name,
+                name: `${delegate.users.first_name} ${delegate.users.last_name}`,
+                photo: delegate.users.photo_url,
+                council: delegate.council,
+                qrCode: delegate.qr_code,
+                status: delegate.status
+            };
         }
-
-        const userData = {
-            id: delegate.id, // Council-based ID
-            userId: delegate.user_id, // UUID
-            email: delegate.users.email,
-            firstName: delegate.users.first_name,
-            lastName: delegate.users.last_name,
-            name: `${delegate.users.first_name} ${delegate.users.last_name}`,
-            dateOfBirth: delegate.users.date_of_birth,
-            photo: delegate.users.photo_url,
-            council: delegate.council,
-            qrCode: delegate.qr_code,
-            status: delegate.status
-        };
 
         res.json({
             success: true,
@@ -325,12 +420,12 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
         // Find user by email (check delegates, members, admins)
         let user = await getDelegateByEmail(email);
         let userType = 'delegate';
-        
+
         if (!user) {
             user = await getMemberByEmail(email);
             userType = 'member';
         }
-        
+
         // Return error if email is not registered
         if (!user) {
             return res.status(404).json({
@@ -345,7 +440,7 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
 
         // Save reset token to database
         const { supabaseAdmin } = await import('../db/supabase.js');
-        
+
         // Invalidate any existing unused tokens for this user (optional - allows unlimited requests)
         // This ensures only the most recent reset link works
         await supabaseAdmin
@@ -353,7 +448,7 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
             .update({ used: true })
             .eq('user_id', user.user_id || user.id)
             .eq('used', false);
-        
+
         // Insert new token
         const { error: insertError } = await supabaseAdmin
             .from('password_reset_tokens')
@@ -409,7 +504,7 @@ router.post('/password/reset/verify', async (req, res, next) => {
         }
 
         const { supabaseAdmin } = await import('../db/supabase.js');
-        
+
         // Find token
         const { data: resetToken, error: tokenError } = await supabaseAdmin
             .from('password_reset_tokens')
@@ -428,7 +523,7 @@ router.post('/password/reset/verify', async (req, res, next) => {
         // Check if token is expired
         const now = new Date();
         const expiresAt = new Date(resetToken.expires_at);
-        
+
         if (now > expiresAt) {
             return res.status(400).json({
                 success: false,
@@ -454,7 +549,7 @@ router.post('/password/reset', validatePasswordReset, async (req, res, next) => 
         const { token, password } = req.body;
 
         const { supabaseAdmin } = await import('../db/supabase.js');
-        
+
         // Find token
         const { data: resetToken, error: tokenError } = await supabaseAdmin
             .from('password_reset_tokens')
@@ -473,7 +568,7 @@ router.post('/password/reset', validatePasswordReset, async (req, res, next) => 
         // Check if token is expired
         const now = new Date();
         const expiresAt = new Date(resetToken.expires_at);
-        
+
         if (now > expiresAt) {
             return res.status(400).json({
                 success: false,
