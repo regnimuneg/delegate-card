@@ -210,7 +210,6 @@ export async function getByClaimToken(token) {
             )
         `)
         .eq('claim_token', token.toUpperCase())
-        .eq('claim_token_used', false)
         .maybeSingle();
 
     if (delegateData) {
@@ -233,7 +232,6 @@ export async function getByClaimToken(token) {
             )
         `)
         .eq('claim_token', token.toUpperCase())
-        .eq('claim_token_used', false)
         .maybeSingle();
 
     if (memberData) {
