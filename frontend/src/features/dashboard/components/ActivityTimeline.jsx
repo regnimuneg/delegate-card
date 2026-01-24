@@ -89,6 +89,59 @@ function formatAttendanceTitle(title) {
 }
 
 /**
+ * Format food title professionally
+ */
+function formatFoodTitle(title) {
+    // Common food-related patterns
+    const lowerTitle = title.toLowerCase();
+
+    // Extract meal type and day
+    let mealType = '';
+    if (lowerTitle.includes('breakfast')) mealType = 'Breakfast';
+    else if (lowerTitle.includes('lunch')) mealType = 'Lunch';
+    else if (lowerTitle.includes('dinner')) mealType = 'Dinner';
+    else if (lowerTitle.includes('snack')) mealType = 'Snack';
+    else if (lowerTitle.includes('food')) mealType = 'Meal';
+
+    // Extract day
+    let dayPart = '';
+    const dayMatch = lowerTitle.match(/day\s*(\d+)/i) || lowerTitle.match(/sessions\.day(\d+)/i);
+    const confMatch = lowerTitle.match(/conf_?day\s*(\d+)/i) || lowerTitle.match(/sessions\.conf_?day(\d+)/i);
+    const openingMatch = lowerTitle.includes('opening');
+
+    if (confMatch) {
+        dayPart = `Conference Day ${confMatch[1]}`;
+    } else if (dayMatch) {
+        dayPart = `Day ${dayMatch[1]}`;
+    } else if (openingMatch) {
+        dayPart = 'Opening Ceremony';
+    }
+
+    // Build formatted title
+    if (mealType && dayPart) {
+        return `${dayPart} ${mealType}`;
+    } else if (mealType) {
+        return mealType;
+    } else if (dayPart) {
+        return dayPart;
+    }
+
+    // Fallback: clean up the title
+    return title
+        .replace(/sessions\./gi, '')
+        .replace(/food\s*tracking[:\s]*/gi, '')
+        .replace(/for\s+/gi, '')
+        .replace(/day(\d+)/gi, 'Day $1')
+        .replace(/conf_day(\d+)/gi, 'Conference Day $1')
+        .replace(/_/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
+
+/**
  * Get attendance field key from title for deduplication
  */
 function getAttendanceFieldKey(title) {
@@ -109,7 +162,7 @@ function getAttendanceFieldKey(title) {
             return key;
         }
     }
-    
+
     return null;
 }
 
@@ -121,46 +174,121 @@ function isNotAttended(activity) {
     if (activity.activity_type !== 'attendance') return false;
     const desc = (activity.description || '').toLowerCase();
     return desc.includes('marked attended as false') ||
-           desc.includes('attended as false');
+        desc.includes('attended as false');
 }
 
 /**
- * Deduplicate attendance entries - keep only latest state per field
- * If latest state is "Not Attended", remove it from UI (don't show it)
+ * Check if activity is a check-in or check-out (not a status change)
  */
-function deduplicateAttendanceEntries(activities) {
-    const attendanceMap = new Map();
-    const otherActivities = [];
+function isCheckInOrOut(activity) {
+    if (activity.activity_type !== 'attendance') return false;
+    const desc = (activity.description || '').toLowerCase();
+    return desc.includes('check-in') || desc.includes('checkin') ||
+        desc.includes('check-out') || desc.includes('checkout') ||
+        desc.includes('checked in') || desc.includes('checked out');
+}
 
-    // Separate attendance from other activities
+/**
+ * Filter attendance entries:
+ * - Keep ALL check-in and check-out entries
+ * - For status changes (marked attended), keep only latest per day and filter out "Not Attended"
+ */
+function filterAttendanceEntries(activities) {
+    const statusMap = new Map(); // For deduplicating status changes
+    const result = [];
+
     activities.forEach(activity => {
-        if (activity.activity_type === 'attendance') {
+        if (activity.activity_type !== 'attendance') {
+            // Keep all non-attendance activities
+            result.push(activity);
+        } else if (isCheckInOrOut(activity)) {
+            // Keep ALL check-in and check-out entries
+            result.push(activity);
+        } else {
+            // For status changes, deduplicate by field
             const fieldKey = getAttendanceFieldKey(activity.title);
             if (fieldKey) {
-                // Keep only the most recent entry for each attendance field
-                const existing = attendanceMap.get(fieldKey);
+                const existing = statusMap.get(fieldKey);
                 if (!existing || new Date(activity.created_at) > new Date(existing.created_at)) {
-                    attendanceMap.set(fieldKey, activity);
+                    statusMap.set(fieldKey, activity);
                 }
             } else {
-                // If we can't identify the field, keep it
-                otherActivities.push(activity);
+                result.push(activity);
             }
-        } else {
-            otherActivities.push(activity);
         }
     });
 
-    // Filter out "Not Attended" entries - don't show them in UI
-    const deduplicated = Array.from(attendanceMap.values())
-        .filter(activity => !isNotAttended(activity));
-    
-    const allActivities = [...deduplicated, ...otherActivities];
+    // Add deduplicated status changes, filtering out "Not Attended"
+    statusMap.forEach(activity => {
+        if (!isNotAttended(activity)) {
+            result.push(activity);
+        }
+    });
 
     // Sort by timestamp (most recent first)
-    return allActivities.sort((a, b) => 
+    return result.sort((a, b) =>
         new Date(b.created_at) - new Date(a.created_at)
     );
+}
+
+/**
+ * Format attendance description professionally
+ * Shows check-in/check-out with time
+ */
+function formatAttendanceDescription(description, timestamp) {
+    if (!description) return '';
+
+    const lowerDesc = description.toLowerCase();
+
+    // Format the time from timestamp if available
+    let timeStr = '';
+    if (timestamp) {
+        const date = new Date(timestamp);
+        timeStr = date.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+        });
+    }
+
+    // Check for check-in
+    if (lowerDesc.includes('check-in') || lowerDesc.includes('checkin') || lowerDesc.includes('checked in')) {
+        return timeStr ? `Check in at ${timeStr}` : 'Checked in';
+    }
+
+    // Check for check-out
+    if (lowerDesc.includes('check-out') || lowerDesc.includes('checkout') || lowerDesc.includes('checked out')) {
+        return timeStr ? `Check out at ${timeStr}` : 'Checked out';
+    }
+
+    // Check for attendance marked
+    if (lowerDesc.includes('marked attended as true') || lowerDesc.includes('attended as true')) {
+        return timeStr ? `Marked present at ${timeStr}` : 'Marked as present';
+    }
+    if (lowerDesc.includes('marked attended as false') || lowerDesc.includes('attended as false')) {
+        return 'Not Attended';
+    }
+
+    return description;
+}
+
+/**
+ * Format food description professionally
+ */
+function formatFoodDescription(description) {
+    if (!description) return 'Meal redeemed';
+
+    // Clean up common patterns
+    const cleaned = description
+        .replace(/food\s*tracking[:\s]*/gi, '')
+        .replace(/for\s+sessions\./gi, '')
+        .replace(/sessions\./gi, '')
+        .replace(/day(\d+)/gi, 'Day $1')
+        .replace(/conf_day(\d+)/gi, 'Conference Day $1')
+        .replace(/_/g, ' ')
+        .trim();
+
+    return cleaned || 'Meal redeemed';
 }
 
 /**
@@ -168,14 +296,24 @@ function deduplicateAttendanceEntries(activities) {
  */
 function transformActivity(activity) {
     const isAttendance = activity.activity_type === 'attendance';
-    const formattedTitle = isAttendance 
-        ? formatAttendanceTitle(activity.title)
-        : activity.title;
+    const isFood = activity.activity_type === 'food';
+
+    let formattedTitle = activity.title;
+    let formattedDescription = activity.description || '';
+
+    if (isAttendance) {
+        formattedTitle = formatAttendanceTitle(activity.title);
+        formattedDescription = formatAttendanceDescription(activity.description, activity.created_at);
+    } else if (isFood) {
+        formattedTitle = formatFoodTitle(activity.title);
+        formattedDescription = formatFoodDescription(activity.description);
+    }
 
     return {
         id: activity.id,
         type: activity.activity_type,
         title: formattedTitle,
+        description: formattedDescription,
         timestamp: activity.created_at,
         icon: getIconForType(activity.activity_type)
     };
@@ -203,14 +341,14 @@ export function ActivityTimeline({ activities: propActivities, limit = 5 }) {
         // Otherwise, fetch from API
         const fetchActivities = async () => {
             if (!user) return;
-            
+
             setLoading(true);
-            
+
             try {
                 const response = await api.getActivityTimeline(limit * 3); // Fetch more to account for deduplication
                 if (response.success && response.activities) {
                     // First deduplicate (checking original descriptions), then transform
-                    const deduplicated = deduplicateAttendanceEntries(response.activities);
+                    const deduplicated = filterAttendanceEntries(response.activities);
                     const transformed = deduplicated.map(transformActivity);
                     setActivities(transformed);
                 } else {
@@ -295,6 +433,9 @@ export function ActivityTimeline({ activities: propActivities, limit = 5 }) {
                                     {formatRelativeTime(activity.timestamp)}
                                 </span>
                             </div>
+                            {activity.description && (
+                                <p className="activity-timeline-description">{activity.description}</p>
+                            )}
                         </div>
                     </div>
                 ))}
