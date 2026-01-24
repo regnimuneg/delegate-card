@@ -5,8 +5,9 @@ import { DelegateCard } from '../components/DelegateCard';
 import { ActivityTimeline } from '../components/ActivityTimeline';
 import { AttendanceHistory } from '../components/AttendanceHistory';
 import { FoodHistory } from '../components/FoodHistory';
-import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
-import { VoucherRedemptionCard } from '../../vouchers/components/VoucherRedemptionCard';
+// TODO: Uncomment when real voucher data is available
+// import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
+// import { VoucherRedemptionCard } from '../../vouchers/components/VoucherRedemptionCard';
 import { Navbar, Footer } from '../../../shared/components/layout';
 import './Dashboard.css';
 import './Dashboard-additions.css';
@@ -18,18 +19,20 @@ import './Dashboard-additions.css';
 export function Dashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    const [activeClaim, setActiveClaim] = useState(null);
+    // TODO: Uncomment when real voucher data is available
+    // const [activeClaim, setActiveClaim] = useState(null);
     const [activeTab, setActiveTab] = useState('home'); // 'home', 'attendance', 'food'
 
-    // Handle successful voucher claim
-    const handleClaimSuccess = (claimData) => {
-        setActiveClaim(claimData);
-    };
+    // TODO: Uncomment when real voucher data is available
+    // // Handle successful voucher claim
+    // const handleClaimSuccess = (claimData) => {
+    //     setActiveClaim(claimData);
+    // };
 
-    // Dismiss the active claim display
-    const handleDismissClaim = () => {
-        setActiveClaim(null);
-    };
+    // // Dismiss the active claim display
+    // const handleDismissClaim = () => {
+    //     setActiveClaim(null);
+    // };
 
     if (!user) {
         return null;
@@ -57,13 +60,14 @@ export function Dashboard() {
                                 <p>Claim your vouchers and track your conference activities</p>
                             </section>
 
+                            {/* TODO: Uncomment when real voucher data is available */}
                             {/* Voucher Redemption Card - Center of Attention */}
-                            {activeClaim && (
+                            {/* {activeClaim && (
                                 <VoucherRedemptionCard
                                         claim={activeClaim}
                                         onDismiss={handleDismissClaim}
                                     />
-                            )}
+                            )} */}
 
                             {/* Bento Grid Layout */}
                             <div className="bento-grid">
@@ -80,7 +84,7 @@ export function Dashboard() {
                                         const confEnd = new Date('2026-02-02');
                                         const isInConference = now >= confStart && now <= confEnd;
                                         const daysDiff = isInConference ? Math.floor((now - confStart) / (1000 * 60 * 60 * 24)) + 1 : 0;
-                                        
+
                                         // Determine which phase is active
                                         // Sessions: Jan 25-28 (days 1-4)
                                         // Opening: Jan 30 (day 6)
@@ -150,10 +154,10 @@ export function Dashboard() {
                                                             <div className={`dashboard-timeline-item ${activePhase === 'conference' && conferenceDay === 3 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 3</span>
                                                                 <span className="dashboard-timeline-date">2 Feb</span>
-                                        </div>
-                                        </div>
-                                        </div>
-                                    </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </>
                                         );
                                     })()}
@@ -163,7 +167,7 @@ export function Dashboard() {
                                 <section className="bento-item bento-item--activity animate-slide-up" style={{ animationDelay: '100ms' }}>
                                     <div className="dashboard-activity-header">
                                         <h3 className="dashboard-activity-title">Recent Activity</h3>
-                                        <button 
+                                        <button
                                             className="dashboard-activity-view-all"
                                             onClick={() => navigate('/activity')}
                                         >
@@ -173,8 +177,9 @@ export function Dashboard() {
                                     <ActivityTimeline limit={8} />
                                 </section>
 
+                                {/* TODO: Uncomment when real voucher data is available */}
                                 {/* Available Benefits - Full Width */}
-                                <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
+                                {/* <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
                                     <div className="dashboard-benefits-header">
                                         <div>
                                             <h3 className="dashboard-benefits-title">Available Benefits Today</h3>
@@ -185,7 +190,7 @@ export function Dashboard() {
                                         delegateId={user.id}
                                         onClaimSuccess={handleClaimSuccess}
                                     />
-                                </section>
+                                </section> */}
                             </div>
                         </>
                     )}
