@@ -151,14 +151,14 @@ export async function getDelegateByEmail(email) {
 
 
 /**
- * Get member by email
+ * Get member by email (includes member, executive, and high board types)
  */
 export async function getMemberByEmail(email) {
     const { data: user, error: userError } = await supabaseAdmin
         .from('users')
         .select('*')
         .eq('email', email.toLowerCase())
-        .eq('user_type', 'member')
+        .in('user_type', ['member', 'executive', 'high board'])
         .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
     if (userError) {

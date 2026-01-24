@@ -31,13 +31,13 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 -- ============================================
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    email VARCHAR(255) UNIQUE, -- email is unique but can be NULL (for printed invites etc)
+    email VARCHAR(255), -- Not unique, can be NULL. ID is the identifier.
     password_hash VARCHAR(255) NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     phone_number VARCHAR(20), -- Phone number for all users
     photo_url TEXT,
-    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member', 'invitation')),
+    user_type VARCHAR(20) NOT NULL CHECK (user_type IN ('delegate', 'member', 'invitation', 'executive', 'high board')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     last_login TIMESTAMP WITH TIME ZONE
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS delegates (
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     -- Note: name is stored in users.first_name + users.last_name
     council VARCHAR(100) NOT NULL, -- Council name (e.g., HRC, UNSC, DISEC)
-    claim_token VARCHAR(5) UNIQUE,
+    claim_token VARCHAR(50) UNIQUE,
     claim_token_used BOOLEAN DEFAULT FALSE,
     qr_code VARCHAR(100) UNIQUE NOT NULL, -- QR code identifier
     status VARCHAR(20) DEFAULT 'unclaimed' CHECK (status IN ('unclaimed', 'active', 'inactive')),
@@ -167,7 +167,8 @@ CREATE TABLE IF NOT EXISTS members (
         'Socials & Events',
         'Public Relations',
         'Media & Design',
-        'Operations & Logistics'
+        'Operations & Logistics',
+        'High Board'
     )),
     claim_token VARCHAR(50) UNIQUE,
     claim_token_used BOOLEAN DEFAULT FALSE,
