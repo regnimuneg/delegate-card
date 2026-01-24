@@ -167,14 +167,7 @@ router.post('/claim/validate', validateClaimToken, async (req, res, next) => {
 
         const { type, data } = result;
 
-        // Check if already active (delegates have status, members don't)
-        if (type === 'delegate' && data.status === 'active') {
-            return res.status(400).json({
-                success: false,
-                error: 'This account has already been claimed'
-            });
-        }
-
+        // Check if already claimed
         if (data.claim_token_used) {
             return res.status(400).json({
                 success: false,
@@ -240,13 +233,6 @@ router.post('/claim/complete', validateClaimAccount, async (req, res, next) => {
         const { type, data } = result;
 
         // Check if already claimed
-        if (type === 'delegate' && data.status === 'active') {
-            return res.status(400).json({
-                success: false,
-                error: 'This account has already been claimed'
-            });
-        }
-
         if (data.claim_token_used) {
             return res.status(400).json({
                 success: false,
