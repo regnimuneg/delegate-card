@@ -66,10 +66,14 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
     const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL || process.env.SMTP_USER || 'reg.nimun.eg@gmail.com';
+    // Use Resend default or SMTP user
+    const fromEmail = process.env.RESEND_FROM_EMAIL ||
+        (process.env.RESEND_API_KEY ? 'noreply@nimuneg.org' : null) ||
+        process.env.SMTP_USER ||
+        'reg.nimun.eg@gmail.com';
     const from = `"NIMUN'26" <${fromEmail}>`;
     const subject = 'Reset Your NIMUN\'26 Delegate Portal Password';
-    
+
     const html = `
             <!DOCTYPE html>
             <html>
@@ -133,7 +137,7 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
             </body>
             </html>
         `;
-    
+
     const text = `
             NIMUN'26 Delegate Portal - Password Reset
             
@@ -158,7 +162,7 @@ export async function sendPasswordResetEmail(to, resetToken, firstName = 'Delega
             const result = await sendEmailViaResend(to, subject, html, text, from);
             return { success: true, messageId: result.id };
         }
-        
+
         // Fallback to SMTP (for local development only - won't work on Render free tier)
         const transporter = createTransporter();
         const info = await transporter.sendMail({
