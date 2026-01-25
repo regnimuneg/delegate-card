@@ -25,7 +25,7 @@ export function handleValidationErrors(req, res, next) {
 export const validateLogin = [
     body('email')
         .isEmail()
-        .toLowerCase()
+        .customSanitizer(value => value.toLowerCase())
         .withMessage('Valid email is required'),
     body('password')
         .notEmpty()
@@ -89,7 +89,7 @@ export const validateRewardActivation = [
 export const validatePasswordResetRequest = [
     body('email')
         .isEmail()
-        .toLowerCase()
+        .customSanitizer(value => value.toLowerCase())
         .withMessage('Valid email is required'),
     handleValidationErrors
 ];

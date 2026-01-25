@@ -32,10 +32,7 @@ const router = express.Router();
  * POST /api/auth/login
  * Login with email and password
  */
-router.post('/login', (req, res, next) => {
-    console.log('🔍 RAW LOGIN BODY:', JSON.stringify(req.body));
-    next();
-}, validateLogin, async (req, res, next) => {
+router.post('/login', validateLogin, async (req, res, next) => {
     try {
         const { email, password } = req.body;
 
