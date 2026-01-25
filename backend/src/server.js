@@ -21,6 +21,12 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Request logger
+app.use((req, res, next) => {
+    console.log(`📡 [INCOMING] ${req.method} ${req.url} | Origin: ${req.headers.origin || 'No Origin'}`);
+    next();
+});
+
 // Trust proxy - required for rate limiting behind reverse proxy (Render, etc.)
 // Use 1 instead of true to satisfy express-rate-limit on Render
 app.set('trust proxy', 1);
@@ -124,7 +130,7 @@ async function startServer() {
 
     // Test database connection before starting server
     const dbTest = await testConnection();
-    
+
     if (!dbTest.success) {
         logError('❌ Database connection failed!', { error: dbTest.error });
         if (isDevelopment) {

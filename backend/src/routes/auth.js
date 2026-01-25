@@ -121,7 +121,8 @@ router.post('/login', validateLogin, async (req, res, next) => {
                 name: `${user.first_name} ${user.last_name}`,
                 phoneNumber: user.phone_number,
                 role: user.role,
-                committee: user.committee
+                committee: user.committee,
+                photo: user.photo_url
             };
         } else {
             // Admin
@@ -403,14 +404,23 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
     try {
         const { email } = req.body;
 
-        // Find user by email (check delegates, members, admins)
-        let user = await getDelegateByEmail(email);
-        let userType = 'delegate';
+        console.log('🔑 Password reset requested for:', email);
 
-        if (!user) {
-            user = await getMemberByEmail(email);
-            userType = 'member';
+        // For password reset, we just need to find the user by email
+        // No need to filter by user_type - any registered user can reset their password
+        const { supabaseAdmin } = await import('../db/supabase.js');
+
+        const { data: user, error: userError } = await supabaseAdmin
+            .from('users')
+            .select('*')
+            .eq('email', email.toLowerCase())
+            .maybeSingle();
+
+        if (userError) {
+            console.error('❌ Database error looking up user:', userError);
         }
+
+        console.log('👤 User lookup result:', user ? `Found user ID: ${user.id}` : 'Not found');
 
         // Return error if email is not registered
         if (!user) {
@@ -425,7 +435,7 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
         const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 hour from now
 
         // Save reset token to database
-        const { supabaseAdmin } = await import('../db/supabase.js');
+        // Note: supabaseAdmin is already imported above
 
         // Invalidate any existing unused tokens for this user (optional - allows unlimited requests)
         // This ensures only the most recent reset link works

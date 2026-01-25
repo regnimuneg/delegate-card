@@ -25,7 +25,7 @@ export function handleValidationErrors(req, res, next) {
 export const validateLogin = [
     body('email')
         .isEmail()
-        .normalizeEmail()
+        .toLowerCase()
         .withMessage('Valid email is required'),
     body('password')
         .notEmpty()
@@ -40,6 +40,7 @@ export const validateClaimToken = [
     body('token')
         .notEmpty()
         .trim()
+        .toUpperCase()
         .matches(/^[A-Z0-9]{6}$/)
         .withMessage('Invalid claim token format (should be 6 characters)'),
     handleValidationErrors
@@ -52,6 +53,7 @@ export const validateClaimAccount = [
     body('token')
         .notEmpty()
         .trim()
+        .toUpperCase()
         .matches(/^[A-Z0-9]{6}$/)
         .withMessage('Invalid claim token format (should be 6 characters)'),
     body('password')
@@ -87,7 +89,7 @@ export const validateRewardActivation = [
 export const validatePasswordResetRequest = [
     body('email')
         .isEmail()
-        .normalizeEmail()
+        .toLowerCase()
         .withMessage('Valid email is required'),
     handleValidationErrors
 ];

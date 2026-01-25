@@ -109,19 +109,19 @@ export function Dashboard() {
                                                     <div className="dashboard-timeline-group">
                                                         <span className="dashboard-timeline-group-label">Sessions</span>
                                                         <div className="dashboard-timeline-items">
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && conferenceDay === 1 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 1 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 1</span>
                                                                 <span className="dashboard-timeline-date">25 Jan</span>
                                                             </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && conferenceDay === 2 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 2 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 2</span>
                                                                 <span className="dashboard-timeline-date">26 Jan</span>
                                                             </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && conferenceDay === 3 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 3 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 3</span>
                                                                 <span className="dashboard-timeline-date">27 Jan</span>
                                                             </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && conferenceDay === 4 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 4 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 4</span>
                                                                 <span className="dashboard-timeline-date">28 Jan</span>
                                                             </div>
@@ -143,15 +143,15 @@ export function Dashboard() {
                                                     <div className="dashboard-timeline-group">
                                                         <span className="dashboard-timeline-group-label">Conference</span>
                                                         <div className="dashboard-timeline-items">
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && conferenceDay === 1 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 7 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 1</span>
                                                                 <span className="dashboard-timeline-date">31 Jan</span>
                                                             </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && conferenceDay === 2 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 8 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 2</span>
                                                                 <span className="dashboard-timeline-date">1 Feb</span>
                                                             </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && conferenceDay === 3 ? 'dashboard-timeline-item--active' : ''}`}>
+                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 9 ? 'dashboard-timeline-item--active' : ''}`}>
                                                                 <span className="dashboard-timeline-day">Day 3</span>
                                                                 <span className="dashboard-timeline-date">2 Feb</span>
                                                             </div>
