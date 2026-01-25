@@ -52,7 +52,7 @@ export function Profile() {
 
     // QR code format: IC'26-{delegateId} (e.g., "IC'26-HRC-01")
     const delegateId = user.id;
-    const qrCodeValue = `IC'26-${delegateId}`;
+    const qrCodeValue = `${delegateId}`;
 
     return (
         <div className="profile-page">

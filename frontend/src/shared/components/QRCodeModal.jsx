@@ -32,7 +32,7 @@ export function QRCodeModal({ qrValue, delegateId, isOpen, onClose }) {
                 </div>
                 <div className="qr-modal-footer">
                     <code className="qr-modal-code">{delegateId}</code>
-                    <p className="qr-modal-hint">IC'26-{delegateId}</p>
+                    {/* <p className="qr-modal-hint">{delegateId}</p> */}
                 </div>
             </div>
         </div>

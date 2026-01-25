@@ -24,7 +24,7 @@ export function DelegateCard({ delegate, showQR = true }) {
 
     const fullName = `${firstName} ${lastName}`;
     const delegateId = delegate.id; // Just the ID like "HRC-01", "EX-01", etc.
-    const qrCodeValue = `IC'26-${delegateId}`; // QR code format: IC'26-HRC-01
+    const qrCodeValue = `${delegateId}`; // QR code format: HRC-01
 
     // Determine the card type based on user data
     const getCardType = () => {
