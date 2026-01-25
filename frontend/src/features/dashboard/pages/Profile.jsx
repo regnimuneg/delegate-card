@@ -142,9 +142,9 @@ export function Profile() {
                                     <div className="profile-info-value">{user.email}</div>
                                 </div>
                                 <div className="profile-info-item">
-                                    <label className="profile-info-label">Date of Birth</label>
+                                    <label className="profile-info-label">Phone Number</label>
                                     <div className="profile-info-value">
-                                        {user.dateOfBirth || 'Not set'}
+                                        {user.phoneNumber || 'Not set'}
                                     </div>
                                 </div>
                             </div>
