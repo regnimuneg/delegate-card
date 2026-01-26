@@ -18,7 +18,7 @@ export function Profile() {
     const [activeTab, setActiveTab] = useState('profile');
     const [stats, setStats] = useState({
         daysAttended: 0,
-        totalDays: 9,
+        totalDays: 8,
         attendanceRate: 0
     });
     const [loadingStats, setLoadingStats] = useState(true);
@@ -28,10 +28,28 @@ export function Profile() {
             try {
                 const response = await api.getAttendanceStats();
                 if (response.success) {
+                    // Calculate elapsed days from start date (Jan 25, 2026)
+                    const startDate = new Date('2026-01-25');
+                    const now = new Date();
+
+                    // Difference in time
+                    const differenceInTime = now.getTime() - startDate.getTime();
+                    // Difference in days (add 1 to include start date as day 1)
+                    let daysElapsed = Math.ceil(differenceInTime / (1000 * 3600 * 24));
+
+                    // Clamp days elapsed: minimum 1, maximum 8 (total conference duration)
+                    // If before start date, treat as Day 1
+                    daysElapsed = Math.max(1, Math.min(daysElapsed, 8));
+
+                    const daysAttended = response.daysAttended || 0;
+
+                    // Rate is days attended / days elapsed (not total days)
+                    const attendanceRate = Math.round((daysAttended / daysElapsed) * 100);
+
                     setStats({
-                        daysAttended: response.daysAttended || 0,
-                        totalDays: response.totalDays || 9,
-                        attendanceRate: response.attendanceRate || 0
+                        daysAttended: daysAttended,
+                        totalDays: response.totalDays || 8, // Keep total days for reference/display if needed
+                        attendanceRate: attendanceRate
                     });
                 }
             } catch (error) {
@@ -50,7 +68,7 @@ export function Profile() {
         return null;
     }
 
-    // QR code format: IC'26-{delegateId} (e.g., "IC'26-HRC-01")
+    // QR code format: {delegateId} (e.g., "HRC-01")
     const delegateId = user.id;
     const qrCodeValue = `${delegateId}`;
 
