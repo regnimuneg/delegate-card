@@ -119,6 +119,7 @@ app.use(errorHandler);
 
 /**
  * Start server with database connection verification
+ * Only starts HTTP server in local dev mode - Vercel handles this in serverless
  */
 async function startServer() {
     // Validate environment variables
@@ -145,8 +146,8 @@ async function startServer() {
 
     log('✅ Database connection verified!\n');
 
-    // Start server - Render provides PORT via environment variable
-    // Listen on all interfaces (0.0.0.0) for Render deployment
+    // Start server - Vercel/Render provides PORT via environment variable
+    // Listen on all interfaces (0.0.0.0) for deployments
     const HOST = '0.0.0.0';
     const SERVER_PORT = process.env.PORT || PORT;
     app.listen(SERVER_PORT, HOST, () => {
@@ -168,11 +169,14 @@ async function startServer() {
     });
 }
 
-// Start the server
-startServer().catch((error) => {
-    logError('❌ Failed to start server', error);
-    process.exit(1);
-});
+// Only start server if not in Vercel serverless environment
+// In Vercel, the app is imported and used directly by api/index.js
+if (process.env.VERCEL !== '1') {
+    startServer().catch((error) => {
+        logError('❌ Failed to start server', error);
+        process.exit(1);
+    });
+}
 
 export default app;
 

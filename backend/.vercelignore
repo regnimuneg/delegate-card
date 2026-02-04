@@ -1,0 +1,13 @@
+# Vercel ignore patterns
+node_modules
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+reproduce_issue.js
+*.md
+!README.md
+src/db/*.sql
+CSV_IMPORT_GUIDE.md
+DEPLOYMENT*.md
