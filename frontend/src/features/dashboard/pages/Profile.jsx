@@ -49,7 +49,8 @@ export function Profile() {
                     setStats({
                         daysAttended: daysAttended,
                         totalDays: response.totalDays || 8, // Keep total days for reference/display if needed
-                        attendanceRate: attendanceRate
+                        attendanceRate: attendanceRate,
+                        awards: response.awards || null
                     });
                 }
             } catch (error) {

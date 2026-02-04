@@ -10,7 +10,7 @@ import './VoucherList.css';
  * @param {string} delegateId - The delegate's ID
  * @param {function} onClaimSuccess - Callback when a voucher is successfully claimed, receives claim data
  */
-export function VoucherList({ delegateId, onClaimSuccess }) {
+export function VoucherList({ delegateId, onClaimSuccess, activeClaims = [], onClaimClick }) {
     const { vouchers, isLoading, claimingVendorId, claimVoucher } = useVouchers(delegateId);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
 
@@ -35,8 +35,8 @@ export function VoucherList({ delegateId, onClaimSuccess }) {
                     vendorName: selectedVoucher.name,
                     timestamp,
                 });
-                const expiresAt = claim.expiresAt ? new Date(claim.expiresAt).getTime() : timestamp + (15 * 60 * 1000);
-                
+                const expiresAt = claim.expiresAt ? new Date(claim.expiresAt).getTime() : timestamp + (5 * 60 * 1000); // 5 minutes
+
                 onClaimSuccess({
                     vendorId: selectedVoucher.id,
                     vendorName: selectedVoucher.name,
@@ -44,7 +44,8 @@ export function VoucherList({ delegateId, onClaimSuccess }) {
                     description: selectedVoucher.description,
                     timestamp,
                     qrToken,
-                    expiresAt
+                    expiresAt,
+                    staticCode: claim.staticCode || null  // Include static code from backend
                 });
             }
             // Close the confirmation modal
@@ -78,14 +79,19 @@ export function VoucherList({ delegateId, onClaimSuccess }) {
                     {/* Available Vouchers */}
                     {availableVouchers.length > 0 && (
                         <div className="voucher-list-grid">
-                            {availableVouchers.map(voucher => (
-                                <VoucherCard
-                                    key={voucher.id}
-                                    voucher={voucher}
-                                    onClaim={handleClaimClick}
-                                    isClaiming={claimingVendorId === voucher.id}
-                                />
-                            ))}
+                            {availableVouchers.map(voucher => {
+                                const activeClaim = activeClaims.find(c => c.vendorId === voucher.id);
+                                return (
+                                    <VoucherCard
+                                        key={voucher.id}
+                                        voucher={voucher}
+                                        onClaim={handleClaimClick}
+                                        isClaiming={claimingVendorId === voucher.id}
+                                        activeClaim={activeClaim}
+                                        onClaimClick={onClaimClick}
+                                    />
+                                );
+                            })}
                         </div>
                     )}
 

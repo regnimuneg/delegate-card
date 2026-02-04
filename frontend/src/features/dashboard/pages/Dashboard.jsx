@@ -5,9 +5,9 @@ import { DelegateCard } from '../components/DelegateCard';
 import { ActivityTimeline } from '../components/ActivityTimeline';
 import { AttendanceHistory } from '../components/AttendanceHistory';
 import { FoodHistory } from '../components/FoodHistory';
-// TODO: Uncomment when real voucher data is available
-// import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
-// import { VoucherRedemptionCard } from '../../vouchers/components/VoucherRedemptionCard';
+import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
+import { VoucherRedemptionCard } from '../../vouchers/components/VoucherRedemptionCard';
+import { useActiveClaims } from '../../vouchers/hooks/useActiveClaims';
 import { Navbar, Footer } from '../../../shared/components/layout';
 import './Dashboard.css';
 import './Dashboard-additions.css';
@@ -19,20 +19,26 @@ import './Dashboard-additions.css';
 export function Dashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
-    // TODO: Uncomment when real voucher data is available
-    // const [activeClaim, setActiveClaim] = useState(null);
+    const [activeClaim, setActiveClaim] = useState(null);
     const [activeTab, setActiveTab] = useState('home'); // 'home', 'attendance', 'food'
+    const { activeClaims, addClaim, getActiveClaim } = useActiveClaims(user?.id);
 
-    // TODO: Uncomment when real voucher data is available
-    // // Handle successful voucher claim
-    // const handleClaimSuccess = (claimData) => {
-    //     setActiveClaim(claimData);
-    // };
+    // Handle successful voucher claim
+    const handleClaimSuccess = (claim) => {
+        console.log('Voucher claimed:', claim);
+        addClaim(claim);  // Store in activeClaims
+        setActiveClaim(claim);  // Show popup
+    };
 
-    // // Dismiss the active claim display
-    // const handleDismissClaim = () => {
-    //     setActiveClaim(null);
-    // };
+    const handleDismissClaim = () => {
+        // Just hide the popup, claim stays active
+        setActiveClaim(null);
+    };
+
+    const handleClaimClick = (claim) => {
+        // Reopen an active claim
+        setActiveClaim(claim);
+    };
 
     if (!user) {
         return null;
@@ -60,14 +66,13 @@ export function Dashboard() {
                                 <p>Claim your vouchers and track your conference activities</p>
                             </section>
 
-                            {/* TODO: Uncomment when real voucher data is available */}
                             {/* Voucher Redemption Card - Center of Attention */}
-                            {/* {activeClaim && (
+                            {activeClaim && (
                                 <VoucherRedemptionCard
-                                        claim={activeClaim}
-                                        onDismiss={handleDismissClaim}
-                                    />
-                            )} */}
+                                    claim={activeClaim}
+                                    onDismiss={handleDismissClaim}
+                                />
+                            )}
 
                             {/* Bento Grid Layout */}
                             <div className="bento-grid">
@@ -177,9 +182,8 @@ export function Dashboard() {
                                     <ActivityTimeline limit={8} />
                                 </section>
 
-                                {/* TODO: Uncomment when real voucher data is available */}
                                 {/* Available Benefits - Full Width */}
-                                {/* <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
+                                <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
                                     <div className="dashboard-benefits-header">
                                         <div>
                                             <h3 className="dashboard-benefits-title">Available Benefits Today</h3>
@@ -189,8 +193,10 @@ export function Dashboard() {
                                     <VoucherList
                                         delegateId={user.id}
                                         onClaimSuccess={handleClaimSuccess}
+                                        activeClaims={activeClaims}
+                                        onClaimClick={handleClaimClick}
                                     />
-                                </section> */}
+                                </section>
                             </div>
                         </>
                     )}

@@ -284,9 +284,9 @@ export async function updateDelegate(delegateId, updates) {
 }
 
 /**
- * Get vouchers for delegate
+ * Get vouchers for user (delegate or member)
  */
-export async function getVouchersForDelegate(delegateId) {
+export async function getVouchersForUser(userId, userType = 'delegate') {
     // Get all active vouchers
     const { data: vouchers, error: vouchersError } = await supabaseAdmin
         .from('vouchers')
@@ -296,19 +296,20 @@ export async function getVouchersForDelegate(delegateId) {
 
     if (vouchersError) throw vouchersError;
 
-    // Get delegate's claims
+    // Get user's claims based on type
+    const queryColumn = userType === 'member' ? 'member_id' : 'delegate_id';
     const { data: claims, error: claimsError } = await supabaseAdmin
         .from('voucher_claims')
         .select('*')
-        .eq('delegate_id', delegateId)
+        .eq(queryColumn, userId)
         .order('claimed_at', { ascending: false });
 
     if (claimsError) throw claimsError;
 
     // Combine vouchers with claim data
     return vouchers.map(voucher => {
-        const delegateClaims = claims.filter(c => c.voucher_id === voucher.id);
-        const used = delegateClaims.length;
+        const userClaims = claims.filter(c => c.voucher_id === voucher.id);
+        const used = userClaims.length;
         const remaining = voucher.usage_limit ? voucher.usage_limit - used : null;
 
         return {
@@ -323,18 +324,33 @@ export async function getVouchersForDelegate(delegateId) {
 }
 
 /**
- * Create voucher claim
+ * Get vouchers for delegate (legacy - calls getVouchersForUser)
  */
-export async function createVoucherClaim(delegateId, voucherId, qrToken, expiresAt) {
+export async function getVouchersForDelegate(delegateId) {
+    return getVouchersForUser(delegateId, 'delegate');
+}
+
+/**
+ * Create voucher claim for user (delegate or member)
+ */
+export async function createVoucherClaim(userId, voucherId, qrToken, expiresAt, userType = 'delegate') {
+    const claimData = {
+        voucher_id: voucherId,
+        qr_token: qrToken,
+        qr_expires_at: expiresAt,
+        status: 'active'
+    };
+
+    // Set the appropriate ID field based on user type
+    if (userType === 'member') {
+        claimData.member_id = userId;
+    } else {
+        claimData.delegate_id = userId;
+    }
+
     const { data, error } = await supabaseAdmin
         .from('voucher_claims')
-        .insert({
-            delegate_id: delegateId,
-            voucher_id: voucherId,
-            qr_token: qrToken,
-            qr_expires_at: expiresAt,
-            status: 'active'
-        })
+        .insert(claimData)
         .select()
         .single();
 
@@ -359,7 +375,8 @@ export async function getAttendanceStats(userId, userType = 'delegate') {
             day4_session_attended,
             conf_day1_attended,
             conf_day2_attended,
-            conf_day3_attended
+            conf_day3_attended,
+            award
         `)
         .eq('id', userId)
         .maybeSingle();
@@ -372,7 +389,8 @@ export async function getAttendanceStats(userId, userType = 'delegate') {
         return {
             daysAttended: 0,
             totalDays: 9,
-            attendanceRate: 0
+            attendanceRate: 0,
+            awards: null
         };
     }
 
@@ -394,7 +412,8 @@ export async function getAttendanceStats(userId, userType = 'delegate') {
     return {
         daysAttended,
         totalDays,
-        attendanceRate
+        attendanceRate,
+        awards: user.award || null
     };
 }
 

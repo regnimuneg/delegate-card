@@ -21,7 +21,7 @@ router.post('/activate', authenticate, validateRewardActivation, async (req, res
 
         // Generate QR token
         const qrToken = crypto.randomBytes(32).toString('hex');
-        const expiresAt = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+        const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes - Reward stays valid for this period
 
         // Create QR data payload
         const qrData = {
@@ -99,7 +99,7 @@ router.get('/verify/:token', optionalAuth, async (req, res, next) => {
                 rewardType: activation.reward_type,
                 delegate: {
                     id: activation.delegates.id,
-                    name: activation.delegates.users 
+                    name: activation.delegates.users
                         ? `${activation.delegates.users.first_name} ${activation.delegates.users.last_name}`
                         : 'Unknown',
                     qrCode: activation.delegates.qr_code

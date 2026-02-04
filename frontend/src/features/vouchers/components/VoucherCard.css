@@ -5,20 +5,70 @@
 .voucher-card {
     background: #fff;
     border-radius: 14px;
-    padding: 12px;
+    padding: 16px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     border: 1px solid rgba(0, 0, 0, 0.06);
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px;
     min-width: 0;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 @media (max-width: 480px) {
     .voucher-card {
-        padding: 10px;
+        padding: 12px;
         border-radius: 12px;
-        gap: 6px;
+        gap: 10px;
+    }
+}
+
+/* Active State - Highlight with glow */
+.voucher-card--active {
+    border-left: 3px solid var(--nimun-blue);
+    box-shadow: 0 4px 16px rgba(0, 55, 192, 0.15);
+    background: linear-gradient(to bottom, rgba(0, 55, 192, 0.02), #fff);
+    padding-top: 40px;
+    /* Make room for timer badge */
+}
+
+.voucher-card--active .voucher-usage {
+    background: var(--nimun-blue-subtle);
+    color: var(--nimun-blue);
+    font-weight: var(--font-weight-bold);
+}
+
+/* Active Badge with Timer - Positioned at top */
+.voucher-card-active-badge {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--nimun-blue);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0, 55, 192, 0.3);
+    z-index: 2;
+    white-space: nowrap;
+}
+
+.voucher-card-active-badge svg {
+    width: 12px;
+    height: 12px;
+}
+
+@media (max-width: 480px) {
+    .voucher-card-active-badge {
+        font-size: 10px;
+        padding: 4px 10px;
+        top: 8px;
     }
 }
 
@@ -41,19 +91,19 @@
     box-shadow: var(--shadow-md);
 }
 
-/* Header */
+/* Header - Logo and Name */
 .voucher-card-header {
     display: flex;
-    align-items: flex-start;
-    gap: var(--space-3);
+    align-items: center;
+    gap: 12px;
     min-width: 0;
 }
 
 .voucher-card-image {
     flex-shrink: 0;
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
     overflow: hidden;
     background: rgba(0, 55, 192, 0.08);
     display: flex;
@@ -63,9 +113,9 @@
 
 @media (max-width: 480px) {
     .voucher-card-image {
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
     }
 }
 
@@ -78,45 +128,45 @@
     color: var(--nimun-blue);
 }
 
+.voucher-card-icon-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .voucher-card-icon svg {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
 }
 
 @media (max-width: 480px) {
     .voucher-card-icon svg {
-        width: 18px;
-        height: 18px;
+        width: 20px;
+        height: 20px;
     }
-}
-
-.voucher-card-image-placeholder {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--nimun-blue);
-    background: var(--nimun-blue-subtle);
 }
 
 .voucher-card-vendor {
     flex: 1;
     min-width: 0;
-    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .voucher-card-name {
     font-size: 13px;
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-bold);
     color: var(--text-primary);
     margin: 0;
     line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 @media (max-width: 480px) {
     .voucher-card-name {
-        font-size: 11px;
+        font-size: 12px;
     }
 }
 
@@ -124,11 +174,14 @@
 .voucher-usage {
     display: inline-flex;
     align-items: center;
-    gap: var(--space-1);
-    font-size: var(--font-size-xs);
+    gap: 4px;
+    font-size: 11px;
     font-weight: var(--font-weight-medium);
-    padding: var(--space-1) var(--space-2);
-    border-radius: var(--radius-capsule);
+    padding: 3px 8px;
+    border-radius: 12px;
+    width: fit-content;
+    flex-wrap: wrap;
+    max-width: 100%;
 }
 
 .voucher-usage--available {
@@ -151,8 +204,13 @@
     color: var(--nimun-blue);
 }
 
+.voucher-usage--active {
+    background: var(--nimun-blue-subtle);
+    color: var(--nimun-blue);
+}
+
 .voucher-usage-icon {
-    font-size: var(--font-size-sm);
+    font-size: 13px;
 }
 
 .voucher-usage-count {
@@ -161,44 +219,44 @@
 
 /* Description */
 .voucher-card-description {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 @media (max-width: 480px) {
     .voucher-card-description {
-        font-size: 10px;
-        -webkit-line-clamp: 1;
+        font-size: 11px;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
     }
 }
 
-/* Footer */
+/* Footer - Usage info and button */
 .voucher-card-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-2);
+    gap: 12px;
     margin-top: auto;
-    padding-top: var(--space-2);
-}
-
-.voucher-card-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .voucher-card-used {
     font-size: 10px;
     color: var(--text-muted);
     min-width: 0;
+    flex: 1 1 auto;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 @media (max-width: 480px) {
@@ -209,11 +267,27 @@
 
 .voucher-card-claim-btn {
     flex-shrink: 0;
-    margin-left: auto;
+    flex-grow: 0;
+    min-width: fit-content;
 }
 
-.voucher-card-claim-btn {
-    flex-shrink: 0;
+.voucher-card-claim-btn button {
+    font-size: 11px;
+    padding: 6px 10px;
+    white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+    .voucher-card-claim-btn button {
+        font-size: 11px;
+        padding: 6px 10px;
+    }
+}
+
+.voucher-card-claim-btn svg {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 4px;
 }
 
 /* Exhausted state overrides */
