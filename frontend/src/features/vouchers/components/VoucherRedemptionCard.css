@@ -445,8 +445,10 @@
     .voucher-redemption-card-qr-wrapper {
         padding: var(--space-2);
     }
-} 
- 
+}
+
+   
+
 /* Vendor Info Container */
 .voucher-redemption-vendor {
     display: flex;
@@ -483,19 +485,16 @@
 .voucher-redemption-user-name {
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-top: 10px;
-    padding: 6px 14px;
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 16px;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.95);
-    font-weight: 500;
-    letter-spacing: 0.01em;
+    justify-content: center;
+    gap: 5px;
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 400;
+    letter-spacing: 0.02em;
 }
 
 .voucher-redemption-user-name svg {
-    opacity: 0.8;
+    opacity: 0.6;
     flex-shrink: 0;
 }
