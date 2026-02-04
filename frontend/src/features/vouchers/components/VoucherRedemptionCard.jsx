@@ -165,72 +165,83 @@ export function VoucherRedemptionCard({ claim, onDismiss }) {
 
                         {/* Content Area - Info View Only */}
                         <div className="voucher-redemption-content">
-                            {/* Info View - Vendor Details */}
-                            <div className="voucher-redemption-info">
-                                <div className="voucher-redemption-info-icon">
+                            {/* Vendor Info */}
+                            <div className="voucher-redemption-vendor">
+                                <div className="voucher-redemption-vendor-icon">
                                     {icon && (icon.startsWith('/') || icon.startsWith('http')) ? (
-                                        <img src={icon} alt={vendorName} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                        <img src={icon} alt={vendorName} className="voucher-redemption-vendor-icon-img" />
                                     ) : (
                                         <VoucherIcon type={icon || 'default'} />
                                     )}
                                 </div>
-                                <h2 className="voucher-redemption-info-name">{vendorName}</h2>
+                                <h2 className="voucher-redemption-vendor-name">{vendorName}</h2>
 
-                                {/* Static Code Display - PROMINENT */}
-                                {staticCode && (
-                                    <div className="voucher-redemption-static-code">
-                                        <label>Activation Code</label>
-                                        <div className="static-code-value">
-                                            {staticCode}
-                                        </div>
-                                        <button
-                                            onClick={handleCopyCode}
-                                            className="static-code-copy"
-                                        >
-                                            {copied ? (
-                                                <>✓ Copied!</>
-                                            ) : (
-                                                <>📋 Copy Code</>
-                                            )}
-                                        </button>
+                                {/* User Name - for vendor verification */}
+                                {claim.userName && (
+                                    <div className="voucher-redemption-user-name">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                        <span>{claim.userName}</span>
                                     </div>
                                 )}
+                            </div>
 
-                                {description && (
-                                    <p className="voucher-redemption-info-desc">{description}</p>
-                                )}
-
-                                {/* Different hint based on whether static code exists */}
-                                <div className="voucher-redemption-info-hint">
-                                    {staticCode ? (
-                                        <>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
-                                                <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
-                                            </svg>
-                                            Use this code when ordering online or in-store
-                                        </>
-                                    ) : (
-                                        <>
-                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                                                <circle cx="12" cy="12" r="3" />
-                                            </svg>
-                                            Show this to vendor for visual verification
-                                        </>
-                                    )}
+                            {/* Static Code Display - PROMINENT */}
+                            {staticCode && (
+                                <div className="voucher-redemption-static-code">
+                                    <label>Activation Code</label>
+                                    <div className="static-code-value">
+                                        {staticCode}
+                                    </div>
+                                    <button
+                                        onClick={handleCopyCode}
+                                        className="static-code-copy"
+                                    >
+                                        {copied ? (
+                                            <>✓ Copied!</>
+                                        ) : (
+                                            <>📋 Copy Code</>
+                                        )}
+                                    </button>
                                 </div>
+                            )}
+
+                            {description && (
+                                <p className="voucher-redemption-info-desc">{description}</p>
+                            )}
+
+                            {/* Different hint based on whether static code exists */}
+                            <div className="voucher-redemption-info-hint">
+                                {staticCode ? (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+                                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+                                        </svg>
+                                        Use this code when ordering online or in-store
+                                    </>
+                                ) : (
+                                    <>
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                            <circle cx="12" cy="12" r="3" />
+                                        </svg>
+                                        Show this to vendor for visual verification
+                                    </>
+                                )}
                             </div>
                         </div>
-
-                        {/* Close Button */}
-                        <button className="voucher-redemption-card-close" onClick={onDismiss}>
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
                     </div>
+
+                    {/* Close Button */}
+                    <button className="voucher-redemption-card-close" onClick={onDismiss}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </Card>
             </div>
         </div>

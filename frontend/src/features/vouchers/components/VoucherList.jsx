@@ -10,7 +10,7 @@ import './VoucherList.css';
  * @param {string} delegateId - The delegate's ID
  * @param {function} onClaimSuccess - Callback when a voucher is successfully claimed, receives claim data
  */
-export function VoucherList({ delegateId, onClaimSuccess, activeClaims = [], onClaimClick }) {
+export function VoucherList({ delegateId, userName, onClaimSuccess, activeClaims = [], onClaimClick }) {
     const { vouchers, isLoading, claimingVendorId, claimVoucher } = useVouchers(delegateId);
     const [selectedVoucher, setSelectedVoucher] = useState(null);
 
@@ -45,7 +45,8 @@ export function VoucherList({ delegateId, onClaimSuccess, activeClaims = [], onC
                     timestamp,
                     qrToken,
                     expiresAt,
-                    staticCode: claim.staticCode || null  // Include static code from backend
+                    staticCode: claim.staticCode || null,  // Include static code from backend
+                    userName: userName || 'Delegate'  // Include user name for vendor verification
                 });
             }
             // Close the confirmation modal

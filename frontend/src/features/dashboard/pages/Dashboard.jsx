@@ -192,6 +192,7 @@ export function Dashboard() {
                                     </div>
                                     <VoucherList
                                         delegateId={user.id}
+                                        userName={`${user.firstName} ${user.lastName}`}
                                         onClaimSuccess={handleClaimSuccess}
                                         activeClaims={activeClaims}
                                         onClaimClick={handleClaimClick}
