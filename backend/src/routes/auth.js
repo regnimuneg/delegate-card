@@ -413,7 +413,7 @@ router.post('/password/reset/request', passwordResetLimiter, validatePasswordRes
         const { data: user, error: userError } = await supabaseAdmin
             .from('users')
             .select('*')
-            .eq('email', email.toLowerCase())
+            .ilike('email', email) // Use ilike for case-insensitive comparison
             .maybeSingle();
 
         if (userError) {
