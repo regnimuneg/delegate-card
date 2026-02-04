@@ -117,7 +117,7 @@ export async function getDelegateByEmail(email) {
     const { data: user, error: userError } = await supabaseAdmin
         .from('users')
         .select('*')
-        .eq('email', email.toLowerCase())
+        .ilike('email', email)
         .eq('user_type', 'delegate')
         .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
@@ -157,7 +157,7 @@ export async function getMemberByEmail(email) {
     const { data: user, error: userError } = await supabaseAdmin
         .from('users')
         .select('*')
-        .eq('email', email.toLowerCase())
+        .ilike('email', email)
         .in('user_type', ['member', 'executive', 'high board'])
         .maybeSingle(); // Use maybeSingle() instead of single() to handle no results gracefully
 
