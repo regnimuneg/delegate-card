@@ -91,7 +91,7 @@ export function useActiveClaims(delegateId = null) {
     }, []);
 
     return {
-        activeClaims: activeClaims.filter(c => c.expiresAt > Date.now()),
+        activeClaims,
         addClaim,
         getActiveClaim,
         removeClaim

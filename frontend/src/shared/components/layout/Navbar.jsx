@@ -7,7 +7,7 @@ import './Navbar.css';
  * Navbar Component
  * Responsive navigation with hamburger menu on mobile
  */
-export function Navbar({ user, onLogout, activeTab, onTabChange }) {
+export function Navbar({ onLogout, activeTab, onTabChange }) {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();

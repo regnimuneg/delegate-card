@@ -66,13 +66,14 @@ const VoucherIcon = ({ type }) => {
  * Features: countdown timer, toggle between QR and info view
  */
 export function VoucherRedemptionCard({ claim, onDismiss }) {
-    const [showQR, setShowQR] = useState(true);
     const [timeRemaining, setTimeRemaining] = useState(0);
     const [copied, setCopied] = useState(false);
 
-    if (!claim) return null;
-
-    const { vendorName, icon, description, qrToken, expiresAt, staticCode } = claim;
+    const vendorName = claim?.vendorName;
+    const icon = claim?.icon;
+    const description = claim?.description;
+    const expiresAt = claim?.expiresAt;
+    const staticCode = claim?.staticCode;
 
     // Timer effect with auto-close on expiry
     useEffect(() => {
@@ -97,6 +98,8 @@ export function VoucherRedemptionCard({ claim, onDismiss }) {
 
         return () => clearInterval(interval);
     }, [expiresAt, onDismiss]);
+
+    if (!claim) return null;
 
     const isExpired = timeRemaining <= 0;
     const isWarning = timeRemaining > 0 && timeRemaining < 60000; // Less than 1 minute

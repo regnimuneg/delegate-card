@@ -312,13 +312,26 @@ export async function getVouchersForUser(userId, userType = 'delegate') {
         const used = userClaims.length;
         const remaining = voucher.usage_limit ? voucher.usage_limit - used : null;
 
+        // Check if there's an active unexpired claim for this voucher
+        const now = new Date();
+        const hasActiveClaim = userClaims.some(c =>
+            c.status === 'active' &&
+            new Date(c.qr_expires_at) > now
+        );
+
+        // For limited vouchers: can claim if remaining > 0 OR if there's an active claim (to allow reopening)
+        // For unlimited vouchers: always true
+        const canClaim = voucher.usage_limit
+            ? (remaining > 0 || hasActiveClaim)
+            : true;
+
         return {
             ...voucher,
             used,
             remaining,
             limit: voucher.usage_limit,
-            isExhausted: voucher.usage_limit ? remaining <= 0 : false,
-            canClaim: voucher.usage_limit ? remaining > 0 : true
+            isExhausted: voucher.usage_limit ? remaining <= 0 && !hasActiveClaim : false,
+            canClaim
         };
     });
 }
