@@ -2,6 +2,7 @@
    NIMUN Global Styles
    ============================================ */
 
+@import './fonts.css';
 @import './variables.css';
 
 /* ---- CSS Reset ---- */
@@ -140,7 +141,6 @@ button:focus {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
 .jn-page-main {

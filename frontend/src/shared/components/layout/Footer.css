@@ -17,12 +17,12 @@
 
 .footer-brand { display: flex; align-items: center; gap: 18px; }
 .footer-brand img { width: 100px; filter: drop-shadow(3px 3px 0 var(--jn-pink)); }
-.footer-brand strong { display: block; color: white; font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3rem); letter-spacing: .04em; }
+.footer-brand strong { display: block; color: white; font-family: var(--font-anton); font-size: clamp(2rem, 3vw, 3rem); letter-spacing: .04em; }
 .footer-brand strong span { color: var(--jn-pink); }
 .footer-brand small { display: block; color: white; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
 .footer-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; padding: 0 32px; border-left: 2px solid rgba(255,255,255,.6); border-right: 2px solid rgba(255,255,255,.6); }
 .footer-links div { display: grid; gap: 7px; }
-.footer-links strong { margin-bottom: 5px; color: var(--jn-yellow); font-family: var(--font-display); letter-spacing: .05em; text-transform: uppercase; }
+.footer-links strong { margin-bottom: 5px; color: var(--jn-yellow); font-family: var(--font-anton); letter-spacing: .05em; text-transform: uppercase; }
 .footer-links a { color: white; font-size: .9rem; }
 .footer-links a:hover { color: var(--jn-yellow); }
 .footer-social { display: flex; justify-content: center; gap: 12px; }

@@ -62,8 +62,23 @@ router.post('/login', validateLogin, async (req, res, next) => {
 
         console.log('✅ User found:', { id: user.id, userType, email: user.email });
 
-        // Check if delegate account is claimed (members don't have this status)
-        if (userType === 'delegate' && user.status === 'unclaimed') {
+        // Parse permissions if it's a string
+        let permissions = user.permissions;
+        if (typeof permissions === 'string') {
+            try { permissions = JSON.parse(permissions); } catch (e) {}
+        }
+        
+        console.log('🕵️ Debug Permissions:', { 
+            permissions, 
+            type: typeof permissions,
+            adminValue: permissions ? permissions.admin : undefined,
+            claimTokenUsed: user.claim_token_used
+        });
+        
+        // Check if account is claimed (admins are exempt)
+        const isAdmin = permissions && (permissions.admin === true || permissions.admin === 'true');
+        
+        if (!isAdmin && user.claim_token_used === false) {
             return res.status(401).json({
                 success: false,
                 error: 'Account not yet claimed. Please use your claim token first.'

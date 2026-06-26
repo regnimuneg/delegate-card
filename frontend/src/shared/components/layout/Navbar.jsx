@@ -94,7 +94,7 @@ export function Navbar({ onLogout, activeTab, onTabChange }) {
                 </div>
 
                 {/* Mobile Hamburger */}
-                <button className="navbar-hamburger" onClick={toggleMenu} aria-label="Toggle menu">
+                <button className={`navbar-hamburger ${isMenuOpen ? 'navbar-hamburger--open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
                     <span className={`navbar-hamburger-line ${isMenuOpen ? 'navbar-hamburger-line--open' : ''}`}></span>
                     <span className={`navbar-hamburger-line ${isMenuOpen ? 'navbar-hamburger-line--open' : ''}`}></span>
                     <span className={`navbar-hamburger-line ${isMenuOpen ? 'navbar-hamburger-line--open' : ''}`}></span>

@@ -46,9 +46,7 @@ export function Profile() {
         <div className="profile-page jn-app-page">
             <Navbar user={user} onLogout={logout} activeTab={activeTab} onTabChange={setActiveTab} />
             <main className="profile-main jn-page-main">
-                <PageHeader title="My Profile" subtitle="Manage your delegate information">
-                    <CouncilPills activeCouncil={user.council} />
-                </PageHeader>
+                <PageHeader title="My Profile" />
 
                 <div className="profile-content">
                     <section className="profile-section profile-section--photo">

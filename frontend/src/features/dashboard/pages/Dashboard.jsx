@@ -174,7 +174,7 @@ export function Dashboard() {
                                     <ActivityTimeline limit={8} />
                                 </section>
 
-                                {/* Available Benefits - Full Width */}
+                                {/* Available Benefits - Full Width 
                                 <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
                                     <Sticker src="/element_19_x367_y491_w196_h226.png" className="dashboard-box-sticker dashboard-box-sticker--vouchers" />
                                     <div className="dashboard-benefits-header">
@@ -191,6 +191,7 @@ export function Dashboard() {
                                         onClaimClick={handleClaimClick}
                                     />
                                 </section>
+                                */}
                             </div>
                         </>
                     )}

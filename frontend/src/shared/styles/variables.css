@@ -145,6 +145,8 @@
   --jn-radius: 24px;
   --jn-shadow: 8px 9px 0 var(--jn-pink);
   --jn-shadow-small: 4px 5px 0 var(--jn-pink);
-  --font-display: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  --font-hand: 'Comic Sans MS', 'Bradley Hand', cursive;
+  --font-display: 'Montserrat', sans-serif;
+  --font-display-legacy: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  --font-anton: 'Anton', sans-serif;
+  --font-hand: 'Montserrat', 'Bradley Hand', sans-serif;
 }
