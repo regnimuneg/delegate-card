@@ -8,6 +8,14 @@ export function Footer() {
     return (
         <footer className="footer">
             <div className="footer-container">
+                <div className="footer-brand">
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" />
+                    <div><strong>JNIMUN<span>'26</span></strong><small>Delegate Portal</small></div>
+                </div>
+                <div className="footer-links">
+                    <div><strong>Quick links</strong><a href="/dashboard">Home</a><a href="/activity">Activity</a><a href="/profile">Profile</a></div>
+                    <div><strong>Help &amp; support</strong><a href="https://nimuneg.org" target="_blank" rel="noreferrer">Official website</a><a href="mailto:info@nimuneg.org">Contact us</a></div>
+                </div>
                 {/* Social Links */}
                 <div className="footer-social">
                     <a href="https://www.facebook.com/NIMUNEG" target="_blank" rel="noopener noreferrer" className="footer-social-link" aria-label="Facebook">
@@ -33,7 +41,7 @@ export function Footer() {
                 {/* Copyright */}
                 <div className="footer-bottom">
                     <p className="footer-copyright">
-                        &copy; NIMUN {new Date().getFullYear()}. All rights reserved.
+                        &copy; JNIMUN'26. All rights reserved.
                     </p>
                 </div>
             </div>

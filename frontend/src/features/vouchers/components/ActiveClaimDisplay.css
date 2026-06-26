@@ -3,7 +3,7 @@
    ============================================ */
 
 .active-claim {
-    background: var(--nimun-blue);
+    background: var(--jn-box-blue);
     border-radius: var(--radius-lg);
     overflow: hidden;
     animation: claimSlideIn 0.3s ease-out;

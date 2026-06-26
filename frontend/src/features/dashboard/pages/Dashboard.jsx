@@ -9,8 +9,41 @@ import { VoucherList, ActiveClaimDisplay } from '../../vouchers';
 import { VoucherRedemptionCard } from '../../vouchers/components/VoucherRedemptionCard';
 import { useActiveClaims } from '../../vouchers/hooks/useActiveClaims';
 import { Navbar, Footer } from '../../../shared/components/layout';
+import { PageHeader, Sticker } from '../../../shared/components';
 import './Dashboard.css';
 import './Dashboard-additions.css';
+
+const scheduleGroups = [
+    {
+        label: 'Sessions',
+        items: [
+            { key: 'session-1', title: 'Session #1', date: 'June 27th', isoDate: '2026-06-27' },
+            { key: 'session-2', title: 'Session #2', date: 'June 28th', isoDate: '2026-06-28' },
+            { key: 'session-3', title: 'Session #3', date: 'June 29th', isoDate: '2026-06-29' },
+            { key: 'session-4', title: 'Session #4', date: 'June 30th', isoDate: '2026-06-30' }
+        ]
+    },
+    {
+        label: 'Performance',
+        items: [
+            { key: 'performance', title: 'Performance Day', date: 'July 1st', isoDate: '2026-07-01' }
+        ]
+    },
+    {
+        label: 'Opening',
+        items: [
+            { key: 'opening', title: 'Opening', date: 'July 3rd', isoDate: '2026-07-03' }
+        ]
+    },
+    {
+        label: 'Conference',
+        items: [
+            { key: 'conference-1', title: 'Conference Day #1', date: 'July 4th', isoDate: '2026-07-04' },
+            { key: 'conference-2', title: 'Conference Day #2', date: 'July 5th', isoDate: '2026-07-05' },
+            { key: 'conference-3', title: 'Conference Day #3', date: 'July 6th', isoDate: '2026-07-06' }
+        ]
+    }
+];
 
 /**
  * Dashboard Page
@@ -21,7 +54,7 @@ export function Dashboard() {
     const navigate = useNavigate();
     const [activeClaim, setActiveClaim] = useState(null);
     const [activeTab, setActiveTab] = useState('home'); // 'home', 'attendance', 'food'
-    const { activeClaims, addClaim, getActiveClaim } = useActiveClaims(user?.id);
+    const { activeClaims, addClaim } = useActiveClaims(user?.id);
 
     // Handle successful voucher claim
     const handleClaimSuccess = (claim) => {
@@ -45,7 +78,7 @@ export function Dashboard() {
     }
 
     return (
-        <div className="dashboard-page">
+        <div className="dashboard-page jn-app-page">
             {/* Navbar */}
             <Navbar
                 user={user}
@@ -55,17 +88,17 @@ export function Dashboard() {
             />
 
             {/* Main Content */}
-            <main className="dashboard-main">
+            <main className="dashboard-main jn-page-main">
                 <div className="dashboard-container">
+                    <PageHeader
+                        eyebrow={`Delegate · ${user.id}`}
+                        title={activeTab === 'attendance' ? 'Attendance' : activeTab === 'food' ? 'Meal History' : `Welcome, ${user.firstName}`}
+                        subtitle={activeTab === 'attendance' ? 'Every session, all in one place' : activeTab === 'food' ? 'Meals and refreshments claimed' : null}
+                        sticker={activeTab === 'food' ? 'megaphone' : null}
+                    />
                     {/* Home Tab */}
                     {activeTab === 'home' && (
                         <>
-                            {/* Welcome Section */}
-                            <section className="dashboard-welcome animate-fade-in">
-                                <h1>Welcome, {user.firstName}</h1>
-                                <p>Claim your vouchers and track your conference activities</p>
-                            </section>
-
                             {/* Voucher Redemption Card - Center of Attention */}
                             {activeClaim && (
                                 <VoucherRedemptionCard
@@ -78,90 +111,48 @@ export function Dashboard() {
                             <div className="bento-grid">
                                 {/* Delegate Card - Left Aligned */}
                                 <section className="bento-item bento-item--card animate-slide-up">
+                                    <Sticker src="/element_07_x1472_y63_w230_h190.png" className="dashboard-box-sticker dashboard-box-sticker--card" />
                                     <DelegateCard delegate={user} />
                                 </section>
 
                                 {/* Conference Info */}
                                 <section className="bento-item bento-item--info animate-slide-up">
+                                    <Sticker name="hourglass" className="dashboard-box-sticker dashboard-box-sticker--schedule" />
                                     {(() => {
                                         const now = new Date();
-                                        const confStart = new Date('2026-01-25');
-                                        const confEnd = new Date('2026-02-02');
+                                        const confStart = new Date('2026-06-27T00:00:00');
+                                        const confEnd = new Date('2026-07-06T23:59:59');
                                         const isInConference = now >= confStart && now <= confEnd;
-                                        const daysDiff = isInConference ? Math.floor((now - confStart) / (1000 * 60 * 60 * 24)) + 1 : 0;
-
-                                        // Determine which phase is active
-                                        // Sessions: Jan 25-28 (days 1-4)
-                                        // Opening: Jan 30 (day 6)
-                                        // Conference: Jan 31-Feb 2 (days 7-9)
-                                        const phases = [
-                                            { start: 1, end: 4, label: 'sessions' },
-                                            { start: 6, end: 6, label: 'opening' },
-                                            { start: 7, end: 9, label: 'conference' }
-                                        ];
-                                        const activePhase = phases.find(p => daysDiff >= p.start && daysDiff <= p.end)?.label;
+                                        const todayKey = now.toISOString().slice(0, 10);
+                                        const activeItem = scheduleGroups
+                                            .flatMap((group) => group.items)
+                                            .find((item) => item.isoDate === todayKey);
 
                                         return (
                                             <>
                                                 <div className="dashboard-info-header">
                                                     <h3 className="dashboard-info-title">Schedule</h3>
-                                                    {isInConference && (
-                                                        <span className="dashboard-current-day">Day {daysDiff}</span>
+                                                    {isInConference && activeItem && (
+                                                        <span className="dashboard-current-day">{activeItem.title}</span>
                                                     )}
                                                 </div>
                                                 <div className="dashboard-timeline">
-                                                    {/* Sessions Group */}
-                                                    <div className="dashboard-timeline-group">
-                                                        <span className="dashboard-timeline-group-label">Sessions</span>
-                                                        <div className="dashboard-timeline-items">
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 1 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 1</span>
-                                                                <span className="dashboard-timeline-date">25 Jan</span>
-                                                            </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 2 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 2</span>
-                                                                <span className="dashboard-timeline-date">26 Jan</span>
-                                                            </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 3 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 3</span>
-                                                                <span className="dashboard-timeline-date">27 Jan</span>
-                                                            </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'sessions' && daysDiff === 4 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 4</span>
-                                                                <span className="dashboard-timeline-date">28 Jan</span>
+                                                    {scheduleGroups.map((group) => (
+                                                        <div className="dashboard-timeline-group" key={group.label}>
+                                                            <span className="dashboard-timeline-group-label">{group.label}</span>
+                                                            <div className="dashboard-timeline-items">
+                                                                {group.items.map((item) => (
+                                                                    <div
+                                                                        className={`dashboard-timeline-item ${activeItem?.key === item.key ? 'dashboard-timeline-item--active' : ''}`}
+                                                                        key={item.key}
+                                                                    >
+                                                                        <span className="dashboard-timeline-day">{item.title}</span>
+                                                                        <span className="dashboard-timeline-date">{item.date}</span>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    {/* Opening Ceremony */}
-                                                    <div className="dashboard-timeline-group">
-                                                        <span className="dashboard-timeline-group-label">Opening Ceremony</span>
-                                                        <div className="dashboard-timeline-items">
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'opening' ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Ceremony</span>
-                                                                <span className="dashboard-timeline-date">30 Jan</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Conference Days */}
-                                                    <div className="dashboard-timeline-group">
-                                                        <span className="dashboard-timeline-group-label">Conference</span>
-                                                        <div className="dashboard-timeline-items">
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 7 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 1</span>
-                                                                <span className="dashboard-timeline-date">31 Jan</span>
-                                                            </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 8 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 2</span>
-                                                                <span className="dashboard-timeline-date">1 Feb</span>
-                                                            </div>
-                                                            <div className={`dashboard-timeline-item ${activePhase === 'conference' && daysDiff === 9 ? 'dashboard-timeline-item--active' : ''}`}>
-                                                                <span className="dashboard-timeline-day">Day 3</span>
-                                                                <span className="dashboard-timeline-date">2 Feb</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    ))}
                                                 </div>
                                             </>
                                         );
@@ -170,6 +161,7 @@ export function Dashboard() {
 
                                 {/* Conference Activity - Right column under schedule */}
                                 <section className="bento-item bento-item--activity animate-slide-up" style={{ animationDelay: '100ms' }}>
+                                    <Sticker src="/element_10_x329_y263_w159_h180.png" className="dashboard-box-sticker dashboard-box-sticker--activity" />
                                     <div className="dashboard-activity-header">
                                         <h3 className="dashboard-activity-title">Recent Activity</h3>
                                         <button
@@ -184,6 +176,7 @@ export function Dashboard() {
 
                                 {/* Available Benefits - Full Width */}
                                 <section className="bento-item bento-item--vouchers animate-slide-up" style={{ animationDelay: '100ms' }}>
+                                    <Sticker src="/element_19_x367_y491_w196_h226.png" className="dashboard-box-sticker dashboard-box-sticker--vouchers" />
                                     <div className="dashboard-benefits-header">
                                         <div>
                                             <h3 className="dashboard-benefits-title">Available Benefits Today</h3>
@@ -205,6 +198,7 @@ export function Dashboard() {
                     {/* Attendance Tab */}
                     {activeTab === 'attendance' && (
                         <section className="dashboard-section dashboard-tab-content animate-fade-in">
+                            <Sticker name="microphone" className="dashboard-box-sticker dashboard-box-sticker--tab-left" />
                             <AttendanceHistory />
                         </section>
                     )}
@@ -212,6 +206,7 @@ export function Dashboard() {
                     {/* Food Tab */}
                     {activeTab === 'food' && (
                         <section className="dashboard-section dashboard-tab-content animate-fade-in">
+                            <Sticker name="megaphone" className="dashboard-box-sticker dashboard-box-sticker--tab-right" />
                             <FoodHistory />
                         </section>
                     )}
@@ -225,4 +220,3 @@ export function Dashboard() {
 }
 
 export default Dashboard;
-

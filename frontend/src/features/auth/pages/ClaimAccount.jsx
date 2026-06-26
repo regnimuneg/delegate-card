@@ -107,9 +107,9 @@ export function ClaimAccount() {
                 </div>
                 <div className="claim-left-overlay"></div>
                 <div className="claim-brand-content">
-                    <img src="/Logo_White.png" alt="NIMUN Logo" className="claim-logo-image" />
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="claim-logo-image" />
                     <div className="claim-logo">
-                        <span className="claim-logo-text">NIMUN</span>
+                        <span className="claim-logo-text">JNIMUN</span>
                         <span className="claim-logo-year">'26</span>
                     </div>
                     <p className="claim-tagline">CLAIM YOUR ACCOUNT</p>

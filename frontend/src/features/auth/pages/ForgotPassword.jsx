@@ -92,9 +92,9 @@ export function ForgotPassword() {
                 </div>
                 <div className="forgot-password-left-overlay"></div>
                 <div className="forgot-password-brand-content">
-                    <img src="/Logo_White.png" alt="NIMUN Logo" className="forgot-password-logo-image" />
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="forgot-password-logo-image" />
                     <div className="forgot-password-logo">
-                        <span className="forgot-password-logo-text">NIMUN</span>
+                        <span className="forgot-password-logo-text">JNIMUN</span>
                         <span className="forgot-password-logo-year">'26</span>
                     </div>
                     <p className="forgot-password-tagline">RESET PASSWORD</p>
@@ -178,4 +178,3 @@ export function ForgotPassword() {
 }
 
 export default ForgotPassword;
-

@@ -2,6 +2,9 @@
  * API Client for NIMUN Card System
  * Handles all API requests to the backend
  */
+import { mockApi } from './mockApi';
+
+export const IS_MOCK_MODE = import.meta.env.DEV && import.meta.env.VITE_USE_MOCK_API === 'true';
 
 // Use environment variable if set, otherwise detect from current hostname
 // This allows mobile devices to connect to the backend on the same network
@@ -101,7 +104,7 @@ async function apiRequest(endpoint, options = {}) {
 /**
  * API Methods
  */
-export const api = {
+const realApi = {
     // Authentication
     async login(email, password) {
         const response = await apiRequest('/auth/login', {
@@ -236,5 +239,6 @@ export const api = {
     }
 };
 
-export default api;
+export const api = IS_MOCK_MODE ? mockApi : realApi;
 
+export default api;

@@ -71,7 +71,6 @@ export function VoucherCard({
     onClaimClick
 }) {
     const {
-        id,
         name,
         icon,
         description,
@@ -86,17 +85,13 @@ export function VoucherCard({
 
     // Update timer for active claim
     useEffect(() => {
-        if (!activeClaim) {
-            setTimeRemaining(0);
-            return;
-        }
+        if (!activeClaim) return;
 
         const updateTimer = () => {
             const remaining = Math.max(0, activeClaim.expiresAt - Date.now());
             setTimeRemaining(remaining);
         };
 
-        updateTimer();
         const interval = setInterval(updateTimer, 1000);
         return () => clearInterval(interval);
     }, [activeClaim]);

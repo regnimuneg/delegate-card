@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../../auth';
 import { Navbar, Footer } from '../../../shared/components/layout';
+import { PageHeader, Sticker } from '../../../shared/components';
 import { api } from '../../../shared/utils/api';
 import './Activity.css';
 
@@ -362,7 +363,7 @@ export function Activity() {
     };
 
     return (
-        <div className="activity-page">
+        <div className="activity-page jn-app-page">
             <Navbar
                 user={user}
                 onLogout={logout}
@@ -370,13 +371,9 @@ export function Activity() {
                 onTabChange={setActiveTab}
             />
 
-            <main className="activity-main">
+            <main className="activity-main jn-page-main">
                 <div className="activity-container">
-                    {/* Header */}
-                    <div className="activity-header">
-                        <h1>Activity History</h1>
-                        <p>Your complete conference activity log</p>
-                    </div>
+                    <PageHeader title="Activity History" />
 
                     {/* Filters */}
                     <div className="activity-filters">
@@ -478,6 +475,7 @@ export function Activity() {
                             <p>No activities found for this filter</p>
                         </div>
                     )}
+                    <Sticker name="desk-microphone" className="activity-sticker-mic" />
                 </div>
             </main>
 
@@ -487,4 +485,3 @@ export function Activity() {
 }
 
 export default Activity;
-

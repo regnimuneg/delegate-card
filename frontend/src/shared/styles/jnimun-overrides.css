@@ -1,0 +1,64 @@
+/* Final visual layer shared across feature-level stylesheets. */
+
+/* Dashboard */
+.dashboard-page { background: transparent !important; }
+.dashboard-main.jn-page-main { width: min(1440px, calc(100% - 40px)); max-width: none; margin: 0 auto; padding: 42px 0 72px !important; }
+.dashboard-container { width: 100% !important; max-width: none !important; padding: 0 !important; }
+.dashboard-main .bento-grid { gap: 28px !important; }
+.dashboard-main .bento-item { border: var(--jn-border) !important; border-radius: var(--jn-radius) !important; background: white !important; box-shadow: var(--jn-shadow-small) !important; }
+.dashboard-main .bento-item--card { padding: 0 !important; border: 0 !important; background: transparent !important; box-shadow: none !important; }
+.dashboard-main .bento-item--info { background: var(--jn-box-blue) !important; }
+
+/* Delegate card */
+.delegate-card { border: var(--jn-border) !important; border-radius: var(--jn-radius) !important; background: var(--jn-box-blue) !important; box-shadow: var(--jn-shadow) !important; }
+.delegate-card-brand { font-family: var(--font-display) !important; letter-spacing: .06em; }
+.delegate-card-type { border: 2px solid white !important; border-radius: 999px !important; background: var(--jn-pink) !important; }
+.delegate-card-avatar { border: 4px solid white !important; box-shadow: 0 0 0 4px var(--jn-pink),4px 5px 0 var(--jn-yellow) !important; }
+.delegate-card-name { color: white !important; font-family: var(--font-display) !important; letter-spacing: .04em; }
+.delegate-card-info-item,.delegate-card-qr { border: 2px solid rgba(255,255,255,.65) !important; border-radius: 16px !important; background: rgba(255,255,255,.08) !important; }
+.delegate-card-tagline { color: var(--jn-yellow) !important; font-family: var(--font-display) !important; }
+
+/* Compact activity on dashboard */
+.activity-timeline-list { gap: 10px !important; }
+.activity-timeline-item { gap: 12px !important; padding: 11px !important; border: 2px solid #c4e4fa; border-radius: 14px !important; background: #f8fcff !important; }
+.activity-timeline-icon { width: 38px !important; height: 38px !important; border: 2px solid white; border-radius: 50% !important; background: var(--jn-pink) !important; color: white !important; box-shadow: 0 0 0 2px #ffc2d5; }
+.activity-timeline-item-title { color: var(--jn-blue-deep) !important; font-size: .78rem !important; font-weight: 900 !important; }
+.activity-timeline-time { color: #5f6d87 !important; }
+
+/* Vouchers */
+.voucher-list-count { padding: 7px 12px !important; border: 2px solid var(--jn-blue-deep); border-radius: 999px; background: #e8f6ff !important; color: var(--jn-blue-deep) !important; font-weight: 900 !important; }
+.voucher-list-grid { grid-template-columns: repeat(auto-fill,minmax(245px,1fr)) !important; gap: 18px !important; }
+.voucher-card { gap: 14px !important; padding: 18px !important; border: 3px solid var(--jn-blue-deep) !important; border-radius: 20px !important; background: white !important; box-shadow: 4px 5px 0 rgba(246,83,135,.65) !important; }
+.voucher-card:hover { transform: translateY(-3px); }
+.voucher-card-image { width: 58px !important; height: 58px !important; border: 2px solid #8fc8f5; border-radius: 16px !important; background: #edf8ff !important; }
+.voucher-card-icon { color: var(--jn-blue) !important; }
+.voucher-card-name { color: var(--jn-blue-deep) !important; font-family: var(--font-display); font-size: 1.1rem !important; letter-spacing: .03em; }
+.voucher-card-description { color: #43506a !important; font-size: .8rem !important; }
+.voucher-card-footer { border-top: 2px dashed #b8dff9 !important; }
+.voucher-card-active-badge { border: 2px solid white; background: var(--jn-pink) !important; box-shadow: 0 0 0 2px var(--jn-blue-deep) !important; }
+
+/* Attendance and food tabs */
+.attendance-history,.food-history { padding: 0 !important; }
+.attendance-history-title,.food-history-title { color: var(--jn-blue-deep) !important; font-family: var(--font-display); font-size: 2rem !important; }
+.attendance-history-subtitle,.food-history-subtitle { font-family: var(--font-hand); }
+.attendance-history-list,.food-history-list { display: grid !important; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px !important; }
+.attendance-history-item,.food-history-item { border: var(--jn-border) !important; border-radius: 18px !important; background: white !important; box-shadow: var(--jn-shadow-small) !important; }
+.attendance-history-item-icon,.food-history-item-icon { width: 46px !important; height: 46px !important; border: 3px solid white; border-radius: 50% !important; background: var(--jn-pink) !important; color: white !important; box-shadow: 0 0 0 2px #ffc2d5; }
+.attendance-history-item-title,.food-history-item-title { color: var(--jn-blue-deep) !important; font-family: var(--font-display); }
+.food-history-item-tag { border: 1px solid #8fc8f5; border-radius: 999px !important; background: #edf8ff !important; color: var(--jn-blue-deep) !important; }
+
+/* Modals and QR surfaces */
+.voucher-claim-modal-content,.voucher-redemption-card,.qr-modal-content,.active-claim-display {
+    border: var(--jn-border) !important;
+    border-radius: var(--jn-radius) !important;
+    box-shadow: var(--jn-shadow) !important;
+}
+.voucher-claim-modal-title,.voucher-redemption-info-name,.qr-modal-title { color: var(--jn-blue-deep) !important; font-family: var(--font-display) !important; }
+.voucher-redemption-static-code { border: 3px dashed var(--jn-pink) !important; border-radius: 16px !important; background: #fff8ca !important; }
+.reward-activator { border: var(--jn-border) !important; border-radius: var(--jn-radius) !important; box-shadow: var(--jn-shadow-small) !important; }
+
+@media (max-width:700px) {
+    .dashboard-main.jn-page-main { width: min(100% - 24px,1440px); padding-top: 28px !important; }
+    .dashboard-main .bento-grid { gap: 20px !important; }
+    .voucher-list-grid,.attendance-history-list,.food-history-list { grid-template-columns: 1fr !important; }
+}

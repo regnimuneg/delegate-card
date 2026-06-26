@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Button, Card } from '../../../shared/components';
 import './ActiveClaimDisplay.css';
@@ -20,31 +20,27 @@ function generateToken(vendorId, timestamp) {
  * Compact inline display with QR code and timer
  */
 export function ActiveClaimDisplay({ claim, onDismiss }) {
-    const [qrToken, setQrToken] = useState(null);
-    const [timeRemaining, setTimeRemaining] = useState(0);
+    const [timeRemaining, setTimeRemaining] = useState(() => {
+        if (!claim) return 0;
+        return Math.max(0, QR_VALIDITY_SECONDS - Math.floor((Date.now() - (claim.timestamp || Date.now())) / 1000));
+    });
     const [showLowTechMode, setShowLowTechMode] = useState(false);
 
-    useEffect(() => {
-        if (claim) {
-            const timestamp = claim.timestamp || Date.now();
-            const elapsed = Math.floor((Date.now() - timestamp) / 1000);
-            const remaining = Math.max(0, QR_VALIDITY_SECONDS - elapsed);
+    const qrToken = useMemo(() => {
+        if (!claim) return null;
+        const timestamp = claim.timestamp || 0;
+        const token = generateToken(claim.vendorId, timestamp);
+        return JSON.stringify({
+            type: 'voucher_claim', vendorId: claim.vendorId, vendorName: claim.vendorName,
+            timestamp, token, expiresAt: timestamp + (QR_VALIDITY_SECONDS * 1000)
+        });
+    }, [claim]);
 
-            const token = generateToken(claim.vendorId, timestamp);
-            const qrData = JSON.stringify({
-                type: 'voucher_claim',
-                vendorId: claim.vendorId,
-                vendorName: claim.vendorName,
-                timestamp,
-                token,
-                expiresAt: timestamp + (QR_VALIDITY_SECONDS * 1000)
-            });
-            setQrToken(qrData);
-            setTimeRemaining(remaining);
-        } else {
-            setQrToken(null);
-            setTimeRemaining(0);
-        }
+    useEffect(() => {
+        if (!claim) return;
+        const refresh = () => setTimeRemaining(Math.max(0, QR_VALIDITY_SECONDS - Math.floor((Date.now() - (claim.timestamp || Date.now())) / 1000)));
+        const timeout = setTimeout(refresh, 0);
+        return () => clearTimeout(timeout);
     }, [claim]);
 
     useEffect(() => {

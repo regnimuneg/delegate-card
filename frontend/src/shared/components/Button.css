@@ -8,7 +8,7 @@
     justify-content: center;
     gap: var(--space-2);
     font-family: var(--font-primary);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-extrabold);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     border-radius: var(--radius-capsule);
@@ -25,16 +25,16 @@
 
 /* ---- Variants ---- */
 .nimun-btn--primary {
-    background: var(--nimun-blue);
+    background: var(--jn-pink);
     color: white;
-    border: 2px solid var(--nimun-blue);
-    box-shadow: var(--shadow-blue);
+    border: 3px solid var(--jn-blue-deep);
+    box-shadow: 3px 4px 0 var(--jn-blue-deep);
 }
 
 .nimun-btn--primary:hover:not(:disabled) {
-    background: var(--nimun-blue-dark);
-    border-color: var(--nimun-blue-dark);
-    box-shadow: var(--shadow-blue-lg);
+    background: var(--jn-pink-dark);
+    border-color: var(--jn-blue-deep);
+    box-shadow: 1px 2px 0 var(--jn-blue-deep);
     transform: translateY(-2px);
 }
 
@@ -43,9 +43,10 @@
 }
 
 .nimun-btn--secondary {
-    background: transparent;
-    color: var(--nimun-blue);
-    border: 2px solid var(--nimun-blue);
+    background: white;
+    color: var(--jn-blue-deep);
+    border: 3px solid var(--jn-blue-deep);
+    box-shadow: 3px 4px 0 var(--jn-pink);
 }
 
 .nimun-btn--secondary:hover:not(:disabled) {
@@ -54,7 +55,7 @@
 
 .nimun-btn--ghost {
     background: transparent;
-    color: var(--text-primary);
+    color: inherit;
     border: 2px solid transparent;
 }
 
@@ -85,7 +86,7 @@
 }
 
 .nimun-btn--large {
-    padding: var(--space-4) var(--space-8);
+    padding: .9rem var(--space-8);
     font-size: var(--font-size-base);
 }
 

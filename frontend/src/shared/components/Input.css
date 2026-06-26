@@ -11,7 +11,7 @@
 .nimun-input-label {
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-medium);
-    color: var(--text-primary);
+    color: var(--jn-blue-deep);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -43,9 +43,9 @@
     font-size: var(--font-size-base);
     color: var(--text-primary);
     background: var(--bg-card);
-    border: 2px solid transparent;
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-sm);
+    border: 2px solid #8fc8f5;
+    border-radius: 16px;
+    box-shadow: 3px 3px 0 rgba(246, 83, 135, .2);
     transition: all var(--transition-fast);
 }
 
@@ -63,8 +63,8 @@
 
 .nimun-input:focus {
     outline: none;
-    border-color: var(--nimun-blue);
-    box-shadow: var(--shadow-md), 0 0 0 4px var(--nimun-blue-subtle);
+    border-color: var(--jn-blue-deep);
+    box-shadow: 4px 4px 0 var(--jn-pink), 0 0 0 4px rgba(255, 210, 63, .4);
 }
 
 .nimun-input:disabled {

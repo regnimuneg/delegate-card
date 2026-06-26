@@ -49,7 +49,7 @@ export function ResetPassword() {
                 if (!response.success) {
                     setError('Invalid or expired reset token. Please request a new password reset.');
                 }
-            } catch (err) {
+            } catch {
                 setError('Invalid or expired reset token. Please request a new password reset.');
             } finally {
                 setIsVerifying(false);
@@ -98,7 +98,7 @@ export function ResetPassword() {
             } else {
                 setError(response.error || 'Failed to reset password');
             }
-        } catch (err) {
+        } catch {
             setError('Failed to reset password. Please try again.');
         } finally {
             setIsLoading(false);
@@ -125,8 +125,9 @@ export function ResetPassword() {
             <div className="reset-password-page page-center">
                 <div className="reset-password-container animate-slide-up">
                     <div className="reset-password-brand">
+                        <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="reset-password-crest" />
                         <div className="reset-password-logo">
-                            <span className="reset-password-logo-text">NIMUN</span>
+                            <span className="reset-password-logo-text">JNIMUN</span>
                             <span className="reset-password-logo-year">'26</span>
                         </div>
                     </div>
@@ -153,8 +154,9 @@ export function ResetPassword() {
             <div className="reset-password-container animate-slide-up">
                 {/* Logo/Brand Header */}
                 <div className="reset-password-brand">
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="reset-password-crest" />
                     <div className="reset-password-logo">
-                        <span className="reset-password-logo-text">NIMUN</span>
+                        <span className="reset-password-logo-text">JNIMUN</span>
                         <span className="reset-password-logo-year">'26</span>
                     </div>
                     <p className="reset-password-tagline">Delegate Portal</p>
@@ -223,4 +225,3 @@ export function ResetPassword() {
 }
 
 export default ResetPassword;
-

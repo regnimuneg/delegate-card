@@ -5,207 +5,99 @@ import { useAuth } from '../../auth';
 import { api } from '../../../shared/utils/api';
 import { ProfilePhotoUpload } from '../components/ProfilePhotoUpload';
 import { Navbar, Footer } from '../../../shared/components/layout';
-import { Button } from '../../../shared/components';
+import { Button, PageHeader, CouncilPills, SectionTitle, Sticker } from '../../../shared/components';
 import './Profile.css';
 
-/**
- * Profile Page
- * Allows delegates to view and edit their profile information
- */
+const PersonIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>;
+const QrIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM18 18h3v3h-3z"/></svg>;
+const ChartIcon = () => <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-7"/></svg>;
+
 export function Profile() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const [activeTab, setActiveTab] = useState('profile');
-    const [stats, setStats] = useState({
-        daysAttended: 0,
-        totalDays: 8,
-        attendanceRate: 0
-    });
-    const [loadingStats, setLoadingStats] = useState(true);
+    const [stats, setStats] = useState({ daysAttended: 0, totalDays: 8, attendanceRate: 0, awards: null });
 
     useEffect(() => {
         const fetchStats = async () => {
             try {
                 const response = await api.getAttendanceStats();
                 if (response.success) {
-                    // Calculate elapsed days from start date (Jan 25, 2026)
                     const startDate = new Date('2026-01-25');
-                    const now = new Date();
-
-                    // Difference in time
-                    const differenceInTime = now.getTime() - startDate.getTime();
-                    // Difference in days (add 1 to include start date as day 1)
-                    let daysElapsed = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-
-                    // Clamp days elapsed: minimum 1, maximum 8 (total conference duration)
-                    // If before start date, treat as Day 1
-                    daysElapsed = Math.max(1, Math.min(daysElapsed, 8));
-
+                    const daysElapsed = Math.max(1, Math.min(Math.ceil((Date.now() - startDate.getTime()) / 86400000), 8));
                     const daysAttended = response.daysAttended || 0;
-
-                    // Rate is days attended / days elapsed (not total days)
-                    const attendanceRate = Math.round((daysAttended / daysElapsed) * 100);
-
                     setStats({
-                        daysAttended: daysAttended,
-                        totalDays: response.totalDays || 8, // Keep total days for reference/display if needed
-                        attendanceRate: attendanceRate,
+                        daysAttended,
+                        totalDays: response.totalDays || 8,
+                        attendanceRate: Math.round((daysAttended / daysElapsed) * 100),
                         awards: response.awards || null
                     });
                 }
             } catch (error) {
                 console.error('Failed to fetch attendance stats:', error);
-            } finally {
-                setLoadingStats(false);
             }
         };
-
-        if (user) {
-            fetchStats();
-        }
+        if (user) fetchStats();
     }, [user]);
 
-    if (!user) {
-        return null;
-    }
-
-    // QR code format: {delegateId} (e.g., "HRC-01")
-    const delegateId = user.id;
-    const qrCodeValue = `${delegateId}`;
+    if (!user) return null;
 
     return (
-        <div className="profile-page">
-            <Navbar
-                user={user}
-                onLogout={logout}
-                activeTab={activeTab}
-                onTabChange={setActiveTab}
-            />
+        <div className="profile-page jn-app-page">
+            <Navbar user={user} onLogout={logout} activeTab={activeTab} onTabChange={setActiveTab} />
+            <main className="profile-main jn-page-main">
+                <PageHeader title="My Profile" subtitle="Manage your delegate information">
+                    <CouncilPills activeCouncil={user.council} />
+                </PageHeader>
 
-            <main className="profile-main">
-                <div className="profile-container">
-                    {/* Header */}
-                    <div className="profile-header">
-                        <h1>My Profile</h1>
-                        <p>Manage your delegate information</p>
-                    </div>
+                <div className="profile-content">
+                    <section className="profile-section profile-section--photo">
+                        <SectionTitle icon={<PersonIcon />} title="Profile Photo" subtitle="Personalize your delegate card" />
+                        <ProfilePhotoUpload />
+                    </section>
 
-                    {/* Profile Content - Bento Grid on Desktop */}
-                    <div className="profile-content">
-                        {/* Photo Section - Left column, spans 2 rows on desktop */}
-                        <section className="profile-section profile-section--photo">
-                            <h2 className="profile-section-title">Profile Photo</h2>
-                            <p className="profile-section-desc">
-                                Upload a photo to personalize your delegate card
-                            </p>
-                            <div className="profile-photo-section">
-                                <ProfilePhotoUpload />
+                    <section className="profile-section profile-section--qr">
+                        <SectionTitle icon={<QrIcon />} title="Your QR Code" subtitle="For attendance, meals, and activities" tone="blue" />
+                        <div className="profile-qr-container">
+                            <div className="profile-qr-wrapper">
+                                <QRCodeSVG value={`${user.id}`} size={190} bgColor="#FFFFFF" fgColor="#0753C8" level="M" />
                             </div>
-                        </section>
-
-                        {/* QR Code Section - Right column top on desktop */}
-                        <section className="profile-section profile-section--qr">
-                            <h2 className="profile-section-title">Your QR Code</h2>
-                            <p className="profile-section-desc">
-                                Used for attendance, meals, and activities
-                            </p>
-                            <div className="profile-qr-container">
-                                <div className="profile-qr-wrapper">
-                                    <QRCodeSVG
-                                        value={qrCodeValue}
-                                        size={160}
-                                        bgColor="#FFFFFF"
-                                        fgColor="#0037C0"
-                                        level="M"
-                                    />
-                                </div>
-                                <code className="profile-qr-code">{delegateId}</code>
-                            </div>
-                        </section>
-
-                        {/* Stats Section - Right column bottom on desktop */}
-                        <section className="profile-section profile-section--stats">
-                            <h2 className="profile-section-title">Conference Stats</h2>
-                            <div className="profile-stats-grid">
-                                <div className="profile-stat">
-                                    <span className="profile-stat-value">{stats.daysAttended}</span>
-                                    <span className="profile-stat-label">Days Attended</span>
-                                </div>
-                                <div className="profile-stat">
-                                    <span className="profile-stat-value">{stats.attendanceRate}%</span>
-                                    <span className="profile-stat-label">Attendance Rate</span>
-                                </div>
-                                <div className="profile-stat profile-stat--full">
-                                    <span className="profile-stat-label">Awards</span>
-                                    {stats.awards ? (
-                                        <span className="profile-stat-award">{stats.awards}</span>
-                                    ) : (
-                                        <span className="profile-stat-none">No awards yet</span>
-                                    )}
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Personal Info Section - Full width on desktop */}
-                        <section className="profile-section profile-section--info">
-                            <h2 className="profile-section-title">Personal Information</h2>
-                            <div className="profile-info-grid">
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Full Name</label>
-                                    <div className="profile-info-value">
-                                        {user.firstName} {user.lastName}
-                                    </div>
-                                </div>
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Email</label>
-                                    <div className="profile-info-value">{user.email}</div>
-                                </div>
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Phone Number</label>
-                                    <div className="profile-info-value">
-                                        {user.phoneNumber || 'Not set'}
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Conference Info Section - Full width on desktop */}
-                        <section className="profile-section profile-section--conference">
-                            <h2 className="profile-section-title">Conference Details</h2>
-                            <div className="profile-info-grid">
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Delegate ID</label>
-                                    <div className="profile-info-value profile-info-value--mono">
-                                        {user.id}
-                                    </div>
-                                </div>
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Council</label>
-                                    <div className="profile-info-value">{user.council}</div>
-                                </div>
-                                <div className="profile-info-item">
-                                    <label className="profile-info-label">Status</label>
-                                    <div className="profile-info-badge">
-                                        <span className="profile-status-dot"></span>
-                                        Active
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Actions */}
-                        <div className="profile-actions">
-                            <Button
-                                variant="secondary"
-                                onClick={() => navigate('/dashboard')}
-                            >
-                                Back to Dashboard
-                            </Button>
+                            <code className="profile-qr-code">{user.id}</code>
+                            <p>Show this QR code at check-in and activity points throughout the conference.</p>
                         </div>
-                    </div>
-                </div>
-            </main>
+                    </section>
 
+                    <section className="profile-section profile-section--stats">
+                        <SectionTitle icon={<ChartIcon />} title="Conference Stats" tone="pink" />
+                        <div className="profile-stats-grid">
+                            <div className="profile-stat"><span className="profile-stat-value">{stats.daysAttended}</span><span className="profile-stat-label">Days Attended</span></div>
+                            <div className="profile-stat"><span className="profile-stat-value">{stats.attendanceRate}%</span><span className="profile-stat-label">Attendance Rate</span></div>
+                            <div className="profile-stat profile-stat--full">
+                                <span className="profile-stat-trophy">★</span>
+                                <div><span className="profile-stat-label">Awards</span><span className={stats.awards ? 'profile-stat-award' : 'profile-stat-none'}>{stats.awards || 'No awards yet'}</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="profile-section profile-section--info">
+                        <SectionTitle icon={<PersonIcon />} title="Personal Information" />
+                        <div className="profile-info-grid">
+                            <div className="profile-info-item"><span className="profile-info-symbol">◎</span><div><span className="profile-info-label">Full Name</span><span className="profile-info-value">{user.firstName} {user.lastName}</span></div></div>
+                            <div className="profile-info-item"><span className="profile-info-symbol">✉</span><div><span className="profile-info-label">Email</span><span className="profile-info-value">{user.email}</span></div></div>
+                            <div className="profile-info-item"><span className="profile-info-symbol">☎</span><div><span className="profile-info-label">Phone Number</span><span className="profile-info-value">{user.phoneNumber || 'Not set'}</span></div></div>
+                        </div>
+                    </section>
+
+                    <section className="profile-section profile-section--conference">
+                        <div className="profile-conference-item"><span>Delegate ID</span><strong>{user.id}</strong></div>
+                        <div className="profile-conference-item"><span>Council</span><strong>{user.council}</strong></div>
+                        <div className="profile-conference-item"><span>Status</span><strong className="profile-info-badge"><i />Active</strong></div>
+                        <Button variant="secondary" onClick={() => navigate('/dashboard')}>Back to Dashboard</Button>
+                    </section>
+                </div>
+                <Sticker name="megaphone-black" className="profile-sticker-megaphone" />
+                <Sticker name="handshake-black" className="profile-sticker-handshake" />
+            </main>
             <Footer />
         </div>
     );

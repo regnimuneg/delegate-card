@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
                         // Invalid token, clear it
                         api.logout();
                     }
-                } catch (error) {
+                } catch {
                     // Token invalid or expired
                     api.logout();
                 }
@@ -130,6 +130,8 @@ export function AuthProvider({ children }) {
     );
 }
 
+// Context and hook intentionally live together to keep the auth boundary cohesive.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
     const context = useContext(AuthContext);
     if (!context) {

@@ -1,106 +1,46 @@
-/* ============================================
-   Footer Component Styles
-   Minimal Design Matching nimuneg.org
-   ============================================ */
-
-.footer {
-    background: var(--nimun-blue-dark);
-    color: var(--text-on-blue);
-    border-top: none;
-    padding: var(--space-8) 0 var(--space-6);
-    margin-top: var(--space-12);
-}
-
+.footer { position: relative; padding: 0 14px 14px; }
 .footer-container {
-    max-width: var(--container-xl);
+    display: grid;
+    grid-template-columns: 1.25fr 1.5fr 1fr;
+    align-items: center;
+    gap: 36px;
+    width: min(1440px, calc(100% - 64px));
+    min-height: 220px;
     margin: 0 auto;
-    padding: 0 var(--space-4);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--space-6);
+    padding: 32px 52px 52px;
+    border: 4px solid white;
+    border-radius: 36px;
+    background: var(--jn-box-blue);
+    box-shadow: 0 7px 0 var(--jn-pink), 0 10px 0 var(--jn-blue-deep);
+    color: white;
 }
 
-/* ---- Social Links ---- */
-.footer-social {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--space-4);
+.footer-brand { display: flex; align-items: center; gap: 18px; }
+.footer-brand img { width: 100px; filter: drop-shadow(3px 3px 0 var(--jn-pink)); }
+.footer-brand strong { display: block; color: white; font-family: var(--font-display); font-size: clamp(2rem, 3vw, 3rem); letter-spacing: .04em; }
+.footer-brand strong span { color: var(--jn-pink); }
+.footer-brand small { display: block; color: white; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+.footer-links { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; padding: 0 32px; border-left: 2px solid rgba(255,255,255,.6); border-right: 2px solid rgba(255,255,255,.6); }
+.footer-links div { display: grid; gap: 7px; }
+.footer-links strong { margin-bottom: 5px; color: var(--jn-yellow); font-family: var(--font-display); letter-spacing: .05em; text-transform: uppercase; }
+.footer-links a { color: white; font-size: .9rem; }
+.footer-links a:hover { color: var(--jn-yellow); }
+.footer-social { display: flex; justify-content: center; gap: 12px; }
+.footer-social-link { display: grid; place-items: center; width: 48px; height: 48px; border: 2px solid white; border-radius: 50%; color: white; }
+.footer-social-link:hover { background: var(--jn-pink); color: white; transform: translateY(-3px); }
+.footer-favicon { width: 25px; height: 25px; }
+.footer-bottom { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); }
+.footer-copyright { margin: 0; color: white; font-size: .82rem; white-space: nowrap; letter-spacing: .08em; }
+
+@media (max-width: 950px) {
+    .footer-container { width: calc(100% - 24px); grid-template-columns: 1fr 1fr; padding: 30px 28px 54px; }
+    .footer-links { grid-row: 2; grid-column: 1 / -1; border: 0; border-top: 2px solid rgba(255,255,255,.5); padding: 22px 0 0; }
 }
 
-.footer-social-link {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    color: rgba(255, 255, 255, 0.7);
-    transition: all var(--transition-base);
-}
-
-.footer-social-link:hover {
-    color: var(--text-on-blue);
-    transform: translateY(-2px);
-}
-
-.footer-social-link--website {
-    filter: brightness(0) invert(1);
-    opacity: 0.7;
-}
-
-.footer-social-link--website:hover {
-    opacity: 1;
-}
-
-.footer-favicon {
-    width: 24px;
-    height: 24px;
-    object-fit: contain;
-}
-
-/* ---- Footer Bottom ---- */
-.footer-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.footer-copyright {
-    font-size: var(--font-size-sm);
-    color: rgba(255, 255, 255, 0.6);
-    margin: 0;
-    text-align: center;
-    font-weight: var(--font-weight-normal);
-}
-
-/* ============================================
-   Tablet Breakpoint (768px+)
-   ============================================ */
-@media (min-width: 768px) {
-    .footer {
-        padding: var(--space-10) 0 var(--space-8);
-    }
-
-    .footer-container {
-        padding: 0 var(--space-6);
-    }
-
-    .footer-social {
-        gap: var(--space-5);
-    }
-
-    .footer-social-link {
-        width: 40px;
-        height: 40px;
-    }
-}
-
-/* ============================================
-   Desktop Breakpoint (1024px+)
-   ============================================ */
-@media (min-width: 1024px) {
-    .footer {
-        padding: var(--space-12) 0 var(--space-10);
-    }
+@media (max-width: 620px) {
+    .footer-container { width: 100%; display: flex; flex-direction: column; align-items: stretch; gap: 24px; border-radius: 28px; }
+    .footer-brand { justify-content: center; }
+    .footer-brand img { width: 74px; }
+    .footer-links { width: 100%; }
+    .footer-social { justify-content: center; }
 }

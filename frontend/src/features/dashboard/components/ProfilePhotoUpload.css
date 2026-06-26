@@ -409,6 +409,32 @@
     cursor: not-allowed;
 }
 
+/* JNIMUN '26 theme overrides */
+.profile-section--photo .profile-photo-upload { max-width: 340px; margin: 8px auto 0; }
+.profile-section--photo .profile-photo-container {
+    width: min(250px, 72vw);
+    height: min(250px, 72vw);
+    border: 6px solid white;
+    box-shadow: 0 0 0 5px var(--jn-pink), 7px 8px 0 var(--jn-yellow);
+}
+.profile-section--photo .profile-photo-placeholder { background: rgba(255,255,255,.14); }
+.profile-section--photo .profile-photo-initials { color: white; font-family: var(--font-display); font-size: 4.5rem; }
+.profile-section--photo .profile-photo-actions { justify-content: center; gap: 10px; }
+.profile-section--photo .profile-photo-edit,
+.profile-section--photo .profile-photo-delete {
+    min-width: 120px;
+    border: 2px solid white;
+    border-radius: 10px;
+    background: var(--jn-pink);
+    color: white;
+    font-weight: 900;
+    box-shadow: 3px 3px 0 rgba(0,0,0,.18);
+}
+.profile-section--photo .profile-photo-hint { color: white; font-family: var(--font-hand); }
+.profile-photo-crop-content { border: var(--jn-border); border-radius: var(--jn-radius); box-shadow: var(--jn-shadow); }
+.profile-photo-crop-title { color: var(--jn-blue-deep); font-family: var(--font-display); }
+.profile-photo-crop-btn--confirm { background: var(--jn-pink); }
+
 /* Phone */
 @media (max-width: 480px) {
     .profile-photo-crop-content {
@@ -430,4 +456,3 @@
         font-size: var(--font-size-sm);
     }
 }
-

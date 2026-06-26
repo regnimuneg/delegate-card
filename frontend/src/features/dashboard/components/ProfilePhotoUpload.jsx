@@ -183,6 +183,8 @@ export function ProfilePhotoUpload({ onPhotoUpdate }) {
         await uploadImage(croppedImageDataUrl);
         setCropMode(false);
         setImageSrc(null);
+    // uploadImage is stable for the lifetime of this render and is invoked only on confirmation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [cropPosition, scale, cropAreaSize]);
 
     const uploadImage = async (imageDataUrl) => {

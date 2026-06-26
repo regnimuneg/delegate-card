@@ -1,0 +1,164 @@
+.jn-page-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 32px;
+    min-height: 150px;
+    margin-bottom: 28px;
+    padding-right: 150px;
+}
+
+.jn-page-heading-copy h1 {
+    display: inline-block;
+    margin: 0;
+    color: var(--jn-blue-deep);
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6.5rem);
+    line-height: .9;
+    letter-spacing: .02em;
+    text-shadow: 4px 4px 0 white;
+    border-bottom: 8px solid var(--jn-pink);
+}
+
+.jn-page-heading-copy p {
+    margin: 12px 0 0 8px;
+    color: #243457;
+    font-family: var(--font-hand);
+    font-size: clamp(1rem, 2vw, 1.45rem);
+    font-weight: 700;
+    transform: rotate(-1deg);
+}
+
+.jn-page-eyebrow {
+    display: block;
+    width: fit-content;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: var(--jn-yellow);
+    color: var(--jn-blue-deep);
+    font-size: .75rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.jn-page-header-sticker {
+    position: absolute;
+    z-index: 0;
+    right: 0;
+    top: 2px;
+    width: 145px;
+    filter: drop-shadow(5px 6px 0 var(--jn-yellow)) drop-shadow(3px 3px 0 var(--jn-pink));
+    transform: rotate(7deg);
+    pointer-events: none;
+}
+
+.jn-council-pills {
+    display: grid;
+    grid-template-columns: auto repeat(3, minmax(0, 1fr));
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 3px solid var(--jn-blue-deep);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, .86);
+    box-shadow: 4px 5px 0 rgba(246, 83, 135, .6);
+}
+
+.jn-council-pills strong {
+    grid-row: 1 / 3;
+    color: var(--jn-blue-deep);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.jn-council-pills span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 52px;
+    padding: 8px 16px;
+    border: 3px solid #9dcef5;
+    border-radius: 16px;
+    background: white;
+    color: var(--jn-blue-deep);
+    font-size: 1rem;
+    font-weight: 900;
+}
+
+.jn-council-pills span.is-active {
+    border-color: var(--jn-pink);
+    background: #fff0f5;
+}
+
+.jn-council-pills img {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+}
+
+.jn-icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    border: 3px solid white;
+    border-radius: 50%;
+    color: white;
+    box-shadow: 0 0 0 3px rgba(8, 47, 156, .2), 3px 4px 0 rgba(8, 47, 156, .2);
+}
+
+.jn-icon-badge svg { width: 25px; height: 25px; }
+.jn-icon-badge--pink { background: var(--jn-pink); }
+.jn-icon-badge--blue { background: var(--jn-blue); }
+.jn-icon-badge--yellow { background: var(--jn-yellow); color: var(--jn-blue-deep); }
+
+.jn-section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.jn-section-title h2 {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    color: var(--jn-blue-deep);
+    letter-spacing: .03em;
+}
+
+.jn-section-title p { margin: 3px 0 0; font-family: var(--font-hand); }
+
+.jn-sticker {
+    position: absolute;
+    z-index: 2;
+    width: 120px;
+    pointer-events: none;
+    filter: drop-shadow(4px 5px 0 var(--jn-pink)) drop-shadow(2px 2px 0 var(--jn-yellow));
+}
+
+@media (max-width: 900px) {
+    .jn-page-header { align-items: flex-end; padding-right: 100px; }
+    .jn-page-header-sticker { width: 100px; }
+    .jn-council-pills { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 18px; }
+    .jn-council-pills strong { grid-column: 1 / -1; grid-row: auto; }
+}
+
+@media (max-width: 650px) {
+    .jn-page-header { display: block; min-height: 120px; padding-right: 62px; }
+    .jn-page-heading-copy h1 { font-size: clamp(2.8rem, 15vw, 4.5rem); border-bottom-width: 6px; }
+    .jn-page-header-sticker { width: 72px; }
+    .jn-council-pills { gap: 8px; padding: 12px; }
+    .jn-council-pills { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .jn-council-pills strong { width: 100%; font-size: 1rem; }
+    .jn-council-pills span { min-height: 46px; padding: 7px 10px; font-size: .82rem; }
+    .jn-council-pills img { width: 28px; height: 28px; }
+}

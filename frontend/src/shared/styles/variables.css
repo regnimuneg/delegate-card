@@ -129,4 +129,22 @@
   --container-md: 768px;
   --container-lg: 1024px;
   --container-xl: 1280px;
+
+  /* ---- JNIMUN '26 Playbook Theme ---- */
+  --jn-blue: #0753c8;
+  --jn-blue-deep: #082f9c;
+  --jn-blue-ink: #08256f;
+  --jn-box-blue: #4e8ecb;
+  --jn-sky: #dff3ff;
+  --jn-sky-strong: #bfe7ff;
+  --jn-pink: #f65387;
+  --jn-pink-dark: #df356c;
+  --jn-yellow: #ffd23f;
+  --jn-white: #ffffff;
+  --jn-border: 3px solid var(--jn-blue-deep);
+  --jn-radius: 24px;
+  --jn-shadow: 8px 9px 0 var(--jn-pink);
+  --jn-shadow-small: 4px 5px 0 var(--jn-pink);
+  --font-display: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  --font-hand: 'Comic Sans MS', 'Bradley Hand', cursive;
 }

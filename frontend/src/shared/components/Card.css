@@ -3,10 +3,10 @@
    ============================================ */
 
 .nimun-card {
-    background: var(--gradient-card);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    background: var(--jn-white);
+    border-radius: var(--jn-radius);
+    box-shadow: var(--jn-shadow-small);
+    border: var(--jn-border);
     position: relative;
     overflow: hidden;
 }
@@ -27,17 +27,17 @@
 }
 
 .nimun-card--elevated {
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--jn-shadow);
 }
 
 .nimun-card--outlined {
-    background: transparent;
-    border: 2px solid rgba(0, 0, 0, 0.1);
-    box-shadow: none;
+    background: rgba(255, 255, 255, .75);
+    border: var(--jn-border);
+    box-shadow: var(--jn-shadow-small);
 }
 
 .nimun-card--blue {
-    background: var(--nimun-blue);
+    background: var(--jn-box-blue);
     color: var(--text-on-blue);
     position: relative;
     overflow: hidden;
@@ -51,8 +51,8 @@
 
 /* ---- Glow Effect ---- */
 .nimun-card--glow {
-    box-shadow: var(--shadow-blue);
-    border-color: rgba(0, 55, 192, 0.2);
+    box-shadow: var(--jn-shadow);
+    border-color: var(--jn-blue-deep);
 }
 
 .nimun-card--glow.nimun-card--interactive:hover {

@@ -47,8 +47,8 @@ export function Navbar({ onLogout, activeTab, onTabChange }) {
             <div className="navbar-content">
                 {/* Brand */}
                 <div className="navbar-brand" onClick={handleHomeClick} style={{ cursor: 'pointer' }}>
-                    <img src="/logo24.png" alt="NIMUN Logo" className="navbar-logo" />
-                    <span className="navbar-brand-text">NIMUN'26</span>
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="navbar-logo" />
+                    <span className="navbar-brand-text">JNIMUN<span>'26</span></span>
                     <span className="navbar-brand-subtitle">Delegate Portal</span>
                 </div>
 
@@ -88,6 +88,7 @@ export function Navbar({ onLogout, activeTab, onTabChange }) {
                 {/* Desktop Sign Out */}
                 <div className="navbar-actions">
                     <Button variant="ghost" size="small" onClick={onLogout}>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                         Sign Out
                     </Button>
                 </div>

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider, Login, ClaimAccount, ForgotPassword, ResetPassword, ProtectedRoute } from './features/auth';
 import { Dashboard, Profile, Activity } from './features/dashboard';
 import './shared/styles/global.css';
+import './shared/styles/jnimun-overrides.css';
 
 /**
  * NIMUN Delegate Card System

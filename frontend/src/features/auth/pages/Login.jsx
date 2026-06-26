@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { Button, Input, Card } from '../../../shared/components';
+import { IS_MOCK_MODE } from '../../../shared/utils/api';
 import './Login.css';
 
 /**
@@ -49,8 +50,8 @@ export function Login() {
     }, [slideshowImages.length]);
 
     const [formData, setFormData] = useState({
-        email: '',
-        password: ''
+        email: IS_MOCK_MODE ? 'delegate@nimun.local' : '',
+        password: IS_MOCK_MODE ? 'demo123' : ''
     });
     const [error, setError] = useState('');
 
@@ -93,9 +94,9 @@ export function Login() {
                 </div>
                 <div className="login-left-overlay"></div>
                 <div className="login-brand-content">
-                    <img src="/Logo_White.png" alt="NIMUN Logo" className="login-logo-image" />
+                    <img src="/assets/jnimun/logos/jnimun-crest.png" alt="JNIMUN crest" className="login-logo-image" />
                     <div className="login-logo">
-                        <span className="login-logo-text">NIMUN</span>
+                        <span className="login-logo-text">JNIMUN</span>
                         <span className="login-logo-year">'26</span>
                     </div>
                     <p className="login-tagline">DELEGATE PORTAL</p>
@@ -105,9 +106,16 @@ export function Login() {
             {/* Right Panel - Form */}
             <div className="login-right-panel">
                 <div className="login-form-container">
+                    <div className="login-mobile-brand"><img src="/assets/jnimun/logos/jnimun-crest.png" alt="" /> JNIMUN<span>'26</span></div>
                     <Card variant="elevated" padding="large" className="login-card">
                         <h1 className="login-title">Welcome Back</h1>
                         <p className="login-subtitle">Sign in to access your delegate dashboard</p>
+
+                        {IS_MOCK_MODE && (
+                            <div className="login-mock-hint">
+                                Local demo mode · credentials are pre-filled
+                            </div>
+                        )}
 
                         <form onSubmit={handleSubmit} className="login-form">
                             <Input
@@ -169,6 +177,7 @@ export function Login() {
                             </Link>
                         </div>
                     </Card>
+                    <img src="/assets/jnimun/stickers/speak-up-note.png" className="login-sticker login-sticker--note" alt="" aria-hidden="true" />
                 </div>
             </div>
         </div>

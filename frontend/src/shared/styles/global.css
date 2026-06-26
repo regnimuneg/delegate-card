@@ -2,7 +2,6 @@
    NIMUN Global Styles
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 @import './variables.css';
 
 /* ---- CSS Reset ---- */
@@ -26,7 +25,7 @@ body {
     font-weight: var(--font-weight-normal);
     line-height: var(--line-height-normal);
     color: var(--text-primary);
-    background: var(--gradient-secondary);
+    background: url('/doodles.png') center / 720px auto repeat fixed;
     background-attachment: fixed;
     min-height: 100vh;
     position: relative;
@@ -35,6 +34,11 @@ body {
 #root {
     position: relative;
     z-index: 1;
+}
+
+::selection {
+    background: var(--jn-pink);
+    color: white;
 }
 
 
@@ -54,6 +58,12 @@ h6 {
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
+}
+
+h1,
+h2,
+h3 {
+    color: var(--jn-blue-ink);
 }
 
 h1 {
@@ -117,8 +127,42 @@ input:focus,
 textarea:focus,
 select:focus,
 button:focus {
-    outline: 2px solid var(--nimun-blue);
-    outline-offset: 2px;
+    outline: 3px solid var(--jn-yellow);
+    outline-offset: 3px;
+}
+
+:focus-visible {
+    outline: 3px solid var(--jn-yellow);
+    outline-offset: 3px;
+}
+
+.jn-app-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.jn-page-main {
+    position: relative;
+    flex: 1;
+    width: min(1440px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 42px 0 72px;
+}
+
+.jn-card-surface {
+    border: var(--jn-border);
+    border-radius: var(--jn-radius);
+    background: var(--jn-white);
+    box-shadow: var(--jn-shadow);
+}
+
+@media (max-width: 700px) {
+    .jn-page-main {
+        width: min(100% - 24px, 1440px);
+        padding: 28px 0 50px;
+    }
 }
 
 /* ---- Utility Classes ---- */

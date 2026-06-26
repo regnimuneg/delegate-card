@@ -5,12 +5,28 @@
 
 .delegate-card {
     width: 100%;
-    height: 100%;
+    height: auto;
     margin: 0;
     background: var(--nimun-blue);
     border-radius: 0;
     color: var(--text-on-blue);
 }
+
+/* JNIMUN '26 visual theme */
+.delegate-card {
+    border: var(--jn-border);
+    border-radius: var(--jn-radius);
+    background: var(--jn-box-blue);
+    box-shadow: var(--jn-shadow);
+    overflow: hidden;
+}
+.delegate-card::before { opacity: .14; }
+.delegate-card-brand { font-family: var(--font-display); letter-spacing: .06em; }
+.delegate-card-type { border: 2px solid white; border-radius: 999px; background: var(--jn-pink); }
+.delegate-card-avatar { border: 4px solid white; box-shadow: 0 0 0 4px var(--jn-pink), 4px 5px 0 var(--jn-yellow); }
+.delegate-card-name { font-family: var(--font-display); color: white; letter-spacing: .04em; }
+.delegate-card-info-item, .delegate-card-qr { border: 2px solid rgba(255,255,255,.65); border-radius: 16px; background: rgba(255,255,255,.08); }
+.delegate-card-tagline { color: var(--jn-yellow); font-family: var(--font-display); }
 
 .delegate-card-inner {
     display: flex;
@@ -174,17 +190,16 @@
 
 /* ---- Motivational Tagline ---- */
 .delegate-card-tagline {
-    font-family: 'Montserrat';
+    font-family: var(--font-display);
     font-size: 2.5rem;
     font-weight: 800;
     /* font-style: italic; */
     color: rgba(255, 255, 255, 0.9);
     text-align: center;
-    margin-top: auto;
+    margin-top: 0;
     padding: var(--space-6) 0;
     letter-spacing: 0.02em;
     line-height: 1.1;
-    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;

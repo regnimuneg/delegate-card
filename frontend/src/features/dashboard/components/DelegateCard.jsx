@@ -17,8 +17,6 @@ export function DelegateCard({ delegate, showQR = true }) {
         committee,
         council,
         role,
-        qrCode,
-        qrSlug,
         photo
     } = delegate;
 
@@ -112,7 +110,7 @@ export function DelegateCard({ delegate, showQR = true }) {
 
                 {/* Motivational Tagline */}
                 <div className="delegate-card-tagline">
-                    Leave Your Mark!
+                    Leaving Our Marks!
                 </div>
             </div>
         </div>

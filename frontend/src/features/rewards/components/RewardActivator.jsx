@@ -24,7 +24,6 @@ export function RewardActivator({ delegateId }) {
     const [selectedReward, setSelectedReward] = useState(null);
     const [isActive, setIsActive] = useState(false);
     const [qrToken, setQrToken] = useState(null);
-    const [qrData, setQrData] = useState(null);
     const [timeRemaining, setTimeRemaining] = useState(0);
     const [isActivating, setIsActivating] = useState(false);
 
@@ -38,7 +37,6 @@ export function RewardActivator({ delegateId }) {
             if (response.success && response.activation) {
                 const activation = response.activation;
                 setQrToken(activation.qrToken);
-                setQrData(activation.qrData);
                 
                 // Calculate time remaining
                 const expiresAt = new Date(activation.expiresAt);
@@ -65,7 +63,6 @@ export function RewardActivator({ delegateId }) {
             if (timeRemaining <= 0 && isActive) {
                 setIsActive(false);
                 setQrToken(null);
-                setQrData(null);
             }
             return;
         }
@@ -75,7 +72,6 @@ export function RewardActivator({ delegateId }) {
                 if (prev <= 1) {
                     setIsActive(false);
                     setQrToken(null);
-                    setQrData(null);
                     return 0;
                 }
                 return prev - 1;
@@ -96,7 +92,6 @@ export function RewardActivator({ delegateId }) {
     const cancelActivation = () => {
         setIsActive(false);
         setQrToken(null);
-        setQrData(null);
         setTimeRemaining(0);
     };
 

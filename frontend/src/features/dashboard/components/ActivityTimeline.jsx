@@ -367,6 +367,9 @@ export function ActivityTimeline({ activities: propActivities, limit = 5 }) {
 
     // Apply limit
     const displayActivities = activities.slice(0, limit);
+    if (loading) {
+        return <Card padding="medium" className="activity-timeline-empty"><p>Loading activity…</p></Card>;
+    }
     if (activities.length === 0) {
         return (
             <Card padding="medium" className="activity-timeline-empty">
