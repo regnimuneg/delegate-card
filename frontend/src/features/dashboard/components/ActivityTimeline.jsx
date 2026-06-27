@@ -48,7 +48,21 @@ function getIconForType(activityType) {
 /**
  * Format attendance title professionally
  */
-function formatAttendanceTitle(title) {
+function formatAttendanceTitle(title, description = '') {
+    // Handle bus tracking - use description to distinguish pickup vs dropoff
+    const lowerTitle = title.toLowerCase();
+    const lowerDesc = description.toLowerCase();
+    if (lowerTitle.includes('bus tracking')) {
+        const dayMatch = lowerTitle.match(/day(\d+)/i);
+        const dayNum = dayMatch ? dayMatch[1] : '';
+        if (lowerDesc.includes('check-in') || lowerDesc.includes('checkin') || lowerDesc.includes('checked in')) {
+            return `Day ${dayNum} Bus Pickup`;
+        } else if (lowerDesc.includes('check-out') || lowerDesc.includes('checkout') || lowerDesc.includes('checked out')) {
+            return `Day ${dayNum} Bus Dropoff`;
+        }
+        return `Day ${dayNum} Bus Pickup & Dropoff`;
+    }
+
     // Map common attendance title patterns to professional names
     const titleMap = {
         'sessions.day1': 'Day 1 Session',
@@ -302,11 +316,16 @@ function transformActivity(activity) {
     let formattedDescription = activity.description || '';
 
     if (isAttendance) {
-        formattedTitle = formatAttendanceTitle(activity.title);
+        formattedTitle = formatAttendanceTitle(activity.title, activity.description);
         formattedDescription = formatAttendanceDescription(activity.description, activity.created_at);
     } else if (isFood) {
         formattedTitle = formatFoodTitle(activity.title);
         formattedDescription = formatFoodDescription(activity.description);
+    }
+
+    // Also format titles that look like session/bus entries regardless of activity_type
+    if (!isAttendance && /sessions\.|bus tracking/i.test(activity.title)) {
+        formattedTitle = formatAttendanceTitle(activity.title, activity.description);
     }
 
     return {
