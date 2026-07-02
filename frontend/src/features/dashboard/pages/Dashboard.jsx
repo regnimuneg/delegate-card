@@ -123,7 +123,12 @@ export function Dashboard() {
                                         const confStart = new Date('2026-06-27T00:00:00');
                                         const confEnd = new Date('2026-07-06T23:59:59');
                                         const isInConference = now >= confStart && now <= confEnd;
-                                        const todayKey = now.toISOString().slice(0, 10);
+                                        
+                                        const year = now.getFullYear();
+                                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                                        const day = String(now.getDate()).padStart(2, '0');
+                                        const todayKey = `${year}-${month}-${day}`;
+
                                         const activeItem = scheduleGroups
                                             .flatMap((group) => group.items)
                                             .find((item) => item.isoDate === todayKey);

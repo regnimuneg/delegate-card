@@ -6,7 +6,7 @@ export function IconBadge({ children, tone = 'pink', className = '' }) {
 
 export function PageHeader({ eyebrow, title, subtitle, sticker = null, children }) {
     return (
-        <section className="jn-page-header">
+        <section className={`jn-page-header ${!sticker ? 'jn-page-header--no-sticker' : ''}`}>
             <div className="jn-page-heading-copy">
                 {eyebrow && <span className="jn-page-eyebrow">{eyebrow}</span>}
                 <h1>{title}</h1>
