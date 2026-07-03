@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Button } from '../../../shared/components';
 import './VoucherClaimModal.css';
 
@@ -57,6 +58,20 @@ const VoucherIcon = ({ type }) => {
     return icons[type] || icons.default;
 };
 
+const getFallbackIcon = (name = '') => {
+    const lowercaseName = name.toLowerCase();
+    if (lowercaseName.includes('billy') || lowercaseName.includes('yole') || lowercaseName.includes('b&f') || lowercaseName.includes('vapiano') || lowercaseName.includes('2ooltasa')) {
+        return 'snack';
+    }
+    if (lowercaseName.includes('coddiwomple')) {
+        return 'merch';
+    }
+    if (lowercaseName.includes('superpark')) {
+        return 'photo';
+    }
+    return 'default';
+};
+
 /**
  * VoucherClaimModal Component
  * Simple confirmation modal for claiming a voucher
@@ -71,6 +86,7 @@ export function VoucherClaimModal({
     if (!voucher) return null;
 
     const { name, icon, description, remaining, limit } = voucher;
+    const [imageError, setImageError] = useState(false);
 
     // Calculate remaining after this claim
     const remainingAfterClaim = limit !== null ? remaining - 1 : null;
@@ -84,10 +100,15 @@ export function VoucherClaimModal({
                 {/* Header */}
                 <div className="voucher-modal-header">
                     <span className="voucher-modal-icon">
-                        {icon && (icon.startsWith('/') || icon.startsWith('http')) ? (
-                            <img src={icon} alt={name} style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }} />
+                        {icon && (icon.startsWith('/') || icon.startsWith('http')) && !imageError ? (
+                            <img 
+                                src={icon} 
+                                alt={name} 
+                                style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '8px' }} 
+                                onError={() => setImageError(true)}
+                            />
                         ) : (
-                            <VoucherIcon type={icon || 'default'} />
+                            <VoucherIcon type={getFallbackIcon(name)} />
                         )}
                     </span>
                     <h3 className="voucher-modal-title">Activate Voucher</h3>

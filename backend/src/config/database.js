@@ -306,14 +306,22 @@ export async function getVouchersForUser(userId, userType = 'delegate') {
 
     if (claimsError) throw claimsError;
 
-    // Combine vouchers with claim data
-    return vouchers.map(voucher => {
+    // Combine vouchers with claim data and apply date/timezone filters
+    const now = new Date();
+    const activeVouchers = vouchers.filter(voucher => {
+        const fromDate = voucher.valid_from ? new Date(voucher.valid_from) : null;
+        const untilDate = voucher.valid_until ? new Date(voucher.valid_until) : null;
+        if (fromDate && fromDate > now) return false;
+        if (untilDate && untilDate < now) return false;
+        return true;
+    });
+
+    return activeVouchers.map(voucher => {
         const userClaims = claims.filter(c => c.voucher_id === voucher.id);
         const used = userClaims.length;
         const remaining = voucher.usage_limit ? voucher.usage_limit - used : null;
 
         // Check if there's an active unexpired claim for this voucher
-        const now = new Date();
         const hasActiveClaim = userClaims.some(c =>
             c.status === 'active' &&
             new Date(c.qr_expires_at) > now
@@ -325,8 +333,15 @@ export async function getVouchersForUser(userId, userType = 'delegate') {
             ? (remaining > 0 || hasActiveClaim)
             : true;
 
+        // Dynamic description change for 2ooltasa after first claim
+        let description = voucher.description;
+        if (voucher.name.toLowerCase() === '2ooltasa' && used > 0) {
+            description = "10% off subsequent orders until the end of the year. Place orders at least 1 day before via Instagram DM by sending a card photo.";
+        }
+
         return {
             ...voucher,
+            description,
             used,
             remaining,
             limit: voucher.usage_limit,

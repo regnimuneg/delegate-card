@@ -58,6 +58,20 @@ const VoucherIcon = ({ type }) => {
     return icons[type] || icons.default;
 };
 
+const getFallbackIcon = (name = '') => {
+    const lowercaseName = name.toLowerCase();
+    if (lowercaseName.includes('billy') || lowercaseName.includes('yole') || lowercaseName.includes('b&f') || lowercaseName.includes('vapiano') || lowercaseName.includes('2ooltasa')) {
+        return 'snack';
+    }
+    if (lowercaseName.includes('coddiwomple')) {
+        return 'merch';
+    }
+    if (lowercaseName.includes('superpark')) {
+        return 'photo';
+    }
+    return 'default';
+};
+
 /**
  * VoucherCard Component
  * Displays a single voucher with vendor info and remaining usage
@@ -82,6 +96,7 @@ export function VoucherCard({
     } = voucher;
 
     const [timeRemaining, setTimeRemaining] = useState(0);
+    const [imageError, setImageError] = useState(false);
 
     // Update timer for active claim
     useEffect(() => {
@@ -160,10 +175,16 @@ export function VoucherCard({
             <div className="voucher-card-header">
                 <div className="voucher-card-image">
                     <div className="voucher-card-icon">
-                        {icon && (icon.startsWith('/') || icon.startsWith('http')) ? (
-                            <img src={icon} alt={name} className="voucher-card-icon-img" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                        {icon && (icon.startsWith('/') || icon.startsWith('http')) && !imageError ? (
+                            <img 
+                                src={icon} 
+                                alt={name} 
+                                className="voucher-card-icon-img" 
+                                style={{ width: '100%', height: '100%', objectFit: 'contain' }} 
+                                onError={() => setImageError(true)}
+                            />
                         ) : (
-                            <VoucherIcon type={icon || 'default'} />
+                            <VoucherIcon type={getFallbackIcon(name)} />
                         )}
                     </div>
                 </div>
